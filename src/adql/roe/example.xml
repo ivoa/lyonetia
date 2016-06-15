@@ -20,23 +20,45 @@
     +-->
 <queries>
 
+    <!--+
+        | Contact details of who to talk to about this set of queries.
+        +--> 
     <contact>
         <name>Dave Morris</name>
         <url>https://github.com/Zarquan</url>
     </contact>
+    <!--+
+        | The publisher of this set of queries.
+        +--> 
     <publisher>
         <name>The Royal Observatory, Edinburgh</name>
         <url>http://www.roe.ac.uk/</url>
     </publisher>
 
+    <!--+
+        | A query, with a unique identifier.
+        | On Linux, use uuidgen to generate a unique identifier. 
+        +--> 
     <query uuid='8a717d52-c83b-47a7-822e-2c0937341a27'>
-        <target>http://osa.roe.ac.uk/</target>
+
+        <!--+
+            | A URL that can be used to identify the target dataset.
+            +--> 
+        <dataset>http://osa.roe.ac.uk/</dataset>
+        <!--+
+            | A text description of the query.
+            +--> 
         <descrption>
             <![CDATA[
-            As siple example.
+            As simple example.
             ]]>
         <descrption>
 
+        <!--+
+            | The ADQL query.
+            | valid = true if the query is valid ADQL
+            | version = the target version of ADQL
+            +--> 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
@@ -48,10 +70,33 @@
             ]]>
         </adql>
 
+        <!--+
+            | Details of the target dataset (TBD).
+            +--> 
+        <target>
+            <!--+
+                | Details of the target TAP service (TBD).
+                +--> 
+            <tap></tap>
+            <!--+
+                | VOSI metadata of the target data (TBD).
+                +--> 
+            <vosi></vosi>
+        <target>
+
+        <!--+
+            | Details of the expected results.
+            +--> 
         <expected>
+            <!--+
+                | Details of the expected rows.
+                +--> 
             <rows>
                 <count>5</count>
             </rows>
+            <!--+
+                | Details of the expected columns.
+                +--> 
             <columns>
                 <column>
                     <name>ra</name>
