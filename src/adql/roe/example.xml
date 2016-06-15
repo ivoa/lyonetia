@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<queries>
+
+    <contact>
+        <name>Dave Morris</name>
+        <url>https://github.com/Zarquan</url>
+    </contact>
+    <publisher>
+        <name>The Royal Observatory, Edinburgh</name>
+        <url>http://www.roe.ac.uk/</url>
+    </publisher>
+
+    <query uuid='8a717d52-c83b-47a7-822e-2c0937341a27'>
+        <target>http://osa.roe.ac.uk/</target>
+        <descrption>
+            <![CDATA[
+            As siple example.
+            ]]>
+        <descrption>
+
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT
+                TOP 5
+                ra,
+                dec
+            FROM
+                atlasSource
+            ]]>
+        </adql>
+
+        <expected>
+            <rows>
+                <count>5</count>
+            </rows>
+            <columns>
+                <column>
+                    <name>ra</name>
+                    <description>Right ascension</description>
+                    <unit>deg</unit>
+                    <ucd>pos.eq.ra;meta.main</ucd>
+                    <type>float</type>
+                </column>
+                <column>
+                    <name>dec</name>
+                    <description>Declination</description>
+                    <unit>deg</unit>
+                    <ucd>pos.eq.dec;meta.main</ucd>
+                    <type>float</type>
+                </column>
+            </columns>
+        </expected>
+    </query>
+</queries>
+
+
+

@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<queries>
+
+    <contact>
+        <name>Dave Morris</name>
+        <url>https://github.com/Zarquan</url>
+    </contact>
+    <publisher>
+        <name>The Royal Observatory, Edinburgh</name>
+        <url>http://www.roe.ac.uk/</url>
+    </publisher>
+    <descrption>
+        <![CDATA[
+        Example queries from the OSA query logs.
+        ]]>
+    <descrption>                            
+
+    <query uuid='16070256-2cb2-47a5-b24d-88856b0630ac'>
+        <target>http://osa.roe.ac.uk/</target>
+        <descrption>
+            <![CDATA[
+            A really simple example.
+            ]]>
+        <descrption>
+
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT
+                TOP 10
+                ra,
+                dec
+            FROM
+                atlassource  
+            ]]>
+        </adql>
+    </query>
+
+    <query uuid='d6004ff9-06a3-483f-9720-f1afabfbbe58'>
+        <target>http://osa.roe.ac.uk/</target>
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT
+                AVG(rAperMag3)
+            FROM
+                atlasSource
+            WHERE
+                rAperMag3 > 0.0  
+            ]]>
+        </adql>
+    </query>
+
+    <query uuid='84c860f0-1623-463b-ba4d-830185853e3f'>
+        <target>http://osa.roe.ac.uk/</target>
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+                SELECT
+                    AVG(rAperMag3)
+                FROM
+                    atlasSource
+                WHERE
+                    rAperMag3 > 0.0  
+            ]]>
+        </adql>
+    </query>
+    <query uuid='7ad59553-3036-4916-b61f-bb3529a1a3ea'>
+        <target>http://osa.roe.ac.uk/</target>
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+                SELECT
+                    ra,
+                    dec
+                FROM
+                    atlasMergeLog  
+            ]]>
+        </adql>
+    </query>
+    <query uuid='c3f1bc37-4659-4528-a444-e14aabad81bc'>
+        <target>http://osa.roe.ac.uk/</target>
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT
+                ra,
+                dec
+            FROM
+                atlasMergeLog
+            WHERE
+                dec BETWEEN -22.5 AND 20.5  
+            ]]>
+        </adql>
+    </query>
+    <query uuid='77eb3ded-be2a-49a2-a551-364341778c65'>
+        <target>http://osa.roe.ac.uk/</target>
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT
+                mjdObs,
+                ra,
+                dec
+            FROM
+                atlasMergeLog,
+                Multiframe
+            WHERE
+                (dec BETWEEN -22.5 AND -12.5)
+            AND
+                (gmfID = multiframeID)
+            AND
+                (gmfID > 0)  
+            ]]>
+        </adql>
+    </query>
+    <query uuid='96adf235-14b1-4f7e-a522-6bf687cec218'>
+        <target>http://osa.roe.ac.uk/</target>
+        <descrption>
+            <![CDATA[
+            A more realistic example.
+            ]]>
+        <descrption>
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT
+                ATLASsource.*,
+                2*DEGREES(ASIN(sqrt(power(-0.997825033922517-cx, 2) + power(-0.052293794140904105-cy, 2) + power(-0.040131792532559725-cz,2)) / 2)) * 60 as dist
+            FROM
+                ATLASsource
+            WHERE
+                dec > -2.3166666666666664
+            AND
+                dec < -2.283333333333333
+            AND
+                RA >= 182.98331970017435
+            AND
+                RA <= 183.01668029982565
+            AND
+                ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)  
+            ]]>
+        </adql>
+    </query>
+
+</queries>
+
+
+
