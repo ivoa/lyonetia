@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<queries>
+
+    <contact>
+        <name>Dave Morris</name>
+        <url>https://github.com/Zarquan</url>
+    </contact>
+    <publisher>
+        <name>The Royal Observatory, Edinburgh</name>
+        <url>http://www.roe.ac.uk/</url>
+    </publisher>
+
+    <query uuid=''>
+
+        <dataset>http://wwww.example.org/</dataset>
+
+        <description>
+            <![CDATA[
+            As simple example for OFFSET.
+            ]]>
+        <description>
+
+        <adql version='adql-2.1' valid='true'>
+            <![CDATA[
+            SELECT TOP 10
+                ident
+            FROM
+                source
+            WHERE
+                ident NOT NULL
+            OFFSET 100
+            ]]>
+        </adql>
+
+        <!--+
+            | A list of optional featuers.
+            +-->
+        <options>
+            <option>
+                <type>ivo://ivoa.net/std/TAPRegExt#offset</type>
+                <name>OFFSET</name>
+            </option>
+        </options>
+
+        <!--+
+            | A list of platform compatibility.
+            +-->
+        <platforms>
+
+            <platform ident='https://www.postgresql.org/' version='9.4.8' support='FULL'>
+                <tests>
+                    <test>https://github.com/ivoa/cosmopterix/wiki/OFFSET-and-LIMIT#postgresql</test>
+                </tests>
+            </platform>
+
+            <platform ident='http://www.oracle.com/' version='11.2' support='PARTIAL'>
+                <tests>
+                    <test>https://github.com/ivoa/cosmopterix/wiki/OFFSET-and-LIMIT#oracle</test>
+                </tests>
+                <notes>
+                    <![CDATA[
+                    OFFSET is not supported before version 12.
+                    However, there are work arounds using row number.
+                    ]]>
+                </notes>
+            </platform>
+
+            <platform ident='https://mariadb.com/kb/en/mariadb/spider-storage-engine-overview/' support='NONE'>
+                <notes>
+                    <![CDATA[
+                    OFFSET is not practical on a sharded database system.
+                    ]]>
+                </notes>
+            </platform>
+        
+        </platforms>
+        
+    </query>
+</queries>
+
+
+

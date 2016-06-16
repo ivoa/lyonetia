@@ -29,22 +29,22 @@
         <url>http://www.roe.ac.uk/</url>
     </publisher>
 
-    <query uuid=''>
+    <query uuid='1578bfba-c6fa-4b52-8de2-ab4592ed0e6e'>
 
-        <dataset>http://osa.roe.ac.uk/</dataset>
+        <dataset>http://wwww.example.org/</dataset>
 
-        <descrption>
+        <description>
             <![CDATA[
-            As simple example.
+            As simple example, using the full geometry feature set.
             ]]>
-        <descrption>
+        <description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
-                sourceid
+                ident
             FROM
-                atlasSource
+                source
             WHERE
                 CONTAINS(
                     POINT(
@@ -61,7 +61,7 @@
         </adql>
 
         <!--+
-            | The list of options, listing the full set of geometry functions.
+            | The list of options, just listing the geometry functions.
             +-->
         <options>
             <option>
@@ -71,22 +71,22 @@
 
     </query>
 
-    <query uuid=''>
+    <query uuid='cb6a2f70-6ef5-4611-8177-cf537ca5febf'>
 
-        <dataset>http://osa.roe.ac.uk/</dataset>
+        <dataset>http://wwww.example.org/</dataset>
 
-        <descrption>
+        <description>
             <![CDATA[
-            As simple example.
+            As simple example, explicitly naming each optional feature.
             ]]>
-        <descrption>
+        <description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
-                sourceid
+                ident
             FROM
-                atlasSource
+                source
             WHERE
                 CONTAINS(
                     POINT(
@@ -119,10 +119,7 @@
                 <type>ivo://ivoa.net/std/TAPRegExt#features-adql-geo</type>
             </option>
         </options>
-
     </query>
-
-
 </queries>
 
 

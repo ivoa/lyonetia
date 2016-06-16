@@ -43,16 +43,17 @@
 
         <!--+
             | A URL that can be used to identify the target dataset.
+            | Use http://wwww.example.org/ for examples.
             +--> 
         <dataset>http://osa.roe.ac.uk/</dataset>
         <!--+
             | A text description of the query.
             +--> 
-        <descrption>
+        <description>
             <![CDATA[
             As simple example.
             ]]>
-        <descrption>
+        <description>
 
         <!--+
             | The ADQL query.

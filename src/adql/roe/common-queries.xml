@@ -28,19 +28,19 @@
         <name>The Royal Observatory, Edinburgh</name>
         <url>http://www.roe.ac.uk/</url>
     </publisher>
-    <descrption>
+    <description>
         <![CDATA[
         Example queries from the OSA query logs.
         ]]>
-    <descrption>                            
+    <description>                            
 
     <query uuid='16070256-2cb2-47a5-b24d-88856b0630ac'>
         <dataset>http://osa.roe.ac.uk/</dataset>
-        <descrption>
+        <description>
             <![CDATA[
             A really simple example.
             ]]>
-        <descrption>
+        <description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -129,11 +129,11 @@
     </query>
     <query uuid='96adf235-14b1-4f7e-a522-6bf687cec218'>
         <dataset>http://osa.roe.ac.uk/</dataset>
-        <descrption>
+        <description>
             <![CDATA[
             A more realistic example.
             ]]>
-        <descrption>
+        <description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
