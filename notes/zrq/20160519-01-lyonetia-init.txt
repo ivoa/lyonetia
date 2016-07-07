@@ -1,0 +1,56 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our local settings.
+#[user@desktop]
+
+    if [ ! -e "${HOME:?}/lyonetia.settings" ]
+    then
+        cat > "${HOME:?}/lyonetia.settings" << EOF
+LYONETIA_HOME=/var/local/projects/edinburgh/lyonetia
+LYONETIA_CODE=\${LYONETIA_HOME:?}/github
+EOF
+    fi
+
+# -----------------------------------------------------
+# Checkout our source code.
+#[user@desktop]
+
+    source "${HOME:?}/lyonetia.settings"
+
+    if [ ! -e "${LYONETIA_HOME:?}" ]
+    then
+        mkdir -p "${LYONETIA_HOME:?}"
+    fi
+
+    pushd "${LYONETIA_HOME:?}"
+        if [ ! -e "${LYONETIA_CODE:?}" ]
+        then
+             git clone "git@github.com:ivoa/lyonetia.git" "$(basename ${LYONETIA_CODE:?})"
+        else
+            pushd "${LYONETIA_CODE:?}"
+                git pull
+            popd
+        fi
+    popd
+

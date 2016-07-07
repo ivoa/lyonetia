@@ -1,0 +1,100 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    
+    Example syntax for JSON files.
+
+    [
+
+        {
+        "uuid" : "2efd32a8-91d4-4a19-a594-695b40b54a1b"
+        "name" : ""
+        "text" : "Pass/fail parser query"
+
+        "query" : {
+            "adql"  : "SELECT .. FROM .. WHERE"
+            "valid" : "True"
+            }
+
+        },
+
+
+        {
+        "uuid" : "728fbd80-3ea1-488a-b00f-e1f236d96661"
+        "text" : "An Atlas DR1 test query with expected results"
+        "target" : "http://astro.dur.ac.uk/Cosmology/vstatlas/index.php?go=dr1"
+
+        "query" : {
+            "adql"  : "SELECT .. FROM .. WHERE"
+            "valid" : "True"
+            },
+
+        "expect" : {
+            "count": 2
+            "fields" : [
+                    {
+                    "ucd"   : "pos.eq.ra",
+                    "name"  : "ra",
+                    "atype" : "DOUBLE",
+                    "utype" : "xxxx",
+                    "xtype" : "xxxx"
+                    }
+                ]
+            }
+        },
+
+
+        {
+        "uuid" : "f75b7f7d-4dcb-452d-95e4-e1bc607d37ad"
+        "text" : "A Cosmopterix test data query"
+        "target" : "https://github.com/ivoa/cosmopterix/blob/master/docker/data/alpha-source-data.sql"
+
+        "query" : {
+            "adql"  : "SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10"
+            "valid" : "True"
+            }
+
+        "expect" : {
+            "count": 10
+            "fields" : [
+                    {
+                    "name"  : "id",
+                    "atype" : "int"
+                    },
+                    {
+                    "name"  : "ra",
+                    "atype" : "double"
+                    }
+                    {
+                    "name"  : "decl",
+                    "atype" : "double"
+                    }
+                ]
+            }
+
+        },
+
+    ]
+
+    
+
