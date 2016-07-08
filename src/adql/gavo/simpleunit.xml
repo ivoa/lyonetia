@@ -1,5 +1,596 @@
-<queries><contact><name>Markus Demleitner</name><url>mailto:msdemlei@ari.uni-heidelberg.de</url></contact><publisher><name>Heidelberg GAVO Data Center</name><url>http://dc.g-vo.org</url></publisher><description>MISSING: Global descriptions of these queries</description><query uuid="4a7eb482-4429-11e6-9acc-28b2bdcff70b"><description>Most basic ADQL expressions</description><adql valid="true" version="adql-2.1">SELECT x FROM y
-</adql></query><query uuid="52f74a7a-4429-11e6-9acc-28b2bdcff70b"><description>Most basic ADQL expressions</description><adql valid="true" version="adql-2.1">SELECT x FROM y WHERE z=0
-</adql></query><query uuid="57ff2b14-4429-11e6-9acc-28b2bdcff70b"><description>Most basic ADQL expressions</description><adql valid="true" version="adql-2.1">SELECT x, v FROM y WHERE z=0 AND v&gt;2
-</adql></query><query uuid="5c8a9ff6-4429-11e6-9acc-28b2bdcff70b"><description>Most basic ADQL expressions</description><adql valid="true" version="adql-2.1">SELECT 89 FROM X
-</adql></query></queries>
+<queries>
+  <contact>
+    <name>Markus Demleitner</name>
+    <url>mailto:msdemlei@ari.uni-heidelberg.de</url>
+  </contact>
+  <publisher>
+    <name>Heidelberg GAVO Data Center</name>
+    <url>http://dc.g-vo.org</url>
+  </publisher>
+  <description>Plain SQL queries from DaCHS' unittest suite</description>
+  <query uuid="4a7eb482-4429-11e6-9acc-28b2bdcff70b">
+    <description>Most basic ADQL expressions</description>
+    <adql valid="true" version="adql-2.1">SELECT x FROM y
+</adql>
+  </query>
+  <query uuid="52f74a7a-4429-11e6-9acc-28b2bdcff70b">
+    <description>Most basic ADQL expressions</description>
+    <adql valid="true" version="adql-2.1">SELECT x FROM y WHERE z=0
+</adql>
+  </query>
+  <query uuid="57ff2b14-4429-11e6-9acc-28b2bdcff70b">
+    <description>Most basic ADQL expressions</description>
+    <adql valid="true" version="adql-2.1">SELECT x, v FROM y WHERE z=0 AND v&gt;2
+</adql>
+  </query>
+  <query uuid="5c8a9ff6-4429-11e6-9acc-28b2bdcff70b">
+    <description>Most basic ADQL expressions</description>
+    <adql valid="true" version="adql-2.1">SELECT 89 FROM X
+</adql>
+  </query>
+  <query uuid="26fc0742-4458-11e6-96e2-28b2bdcff70b">
+    <description>Delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">SELECT "f-bar", "c""ho" FROM "nons-ak" WHERE "ja ja"&lt;"Umph"
+</adql>
+  </query>
+  <query uuid="37af35a0-4458-11e6-96e2-28b2bdcff70b">
+    <description>Simple syntax errors</description>
+    <adql valid="false" version="adql-2.1">W00T
+</adql>
+  </query>
+  <query uuid="3d40779a-4458-11e6-96e2-28b2bdcff70b">
+    <description>Simple syntax errors</description>
+    <adql valid="false" version="adql-2.1">SELECT A
+</adql>
+  </query>
+  <query uuid="41dc95e0-4458-11e6-96e2-28b2bdcff70b">
+    <description>Simple syntax errors</description>
+    <adql valid="false" version="adql-2.1">SELECT A FROM
+</adql>
+  </query>
+  <query uuid="490cac06-4458-11e6-96e2-28b2bdcff70b">
+    <description>Simple syntax errors</description>
+    <adql valid="false" version="adql-2.1">SELECT A FROM B WHERE
+</adql>
+  </query>
+  <query uuid="582d5460-4458-11e6-96e2-28b2bdcff70b">
+    <description>Simple syntax errors</description>
+    <adql valid="false" version="adql-2.1">SELECT FROM
+</adql>
+  </query>
+  <query uuid="5e700476-4458-11e6-96e2-28b2bdcff70b">
+    <description>Simple syntax errors</description>
+    <adql valid="false" version="adql-2.1">SELECT 89x FROM z
+</adql>
+  </query>
+  <query uuid="6fe70754-4458-11e6-96e2-28b2bdcff70b">
+    <description>Case insensitive keywords</description>
+    <adql valid="true" version="adql-2.1">select z as U From n
+</adql>
+  </query>
+  <query uuid="754fa200-4458-11e6-96e2-28b2bdcff70b">
+    <description>Case insensitive keywords</description>
+    <adql valid="true" version="adql-2.1">seLect z AS U FROM n
+</adql>
+  </query>
+  <query uuid="89097af0-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1, t2
+</adql>
+  </query>
+  <query uuid="8d08e956-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1, t2, t3
+</adql>
+  </query>
+  <query uuid="a7a9d518-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1, t2, t3 WHERE t1.x=t2.y
+</adql>
+  </query>
+  <query uuid="ab9be5d0-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 JOIN t2
+</adql>
+  </query>
+  <query uuid="b00ccf58-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 NATURAL JOIN t2
+</adql>
+  </query>
+  <query uuid="b8823240-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 LEFT OUTER JOIN t2
+</adql>
+  </query>
+  <query uuid="bdcc3002-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 RIGHT OUTER JOIN t2
+</adql>
+  </query>
+  <query uuid="c24cec5c-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 FULL OUTER JOIN t2
+</adql>
+  </query>
+  <query uuid="c8993692-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 FULL OUTER JOIN t2 ON (x=y)
+</adql>
+  </query>
+  <query uuid="cfba5f6e-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 FULL OUTER JOIN t2 USING (x,y)
+</adql>
+  </query>
+  <query uuid="d4c3a72c-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 INNER JOIN (t2 JOIN t3)
+</adql>
+  </query>
+  <query uuid="dbef92f4-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from (t1 JOIN t4) FULL OUTER JOIN (t2 JOIN t3)
+</adql>
+  </query>
+  <query uuid="e26418a8-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various join forms</description>
+    <adql valid="true" version="adql-2.1">select x from t1 NATURAL JOIN t2, t3
+</adql>
+  </query>
+  <query uuid="f15f1a38-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various invalid join forms</description>
+    <adql valid="false" version="adql-2.1">select x from t1 JOIN
+</adql>
+  </query>
+  <query uuid="f83c48a8-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various invalid join forms</description>
+    <adql valid="false" version="adql-2.1">select x from JOIN t1
+</adql>
+  </query>
+  <query uuid="feef3034-4458-11e6-96e2-28b2bdcff70b">
+    <description>Various invalid join forms</description>
+    <adql valid="false" version="adql-2.1">select x from t1 quatsch JOIN t1
+</adql>
+  </query>
+  <query uuid="033bb9b4-4459-11e6-96e2-28b2bdcff70b">
+    <description>Various invalid join forms</description>
+    <adql valid="false" version="adql-2.1">select x from t1 NATURAL JOIN t2, t3 OUTER
+</adql>
+  </query>
+  <query uuid="0b4cefb0-4459-11e6-96e2-28b2bdcff70b">
+    <description>Various invalid join forms</description>
+    <adql valid="false" version="adql-2.1">select x from t1 NATURAL JOIN t2, t3 ON
+</adql>
+  </query>
+  <query uuid="1219ca20-4459-11e6-96e2-28b2bdcff70b">
+    <description>Various invalid join forms</description>
+    <adql valid="false" version="adql-2.1">select x from t1, t2, t3 ON
+</adql>
+  </query>
+  <query uuid="2eae2a5a-4459-11e6-96e2-28b2bdcff70b">
+    <description>trivial order, group by, and having</description>
+    <adql valid="true" version="adql-2.1">select x from t1 order by z
+</adql>
+  </query>
+  <query uuid="34fc5940-4459-11e6-96e2-28b2bdcff70b">
+    <description>trivial order, group by, and having</description>
+    <adql valid="true" version="adql-2.1">select x from t1 order by z desc
+</adql>
+  </query>
+  <query uuid="3969b70c-4459-11e6-96e2-28b2bdcff70b">
+    <description>trivial order, group by, and having</description>
+    <adql valid="true" version="adql-2.1">select x from t1 order by z desc, x asc
+</adql>
+  </query>
+  <query uuid="40174196-4459-11e6-96e2-28b2bdcff70b">
+    <description>trivial order, group by, and having</description>
+    <adql valid="true" version="adql-2.1">select x from t1 group by z
+</adql>
+  </query>
+  <query uuid="449bc75a-4459-11e6-96e2-28b2bdcff70b">
+    <description>trivial order, group by, and having</description>
+    <adql valid="true" version="adql-2.1">select x from t1 group by z, s
+</adql>
+  </query>
+  <query uuid="491b67e0-4459-11e6-96e2-28b2bdcff70b">
+    <description>trivial order, group by, and having</description>
+    <adql valid="true" version="adql-2.1">select x from t1 having x=z AND 7&lt;u
+</adql>
+  </query>
+  <query uuid="5a70a960-4459-11e6-96e2-28b2bdcff70b">
+    <description>invalid having clause</description>
+    <adql valid="false" version="adql-2.1">select x from t1 having y
+</adql>
+  </query>
+  <query uuid="d2dab062-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN 8 AND 9
+</adql>
+  </query>
+  <query uuid="d97f23f8-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN 'a' AND 'b'
+</adql>
+  </query>
+  <query uuid="defb59d2-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z NOT BETWEEN x+8 AND x*8
+</adql>
+  </query>
+  <query uuid="e30fbdd8-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z iN (a)
+</adql>
+  </query>
+  <query uuid="e837a58c-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z NoT In (a)
+</adql>
+  </query>
+  <query uuid="ed5836bc-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z NOT IN (a, 4, 'xy')
+</adql>
+  </query>
+  <query uuid="f3b473cc-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z IN (select x from foo)
+</adql>
+  </query>
+  <query uuid="f9525e3e-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where (5, 6) IN (select x from foo)
+</adql>
+  </query>
+  <query uuid="ffe70470-4459-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where u LIKE '%'
+</adql>
+  </query>
+  <query uuid="060ccdc6-445a-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where u NoT LiKE '%'
+</adql>
+  </query>
+  <query uuid="0cc39046-445a-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where u || 'foo' NOT LIKE '%'
+</adql>
+  </query>
+  <query uuid="13ee6724-445a-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where u NOT LIKE '%' || 'xy'
+</adql>
+  </query>
+  <query uuid="1a003bce-445a-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where k IS NULL
+</adql>
+  </query>
+  <query uuid="1f8ce0b0-445a-11e6-ae3e-28b2bdcff70b">
+    <description>Boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where k IS NOT NULL
+</adql>
+  </query>
+  <query uuid="65a59e44-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN
+</adql>
+  </query>
+  <query uuid="6b953ee0-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN AND
+</adql>
+  </query>
+  <query uuid="7013d8be-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN AND 5
+</adql>
+  </query>
+  <query uuid="7519f7ee-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where z 7 BETWEEN 5 AND 
+</adql>
+  </query>
+  <query uuid="797398cc-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where x IN
+</adql>
+  </query>
+  <query uuid="7d6e697a-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where x IN 5
+</adql>
+  </query>
+  <query uuid="82f7fb04-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where x IN (23, 3,)
+</adql>
+  </query>
+  <query uuid="896fc368-4508-11e6-b156-25ff83d0ee4c">
+    <description>Bad boolean terms</description>
+    <adql valid="true" version="adql-2.1">select x from y where x Is None
+</adql>
+  </query>
+  <query uuid="30f1b542-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with bad function calls</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS()&lt;3
+</adql>
+  </query>
+  <query uuid="34f17092-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with bad function calls</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS(y,z)&lt;3
+</adql>
+  </query>
+  <query uuid="3a38115a-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with bad function calls</description>
+    <adql valid="true" version="adql-2.1">select x from y where TAN2(x)&lt;3
+</adql>
+  </query>
+  <query uuid="3e4a5834-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with bad function calls</description>
+    <adql valid="true" version="adql-2.1">select x from y where PI==3
+</adql>
+  </query>
+  <query uuid="5b8470ec-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with funny delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select x from y where "some weird column"&gt;0
+</adql>
+  </query>
+  <query uuid="60ddc87c-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with funny delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select x from y where "some even ""weirder"" column"&gt;0
+</adql>
+  </query>
+  <query uuid="66a83a26-4509-11e6-8c55-592ac18c5eb7">
+    <description>predicates with funny delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select x from y where "SELECT"&gt;0
+</adql>
+  </query>
+  <query uuid="30f41688-450a-11e6-b934-e71d286ad5ea">
+    <description>No recursive names</description>
+    <adql valid="false" version="adql-2.1">select x.y.z.a.b from a
+</adql>
+  </query>
+  <query uuid="360ed130-450a-11e6-b934-e71d286ad5ea">
+    <description>No recursive names</description>
+    <adql valid="false" version="adql-2.1">select x from a.b.c.d
+</adql>
+  </query>
+  <query uuid="9199fd9a-450a-11e6-a254-9702914a5ded">
+    <description>String expression in select clause</description>
+    <adql valid="true" version="adql-2.1">select m || 'ab' from q
+</adql>
+  </query>
+  <query uuid="bc464508-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS(-3)&lt;3
+</adql>
+  </query>
+  <query uuid="c136a79c-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS(-3.0)&lt;3
+</adql>
+  </query>
+  <query uuid="c4e9ec78-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS(-3.0E4)&lt;3
+</adql>
+  </query>
+  <query uuid="c9864f7e-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS(-3.0e-4)&lt;3
+</adql>
+  </query>
+  <query uuid="cd7e108a-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ABS(x)&lt;3
+</adql>
+  </query>
+  <query uuid="d164b640-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ATAN2(-3.0e-4, 4.5)=x
+</adql>
+  </query>
+  <query uuid="d4bdd7b8-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where RAND(4)=x
+</adql>
+  </query>
+  <query uuid="d7ffb568-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where RAND()=x
+</adql>
+  </query>
+  <query uuid="db79c42c-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ROUND(23)=x
+</adql>
+  </query>
+  <query uuid="df1855d0-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ROUND(23,2)=x
+</adql>
+  </query>
+  <query uuid="e30c4db8-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where ROUND(PI(),2)=3.14
+</adql>
+  </query>
+  <query uuid="e7e0a866-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where POWER(x,10)=3.14
+</adql>
+  </query>
+  <query uuid="edb50da4-450a-11e6-8467-93d5a802c4cb">
+    <description>Function parsing</description>
+    <adql valid="true" version="adql-2.1">select x from y where POWER(10,x)=3.14
+</adql>
+  </query>
+  <query uuid="89bdbf48-450b-11e6-b727-b5b3c3190c3d">
+    <description>select lists</description>
+    <adql valid="true" version="adql-2.1">select a from z
+</adql>
+  </query>
+  <query uuid="8f06ec9a-450b-11e6-b727-b5b3c3190c3d">
+    <description>select lists</description>
+    <adql valid="true" version="adql-2.1">select x.a from z
+</adql>
+  </query>
+  <query uuid="95b213bc-450b-11e6-b727-b5b3c3190c3d">
+    <description>select lists</description>
+    <adql valid="true" version="adql-2.1">select x.a, b from z
+</adql>
+  </query>
+  <query uuid="9bd80300-450b-11e6-b727-b5b3c3190c3d">
+    <description>select lists</description>
+    <adql valid="true" version="adql-2.1">select "one weird name", b from z
+</adql>
+  </query>
+  <query uuid="a980992c-450b-11e6-b727-b5b3c3190c3d">
+    <description>from clauses</description>
+    <adql valid="true" version="adql-2.1">select * from z
+</adql>
+  </query>
+  <query uuid="af5a2462-450b-11e6-b727-b5b3c3190c3d">
+    <description>from clauses</description>
+    <adql valid="true" version="adql-2.1">select * from z.x
+</adql>
+  </query>
+  <query uuid="b520c0a4-450b-11e6-b727-b5b3c3190c3d">
+    <description>from clauses</description>
+    <adql valid="true" version="adql-2.1">select * from z.x.y
+</adql>
+  </query>
+  <query uuid="b9b45d2e-450b-11e6-b727-b5b3c3190c3d">
+    <description>from clauses</description>
+    <adql valid="true" version="adql-2.1">select * from z.x.y, a
+</adql>
+  </query>
+  <query uuid="bf0c6730-450b-11e6-b727-b5b3c3190c3d">
+    <description>from clauses</description>
+    <adql valid="true" version="adql-2.1">select * from (select * from z) as q, a
+</adql>
+  </query>
+  <query uuid="2f8130cc-450c-11e6-8564-332de33a5c03">
+    <description>aliased select</description>
+    <adql valid="true" version="adql-2.1">select foo+2 as fp2 from x
+</adql>
+  </query>
+  <query uuid="4838622a-450c-11e6-8564-332de33a5c03">
+    <description>aliased select</description>
+    <adql valid="true" version="adql-2.1">select x+2 as "99 Monkeys" from z
+</adql>
+  </query>
+  <query uuid="4e4718c8-450c-11e6-8564-332de33a5c03">
+    <description>aliased select</description>
+    <adql valid="true" version="adql-2.1">select x+2 as " ""cute"" Monkeys" from z
+</adql>
+  </query>
+  <query uuid="6ec4c4d8-450c-11e6-8564-332de33a5c03">
+    <description>mixed comparison predicate</description>
+    <adql valid="true" version="adql-2.1">select x from z where 5+9&gt;'gaga'||'bla'
+</adql>
+  </query>
+  <query uuid="796fa074-450c-11e6-8564-332de33a5c03">
+    <description>qualified star</description>
+    <adql valid="true" version="adql-2.1">select t1.*, s1.t2.* from t1, s1.t2, s2.t3
+</adql>
+  </query>
+  <query uuid="9db41c44-450c-11e6-8564-332de33a5c03">
+    <description>delimited table names</description>
+    <adql valid="true" version="adql-2.1">select "abc-g".* from "abc-g" JOIN "select"
+</adql>
+  </query>
+  <query uuid="a76231b8-450c-11e6-8564-332de33a5c03">
+    <description>delimited schema names</description>
+    <adql valid="true" version="adql-2.1">select * from "Murks Schema"."Murks Tabelle"
+</adql>
+  </query>
+  <query uuid="8cde99e8-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">select mag from %s
+</adql>
+  </query>
+  <query uuid="904162aa-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT TOP foo FROM x
+</adql>
+  </query>
+  <query uuid="93c291e2-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT FROM x
+</adql>
+  </query>
+  <query uuid="96e4ad24-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT x, FROM y
+</adql>
+  </query>
+  <query uuid="9af83980-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM distinct
+</adql>
+  </query>
+  <query uuid="a0e2a060-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT DISTINCT FROM y
+</adql>
+  </query>
+  <query uuid="a78fea9e-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT *
+</adql>
+  </query>
+  <query uuid="ab7ee6f0-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM y WHERE
+</adql>
+  </query>
+  <query uuid="af891dc4-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM y WHERE y u 2
+</adql>
+  </query>
+  <query uuid="b48e861a-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM y WHERE y &lt; 2 AND
+</adql>
+  </query>
+  <query uuid="bdf97192-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM y WHERE y &lt; 2 OR
+</adql>
+  </query>
+  <query uuid="c2801072-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM y WHERE y IS 3
+</adql>
+  </query>
+  <query uuid="d66a05d4-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM (SELECT * FROM x)
+</adql>
+  </query>
+  <query uuid="da331444-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * FROM x WHERE EXISTS z
+</adql>
+  </query>
+  <query uuid="ea6310d0-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * from a join b on foo
+</adql>
+  </query>
+  <query uuid="ee372f66-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * from a OFFSET 20 join b on foo
+</adql>
+  </query>
+  <query uuid="f998e7c8-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">SELECT * from a natural join b OFFSET banana
+</adql>
+  </query>
+</queries>
