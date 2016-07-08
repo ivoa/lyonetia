@@ -238,11 +238,6 @@
     <adql valid="true" version="adql-2.1">select x from y where z IN (select x from foo)
 </adql>
   </query>
-  <query uuid="f9525e3e-4459-11e6-ae3e-28b2bdcff70b">
-    <description>Boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where (5, 6) IN (select x from foo)
-</adql>
-  </query>
   <query uuid="ffe70470-4459-11e6-ae3e-28b2bdcff70b">
     <description>Boolean terms</description>
     <adql valid="true" version="adql-2.1">select x from y where u LIKE '%'
@@ -275,62 +270,62 @@
   </query>
   <query uuid="65a59e44-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN
+    <adql valid="false" version="adql-2.1">select x from y where z BETWEEN
 </adql>
   </query>
   <query uuid="6b953ee0-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN AND
+    <adql valid="false" version="adql-2.1">select x from y where z BETWEEN AND
 </adql>
   </query>
   <query uuid="7013d8be-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where z BETWEEN AND 5
+    <adql valid="false" version="adql-2.1">select x from y where z BETWEEN AND 5
 </adql>
   </query>
   <query uuid="7519f7ee-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where z 7 BETWEEN 5 AND 
+    <adql valid="false" version="adql-2.1">select x from y where z 7 BETWEEN 5 AND 
 </adql>
   </query>
   <query uuid="797398cc-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where x IN
+    <adql valid="false" version="adql-2.1">select x from y where x IN
 </adql>
   </query>
   <query uuid="7d6e697a-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where x IN 5
+    <adql valid="false" version="adql-2.1">select x from y where x IN 5
 </adql>
   </query>
   <query uuid="82f7fb04-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where x IN (23, 3,)
+    <adql valid="false" version="adql-2.1">select x from y where x IN (23, 3,)
 </adql>
   </query>
   <query uuid="896fc368-4508-11e6-b156-25ff83d0ee4c">
     <description>Bad boolean terms</description>
-    <adql valid="true" version="adql-2.1">select x from y where x Is None
+    <adql valid="false" version="adql-2.1">select x from y where x Is None
 </adql>
   </query>
   <query uuid="30f1b542-4509-11e6-8c55-592ac18c5eb7">
     <description>predicates with bad function calls</description>
-    <adql valid="true" version="adql-2.1">select x from y where ABS()&lt;3
+    <adql valid="false" version="adql-2.1">select x from y where ABS()&lt;3
 </adql>
   </query>
   <query uuid="34f17092-4509-11e6-8c55-592ac18c5eb7">
     <description>predicates with bad function calls</description>
-    <adql valid="true" version="adql-2.1">select x from y where ABS(y,z)&lt;3
+    <adql valid="false" version="adql-2.1">select x from y where ABS(y,z)&lt;3
 </adql>
   </query>
   <query uuid="3a38115a-4509-11e6-8c55-592ac18c5eb7">
     <description>predicates with bad function calls</description>
-    <adql valid="true" version="adql-2.1">select x from y where TAN2(x)&lt;3
+    <adql valid="false" version="adql-2.1">select x from y where TAN2(x)&lt;3
 </adql>
   </query>
   <query uuid="3e4a5834-4509-11e6-8c55-592ac18c5eb7">
     <description>predicates with bad function calls</description>
-    <adql valid="true" version="adql-2.1">select x from y where PI==3
+    <adql valid="false" version="adql-2.1">select x from y where PI==3
 </adql>
   </query>
   <query uuid="5b8470ec-4509-11e6-8c55-592ac18c5eb7">

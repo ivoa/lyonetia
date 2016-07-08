@@ -16,12 +16,12 @@
   </query>
   <query uuid="1281cf42-450a-11e6-a82a-4fe7326f7d72">
     <description>invalid simple subqueries</description>
-    <adql valid="true" version="adql-2.1">select a, b from (select * from x) q
+    <adql valid="false" version="adql-2.1">select a, b from (select * from x) q
 </adql>
   </query>
   <query uuid="187ca43a-450a-11e6-a82a-4fe7326f7d72">
     <description>invalid simple subqueries</description>
-    <adql valid="true" version="adql-2.1">select a, b from (select * from x)
+    <adql valid="false" version="adql-2.1">select a, b from (select * from x)
 </adql>
   </query>
   <query uuid="e257048e-450b-11e6-a621-b59840aabaf1">
@@ -31,7 +31,7 @@
   </query>
   <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c03">
     <description>subqueries join</description>
-    <adql valid="true" version="adql-2.1">elect * from (select * from urks.a,b, (select * from c,monk.d) as q) as r join (select * from x,y) as p
+    <adql valid="true" version="adql-2.1">select * from (select * from urks.a,b, (select * from c,monk.d) as q) as r join (select * from x,y) as p
 </adql>
   </query>
 </queries>
