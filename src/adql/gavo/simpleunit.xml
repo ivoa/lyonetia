@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <queries>
   <contact>
     <name>Markus Demleitner</name>
@@ -586,6 +587,301 @@
   <query uuid="f998e7c8-450d-11e6-b20b-6d529bdffd4c">
     <description>misc bad queries for error message optimization</description>
     <adql valid="false" version="adql-2.1">SELECT * from a natural join b OFFSET banana
+</adql>
+  </query>
+  <query uuid="d7ed6920-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select 1, 'const' from spatial
+</adql>
+  </query>
+  <query uuid="d8df77f6-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select 1+0.1, 'const'||'ab' from spatial
+</adql>
+  </query>
+  <query uuid="e1308800-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select 1+0.1 as x from spatial
+</adql>
+  </query>
+  <query uuid="e91ed1ca-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select mass from misc
+</adql>
+  </query>
+  <query uuid="f0904614-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select x, foo.* from spatial, misc
+</adql>
+  </query>
+  <query uuid="f8147f72-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select misc.* from misc
+</adql>
+  </query>
+  <query uuid="fd34f5d6-4cf9-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select misc.* from spatial, misc
+</adql>
+  </query>
+  <query uuid="05edded6-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select misc.*, dist, round(mass/10) from spatial, misc
+</adql>
+  </query>
+  <query uuid="1095dfb4-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select misc.* from spatial join misc as foo on (spatial.dist=foo.mass)
+</adql>
+  </query>
+  <query uuid="15688654-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select round(dist, 2) from spatial
+</adql>
+  </query>
+  <query uuid="295f412a-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select width, height from spatial
+</adql>
+  </query>
+  <query uuid="2ebbf0be-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select Width, hEiGHT from spatial
+</adql>
+  </query>
+  <query uuid="3f05f460-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select 2+width, 2*height, height*2 from spatial
+</adql>
+  </query>
+  <query uuid="49d730e8-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select width*height, width/speed, 3*mag*height, mag+height, height+height from spatial, misc
+</adql>
+  </query>
+  <query uuid="533b4188-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select -3*mag from misc
+</adql>
+  </query>
+  <query uuid="6102e244-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc")
+
+</adql>
+  </query>
+  <query uuid="87536932-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select acos(ra2), degrees(ra2), RadianS(ra1), PI(), ABS(width), Ceiling(Width), Truncate(height*2) from spatial
+</adql>
+  </query>
+  <query uuid="8e685d54-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select max(ra1), min(ra1) from spatial
+</adql>
+  </query>
+  <query uuid="940ae5e2-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select point('ICRS', ra1, ra2) from spatial
+</adql>
+  </query>
+  <query uuid="d977cdc0-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select (width+width)*height from spatial
+</adql>
+  </query>
+  <query uuid="e79be30a-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select q.p from (select ra2 as p from spatial) as q
+</adql>
+  </query>
+  <query uuid="eefd0282-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select dist, speed, 2*mass*height from spatial join misc on (mass&gt;height)
+</adql>
+  </query>
+  <query uuid="f626ca34-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select dist from spatial where exists (select * from misc where dist=misc.mass)
+</adql>
+  </query>
+  <query uuid="fd9d1f3e-4cfa-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select dist from spatial as q where exists (select * from misc where q.dist=misc.mass)
+</adql>
+  </query>
+  <query uuid="360cf092-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">SELECT foo, ra1 FROM (SELECT ra1 as foO, ra1 FROM spatial) as q
+</adql>
+  </query>
+  <query uuid="40e66c0a-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">SELECT count(*) as ct, round(ra1/10) as band FROM spatial GROUP BY band
+</adql>
+  </query>
+  <query uuid="4bce84c2-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">SELECT LOWER('foo'), LOWER(version) from crazy
+</adql>
+  </query>
+  <query uuid="9807aabc-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select flag||'ab' as cat from crazy
+</adql>
+  </query>
+  <query uuid="a9ed63c0-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select version||'ab' as cat from crazy
+</adql>
+  </query>
+  <query uuid="d65405ea-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select "Inch""ing" from quoted
+</adql>
+  </query>
+  <query uuid="e2d8cd32-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select "plAin" from quoted
+</adql>
+  </query>
+  <query uuid="f3c50e80-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select "mass" from misc
+</adql>
+  </query>
+  <query uuid="fc869ec6-4cfb-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select 1+0.1 as "x" from spatial
+</adql>
+  </query>
+  <query uuid="0a0826d2-4cfc-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select alllower from quoted
+</adql>
+  </query>
+  <query uuid="a0e4a90e-4cfc-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select "inch""ing", "mass" from misc join quoted on ("left-right"=speed)
+</adql>
+  </query>
+  <query uuid="aba862e0-4cfc-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select "inch""ing", alllower from (select TOP 5 * from quoted where alllower&lt;"inch""ing") as q
+</adql>
+  </query>
+  <query uuid="b3d6d76c-4cfc-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select 4*alllower*"inch""ing" from quoted
+</adql>
+  </query>
+  <query uuid="bc540eaa-4cfc-11e6-9064-032db3af9290">
+    <description>metadata inference samples with delimited identifiers</description>
+    <adql valid="true" version="adql-2.1">select "ra1" from spatial
+</adql>
+  </query>
+  <query uuid="d086e2da-4cfc-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">select dist, speed, 2*mass*height from spatial join misc on (mass&gt;height)
+</adql>
+  </query>
+  <query uuid="11ac0a9c-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM (SELECT ALL q.mass, spatial.ra1 FROM ( SELECT TOP 100 mass, mag FROM misc WHERE speed BETWEEN 0 AND 1) AS q JOIN spatial ON (mass=width)) AS f
+</adql>
+  </query>
+  <query uuid="1de9c3c6-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM misc JOIN (SELECT TOP 3 * FROM crazy) AS q ON (mag=q.ct)
+</adql>
+  </query>
+  <query uuid="2c4ea5a8-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM misc JOIN misc AS u USING (mass)
+</adql>
+  </query>
+  <query uuid="3b942f9c-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">select a.dist, b.dist from spatial as a join spatial as b on (a.dist&gt;b.dist)
+</adql>
+  </query>
+  <query uuid="45429eac-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">select spatial.dist, b.speed from spatial as a join misc as b on (a.dist&gt;b.speed)
+</adql>
+  </query>
+  <query uuid="50cf9e14-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM spatial JOIN spatial2 WHERE dist&lt;2
+</adql>
+  </query>
+  <query uuid="659042f4-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM spatial JOIN spatial2 USING (ra1)
+</adql>
+  </query>
+  <query uuid="70528bd4-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM spatial JOIN spatial2 USING (ra1, dist)
+</adql>
+  </query>
+  <query uuid="7dddadc4-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT ra1, dec, mass FROM spatial JOIN spatial2 USING (ra1, dist) JOIN misc ON (dist=mass)
+</adql>
+  </query>
+  <query uuid="8f5d980c-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT ra1, dec, mass FROM (SELECT * FROM spatial) as q JOIN spatial2 USING (ra1, dist) JOIN misc ON (dist=mass)
+</adql>
+  </query>
+  <query uuid="9ede8a16-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT * from spatial, spatial, misc
+</adql>
+  </query>
+  <query uuid="e91ce10e-4cfd-11e6-9064-032db3af9290">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">SELECT ct FROM crazy JOIN ( 
+  SELECT height FROM spatial
+    JOIN spatial2 ON (ra2=dist)
+    GROUP BY height
+    HAVING (height&gt;avg(dist))) AS q 
+ON (wot=height)
+</adql>
+  </query>
+  <query uuid="82cd2052-4cfe-11e6-80a3-9f00be0ba8f9">
+    <description>uploaded tables</description>
+    <adql valid="true" version="adql-2.1">select alpha, rv from TAP_UPLOAD.adql
+</adql>
+  </query>
+    <query uuid="dc456b34-4cff-11e6-866d-736653f6053b">
+    <description>comments</description>
+    <adql valid="true" version="adql-2.1">-- opening remarks;
+-- quite a few of them, actually.
+select * from foo
+</adql>
+  </query>
+  <query uuid="f37851ea-4cff-11e6-866d-736653f6053b">
+    <description>comments</description>
+    <adql valid="true" version="adql-2.1">select -- comment
+		bar, --comment
+		quux --comment
+		from -- comment
+		foo --comment
+		SELECT bar, quux FROM foo
+</adql>
+  </query>
+  <query uuid="065d4842-4d00-11e6-866d-736653f6053b">
+    <description>comments</description>
+    <adql valid="true" version="adql-2.1">select * from bar where a='qua' -- cmt
+'tsch'
+</adql>
+  </query>
+  <query uuid="1cb90482-4d00-11e6-866d-736653f6053b">
+    <description>comments</description>
+    <adql valid="true" version="adql-2.1">select * from--comment
+bar
 </adql>
   </query>
 </queries>

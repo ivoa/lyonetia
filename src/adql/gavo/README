@@ -1,0 +1,51 @@
+These examples originate mostly in DaCHS' unit tests.
+
+The metadata inference samples are in here mainly because the *might* by
+accident exercise some exotic syntax feature.  They only become really 
+interesting with table metadata.  DaCHS' unit test suite uses this:
+
+spatialFields = [
+	MS(rscdef.Column, name="dist", ucd="phys.distance", unit="m"),
+	MS(rscdef.Column, name="width", ucd="phys.dim", unit="m"),
+	MS(rscdef.Column, name="height", ucd="phys.dim", unit="km"),
+	MS(rscdef.Column, name="ra1", ucd="pos.eq.ra", unit="deg"),
+	MS(rscdef.Column, name="ra2", ucd="pos.eq.ra", unit="rad"),]
+spatial2Fields = [
+	MS(rscdef.Column, name="ra1", ucd="pos.eq.ra;meta.main", unit="deg"),
+	MS(rscdef.Column, name="dec", ucd="pos.eq.dec;meta.main", unit="deg"),
+	MS(rscdef.Column, name="dist", ucd="phys.distance", unit="m"),]
+miscFields = [
+	MS(rscdef.Column, name="mass", ucd="phys.mass", unit="kg"),
+	MS(rscdef.Column, name="mag", ucd="phot.mag", unit="mag"),
+	MS(rscdef.Column, name="speed", ucd="phys.veloc", unit="km/s")]
+quotedFields = [
+	MS(rscdef.Column, name=utils.QuotedName("left-right"), ucd="mess", 
+		unit="bg"),
+	MS(rscdef.Column, name=utils.QuotedName('inch"ing'), ucd="imperial.mess",
+		unit="fin"),
+	MS(rscdef.Column, name=utils.QuotedName('plAin'), ucd="boring.stuff",
+		unit="pc"),
+	MS(rscdef.Column, name=utils.QuotedName('alllower'), ucd="simple.case",
+		unit="km"),]
+crazyFields = [
+	MS(rscdef.Column, name="ct", type="integer"),
+	MS(rscdef.Column, name="wot", type="bigint", 
+		values=MS(rscdef.Values, nullLiteral="-1")),
+	MS(rscdef.Column, name="wotb", type="bytea", 
+		values=MS(rscdef.Values, nullLiteral="254")),
+	MS(rscdef.Column, name="mass", ucd="event;using.incense"),
+	MS(rscdef.Column, name="name", type="unicode"),
+	MS(rscdef.Column, name="version", type="text"),
+	MS(rscdef.Column, name="flag", type="char"),]
+geoFields = [
+	MS(rscdef.Column, name="pt", type="spoint"),
+]
+
+
+You may want to have a look at createfile.py, which is a little piece of 
+python that was used to create these files without too much pain.
+
+testdachs.py is a runner just parsing all the examples and complaining
+when the expectation is not met.  This requires an installed copy of DaCHS.
+*Perhaps* it helps writing your own test runner.  If your parser isn't 
+python-based, chances are it's not.
