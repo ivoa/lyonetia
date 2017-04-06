@@ -1,0 +1,29 @@
+; $Id: rfc1035-2.3.abnf 24 2007-10-13 20:36:23Z gotthardp $
+;
+;  P. Mockapetris
+;  "DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION",
+;  RFC 1035,
+;  November 1987.
+;
+; 2.3.1. Preferred name syntax
+
+; !syntax("abnf-rfc1035")
+; !import("ALPHA" as "<letter>", "DIGIT" as "<digit>", "rfc2234-6.1.abnf")
+
+<domain> ::= <subdomain> | " "
+
+<subdomain> ::= <label> | <subdomain> "." <label>
+
+<label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
+
+<ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+
+<let-dig-hyp> ::= <let-dig> | "-"
+
+<let-dig> ::= <letter> | <digit>
+
+; <letter> ::= any one of the 52 alphabetic characters A through Z in
+; upper case and a through z in lower case
+
+; <digit> ::= any one of the ten digits 0 through 9
+

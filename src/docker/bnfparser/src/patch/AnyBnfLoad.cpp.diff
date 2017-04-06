@@ -1,0 +1,10 @@
+--- src/AnyBnfLoad.cpp 2017-04-05 18:26:59.938391152 +0100
++++ src/AnyBnfLoad.cpp 2017-04-05 18:27:23.612412810 +0100
+@@ -20,6 +20,7 @@
+ 
+ #include <iostream>
+ #include <sys/stat.h>
++#include <limits.h>
+ 
+ #include "BnfParser2.h"
+ #include "Debug.h"

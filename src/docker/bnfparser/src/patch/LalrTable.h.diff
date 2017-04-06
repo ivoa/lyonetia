@@ -1,0 +1,10 @@
+--- src/LalrTable.h 2017-04-05 18:19:13.162965706 +0100
++++ src/LalrTable.h 2017-04-05 18:20:15.896021532 +0100
+@@ -25,6 +25,7 @@
+ #include <list>
+ #include <stdexcept>
+ #include <fstream>
++#include <limits.h>
+ 
+ /** \brief This is the main class for building GLALR table.
+  *

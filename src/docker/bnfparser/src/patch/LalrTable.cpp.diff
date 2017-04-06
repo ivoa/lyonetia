@@ -1,0 +1,18 @@
+--- src/LalrTable.cpp 2017-04-05 18:21:42.443100707 +0100
++++ src/LalrTable.cpp 2017-04-05 18:52:32.115283477 +0100
+@@ -417,7 +417,6 @@
+   int rulenumber, dotpos;
+   int dotsymbol;
+   unsigned rule_from_map;
+-  bool found;
+   bool change;
+   std::map<std::pair<int, int>, std::set<int> > closure;
+   std::map<std::pair<int, int>, std::set<int> >::iterator processed_item;
+@@ -519,7 +518,6 @@
+         for(cycle_iter = range_iter.first; cycle_iter != range_iter.second; cycle_iter++)
+        //looking for all the rules with the nonterm in front of the dot on the left side
+         {
+-          found = false;
+           rule_from_map = cycle_iter->second.at(cycle_iter->second.size() - 1);
+           closure_iter = closure.find(std::make_pair(rule_from_map, 0));
+ 

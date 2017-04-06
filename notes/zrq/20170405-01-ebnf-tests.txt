@@ -1,0 +1,248 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Build our container image.
+#[user@desktop] 
+
+    docker build \
+        --tag lyonetia/bnfparser:1.0 \
+        src/docker/bnfparser
+
+# -----------------------------------------------------
+# Run our container.
+#[user@desktop] 
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "lyonetia/bnfparser:1.0" \
+        bash
+
+# -----------------------------------------------------
+# Fix bugs and create our diff files.
+#[user@desktop] 
+
+        mkdir -p bak
+        mkdir -p bak/src
+        mkdir -p bak/samples
+
+        mkdir -p mod
+        mkdir -p mod/src
+        mkdir -p mod/samples
+
+        srcfile=src/LalrTable.h
+        srcfile=src/LalrTable.cpp
+        srcfile=src/AnyBnfLoad.cpp
+        srcfile=src/AnyBnfFile.cpp
+        srcfile=src/AnyBnfConf.cpp
+        srcfile=src/Debug.cpp
+        srcfile=src/Parser.cpp
+        srcfile=samples/bnfcheck.cpp
+        srcfile=samples/bnfweb.cpp
+
+        cp   "${srcfile:?}" "bak/${srcfile:?}"
+        vi   "${srcfile:?}"
+        diff -u "bak/${srcfile:?}" "${srcfile:?}" | tee mod/"${srcfile:?}.diff"
+
+
+cat > AnyBnfConf.cpp.diff << EOF
+--- src/AnyBnfConf.cpp 2017-04-05 19:55:17.663954540 +0100
++++ src/AnyBnfConf.cpp 2017-04-05 19:56:07.964982100 +0100
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <iostream>
++#include <cstring>
+ 
+ #include "Debug.h"
+ #include "AnyBnfConf.h"
+EOF
+
+
+cat > AnyBnfFile.cpp.diff << EOF
+--- src/AnyBnfFile.cpp 2017-04-05 18:29:47.417556915 +0100
++++ src/AnyBnfFile.cpp 2017-04-05 18:31:49.773690920 +0100
+@@ -18,6 +18,8 @@
+  */
+ 
+ #include <iostream>
++#include <cstring>
++#include <unistd.h>
+ 
+ #include "BnfParser2.h"
+ #include "AnyBnfFile.h"
+EOF
+
+cat > AnyBnfLoad.cpp.diff << EOF
+--- src/AnyBnfLoad.cpp 2017-04-05 18:26:59.938391152 +0100
++++ src/AnyBnfLoad.cpp 2017-04-05 18:27:23.612412810 +0100
+@@ -20,6 +20,7 @@
+ 
+ #include <iostream>
+ #include <sys/stat.h>
++#include <limits.h>
+ 
+ #include "BnfParser2.h"
+ #include "Debug.h"
+EOF
+
+cat > Debug.cpp.diff << EOF
+--- src/Debug.cpp 2017-04-05 18:33:25.002795217 +0100
++++ src/Debug.cpp 2017-04-05 18:33:34.403805513 +0100
+@@ -34,7 +34,7 @@
+   basic_onullstream():
+     std::basic_ios<cT, traits>(&m_sbuf),
+ 	std::basic_ostream<cT, traits>(&m_sbuf)
+-  { init(&m_sbuf); }
++  { this->init(&m_sbuf); }
+ 
+ private:
+   basic_nullbuf<cT, traits> m_sbuf;
+EOF
+
+cat > LalrTable.cpp.diff << EOF
+--- src/LalrTable.cpp 2017-04-05 18:21:42.443100707 +0100
++++ src/LalrTable.cpp 2017-04-05 18:52:32.115283477 +0100
+@@ -417,7 +417,6 @@
+   int rulenumber, dotpos;
+   int dotsymbol;
+   unsigned rule_from_map;
+-  bool found;
+   bool change;
+   std::map<std::pair<int, int>, std::set<int> > closure;
+   std::map<std::pair<int, int>, std::set<int> >::iterator processed_item;
+@@ -519,7 +518,6 @@
+         for(cycle_iter = range_iter.first; cycle_iter != range_iter.second; cycle_iter++)
+        //looking for all the rules with the nonterm in front of the dot on the left side
+         {
+-          found = false;
+           rule_from_map = cycle_iter->second.at(cycle_iter->second.size() - 1);
+           closure_iter = closure.find(std::make_pair(rule_from_map, 0));
+ 
+EOF
+
+cat > LalrTable.h.diff << EOF
+--- src/LalrTable.h 2017-04-05 18:19:13.162965706 +0100
++++ src/LalrTable.h 2017-04-05 18:20:15.896021532 +0100
+@@ -25,6 +25,7 @@
+ #include <list>
+ #include <stdexcept>
+ #include <fstream>
++#include <limits.h>
+ 
+ /** \brief This is the main class for building GLALR table.
+  *
+EOF
+
+cat > bnfcheck.cpp.diff << EOF
+--- samples/bnfcheck.cpp 2017-04-05 18:34:19.979855428 +0100
++++ samples/bnfcheck.cpp 2017-04-05 18:36:50.976991804 +0100
+@@ -19,6 +19,7 @@
+ 
+ #include <string>
+ #include <iostream>
++#include <stdio.h>
+ 
+ #include <SimpleOpt.h>
+ 
+@@ -121,7 +122,7 @@
+ "  -v LEVEL, --verbose=LEVEL set verbosity to LEVEL (default %i)\n"
+ "  --help                    display this help and exit\n"
+ "\n"
+-"Report bugs to <"PACKAGE_BUGREPORT">.\n",
++"Report bugs to <" PACKAGE_BUGREPORT ">.\n",
+           argv[0], delimiter, test.get_verbose_level()
+         );
+         exit(0);
+EOF
+
+cat > bnfweb.cpp.diff << EOF
+--- samples/bnfweb.cpp 2017-04-05 18:37:12.604011293 +0100
++++ samples/bnfweb.cpp 2017-04-05 18:41:14.720215863 +0100
+@@ -20,6 +20,7 @@
+ #include <sys/time.h>
+ #include <set>
+ #include <stdexcept>
++#include <cstring>
+ 
+ #include <cgicc/Cgicc.h>
+ #include <cgicc/HTTPHTMLHeader.h>
+EOF
+
+cat > Parser.cpp.diff << EOF
+--- src/Parser.cpp 2017-04-05 19:50:35.783751489 +0100
++++ src/Parser.cpp 2017-04-05 19:51:33.743781711 +0100
+@@ -71,6 +71,7 @@
+       reducer(i, a_i_1);
+ 
+     if(i != word.size())
++    {
+       if(m_q.empty())
+       {
+         m_last_accepted = false;
+@@ -78,7 +79,10 @@
+         return false;
+       }
+       else
++      {
+         shifter(i, a_i_1, a_i_2);
++      }
++    }
+   }
+ 
+   accepting_states = m_gss.find_state(word.size(), m_table->get_accepting_state());
+EOF
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Build our container image.
+#[user@desktop] 
+
+    docker build \
+        --tag lyonetia/bnfparser:1.1 \
+        src/docker/bnfparser
+
+# -----------------------------------------------------
+# Run our container.
+#[user@desktop] 
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume $(pwd)/run:/work \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "lyonetia/bnfparser:1.1" \
+        bash
+
+
+
+concat=[\r\n]?[ \t]+
+

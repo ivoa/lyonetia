@@ -1,0 +1,101 @@
+; $Id: rfc2234-4.abnf 37 2008-08-09 18:35:00Z gotthardp $
+;
+;  Crocker, D. and P. Overell,
+;  "Augmented BNF for Syntax Specifications: ABNF",
+;  RFC 2234,
+;  November 1997.
+;
+;  Copyright (C) The Internet Society (1997).  All Rights Reserved.
+;
+; 4. ABNF DEFINITION OF ABNF
+
+; !syntax("abnf")
+; !import("ALPHA", "BIT", "CRLF", "DIGIT", "DQUOTE", "HEXDIG", "VCHAR", "WSP", "rfc2234-6.1.abnf")
+
+        rulelist       =  1*( rule / (*c-wsp c-nl) )
+
+        rule           =  rulename defined-as elements c-nl
+                               ; continues if next line starts
+                               ;  with white space
+
+        rulename       =  ALPHA *(ALPHA / DIGIT / "-")
+
+        defined-as     =  *c-wsp ("=" / "=/") *c-wsp
+                               ; basic rules definition and
+                               ;  incremental alternatives
+
+        elements       =  alternation *c-wsp
+
+        c-wsp          =  WSP / (c-nl WSP)
+
+        c-nl           =  comment / CRLF
+                               ; comment or newline
+
+        comment        =  ";" *(WSP / VCHAR) CRLF
+
+        alternation    =  concatenation
+                          *(*c-wsp "/" *c-wsp concatenation)
+
+        concatenation  =  repetition *(1*c-wsp repetition)
+
+        repetition     =  [repeat] element
+
+        repeat         =  1*DIGIT / (*DIGIT "*" *DIGIT)
+
+        element        =  rulename / group / option /
+                          char-val / num-val / prose-val
+
+        group          =  "(" *c-wsp alternation *c-wsp ")"
+
+        option         =  "[" *c-wsp alternation *c-wsp "]"
+
+        char-val       =  DQUOTE *(%x20-21 / %x23-7E) DQUOTE
+                               ; quoted string of SP and VCHAR
+                               ;  without DQUOTE
+
+        num-val        =  "%" (bin-val / dec-val / hex-val)
+
+        bin-val        =  "b" 1*BIT
+                          [ 1*("." 1*BIT) / ("-" 1*BIT) ]
+                               ; series of concatenated bit values
+                               ; or single ONEOF range
+
+        dec-val        =  "d" 1*DIGIT
+                          [ 1*("." 1*DIGIT) / ("-" 1*DIGIT) ]
+
+        hex-val        =  "x" 1*HEXDIG
+                          [ 1*("." 1*HEXDIG) / ("-" 1*HEXDIG) ]
+
+        prose-val      =  "<" *(%x20-3D / %x3F-7E) ">"
+                               ; bracketed string of SP and VCHAR
+                               ;  without angles
+                               ; prose description, to be used as
+                               ;  last resort
+
+; 10. Full Copyright Statement
+;
+;  Copyright (C) The Internet Society (1997).  All Rights Reserved.
+;
+;  This document and translations of it may be copied and furnished to
+;  others, and derivative works that comment on or otherwise explain it
+;  or assist in its implementation may be prepared, copied, published
+;  and distributed, in whole or in part, without restriction of any
+;  kind, provided that the above copyright notice and this paragraph are
+;  included on all such copies and derivative works.  However, this
+;  document itself may not be modified in any way, such as by removing
+;  the copyright notice or references to the Internet Society or other
+;  Internet organizations, except as needed for the purpose of
+;  developing Internet standards in which case the procedures for
+;  copyrights defined in the Internet Standards process must be
+;  followed, or as required to translate it into languages other than
+;  English.
+;
+;  The limited permissions granted above are perpetual and will not be
+;  revoked by the Internet Society or its successors or assigns.
+;
+;  This document and the information contained herein is provided on an
+;  "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+;  TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+;  BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+;  HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+;  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.

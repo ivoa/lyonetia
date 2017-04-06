@@ -1,0 +1,21 @@
+--- src/Parser.cpp 2017-04-05 19:50:35.783751489 +0100
++++ src/Parser.cpp 2017-04-05 19:51:33.743781711 +0100
+@@ -71,6 +71,7 @@
+       reducer(i, a_i_1);
+ 
+     if(i != word.size())
++    {
+       if(m_q.empty())
+       {
+         m_last_accepted = false;
+@@ -78,7 +79,10 @@
+         return false;
+       }
+       else
++      {
+         shifter(i, a_i_1, a_i_2);
++      }
++    }
+   }
+ 
+   accepting_states = m_gss.find_state(word.size(), m_table->get_accepting_state());

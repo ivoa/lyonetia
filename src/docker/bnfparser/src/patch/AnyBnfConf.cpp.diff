@@ -1,0 +1,10 @@
+--- src/AnyBnfConf.cpp 2017-04-05 19:55:17.663954540 +0100
++++ src/AnyBnfConf.cpp 2017-04-05 19:56:07.964982100 +0100
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <iostream>
++#include <cstring>
+ 
+ #include "Debug.h"
+ #include "AnyBnfConf.h"

@@ -1,0 +1,83 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Build our container image.
+#[user@desktop] 
+
+    docker build \
+        --tag "lyonetia/bnfparser:1.1" \
+        src/docker/bnfparser
+
+# -----------------------------------------------------
+# Run our container.
+#[user@desktop] 
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume "/etc/localtime:/etc/localtime:ro" \
+        --volume "$(pwd)/src/docker/bnfparser/src:/bnfparser/src" \
+        "lyonetia/bnfparser:1.1" \
+        bash
+
+# -----------------------------------------------------
+# Run our tests.
+#[user@bnfparser] 
+
+    #
+    # Fix the library path.
+    export LD_LIBRARY_PATH=/usr/local/lib
+
+    #
+    # Run the parser on our BNF files.
+    bnfcheck '<query>' -v 6 adql.ebnf
+
+
+SELECT value
+SELECT value,value
+SELECT value, value
+SELECT value ,value
+SELECT value , value
+
+SELECT value,value AS identifier
+SELECT value, value AS identifier
+SELECT value ,value AS identifier
+SELECT value , value AS identifier
+
+SELECT value AS identifier
+SELECT value AS identifier,value AS identifier
+SELECT value AS identifier ,value AS identifier
+SELECT value AS identifier, value AS identifier
+SELECT value AS identifier , value AS identifier
+
+
+
+
+
+
+
+
+
+
+

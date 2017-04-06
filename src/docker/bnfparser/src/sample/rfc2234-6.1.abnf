@@ -1,0 +1,86 @@
+; $Id: rfc2234-6.1.abnf 24 2007-10-13 20:36:23Z gotthardp $
+;
+;  Crocker, D. and P. Overell,
+;  "Augmented BNF for Syntax Specifications: ABNF",
+;  RFC 2234,
+;  November 1997.
+;
+;  Copyright (C) The Internet Society (1997).  All Rights Reserved.
+;
+; 6.1 Core Rules
+
+; !syntax("abnf")
+
+        ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
+
+        BIT            =  "0" / "1"
+
+        CHAR           =  %x01-7F
+                               ; any 7-bit US-ASCII character,
+                               ;  excluding NUL
+
+        CR             =  %x0D
+                               ; carriage return
+
+        CRLF           =  CR LF
+                               ; Internet standard newline
+
+        CTL            =  %x00-1F / %x7F
+                               ; controls
+
+        DIGIT          =  %x30-39
+                               ; 0-9
+
+        DQUOTE         =  %x22
+                               ; " (Double Quote)
+
+        HEXDIG         =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+
+        HTAB           =  %x09
+                               ; horizontal tab
+
+        LF             =  %x0A
+                               ; linefeed
+
+        LWSP           =  *(WSP / CRLF WSP)
+                               ; linear white space (past newline)
+
+        OCTET          =  %x00-FF
+                               ; 8 bits of data
+
+        SP             =  %x20
+                               ; space
+
+        VCHAR          =  %x21-7E
+                               ; visible (printing) characters
+
+        WSP            =  SP / HTAB
+                               ; white space
+
+; 10. Full Copyright Statement
+;
+;  Copyright (C) The Internet Society (1997).  All Rights Reserved.
+;
+;  This document and translations of it may be copied and furnished to
+;  others, and derivative works that comment on or otherwise explain it
+;  or assist in its implementation may be prepared, copied, published
+;  and distributed, in whole or in part, without restriction of any
+;  kind, provided that the above copyright notice and this paragraph are
+;  included on all such copies and derivative works.  However, this
+;  document itself may not be modified in any way, such as by removing
+;  the copyright notice or references to the Internet Society or other
+;  Internet organizations, except as needed for the purpose of
+;  developing Internet standards in which case the procedures for
+;  copyrights defined in the Internet Standards process must be
+;  followed, or as required to translate it into languages other than
+;  English.
+;
+;  The limited permissions granted above are perpetual and will not be
+;  revoked by the Internet Society or its successors or assigns.
+;
+;  This document and the information contained herein is provided on an
+;  "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+;  TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+;  BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+;  HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+;  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.

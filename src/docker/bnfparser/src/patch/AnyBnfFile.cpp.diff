@@ -1,0 +1,11 @@
+--- src/AnyBnfFile.cpp 2017-04-05 18:29:47.417556915 +0100
++++ src/AnyBnfFile.cpp 2017-04-05 18:31:49.773690920 +0100
+@@ -18,6 +18,8 @@
+  */
+ 
+ #include <iostream>
++#include <cstring>
++#include <unistd.h>
+ 
+ #include "BnfParser2.h"
+ #include "AnyBnfFile.h"

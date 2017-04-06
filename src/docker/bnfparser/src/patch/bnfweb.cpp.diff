@@ -1,0 +1,10 @@
+--- samples/bnfweb.cpp 2017-04-05 18:37:12.604011293 +0100
++++ samples/bnfweb.cpp 2017-04-05 18:41:14.720215863 +0100
+@@ -20,6 +20,7 @@
+ #include <sys/time.h>
+ #include <set>
+ #include <stdexcept>
++#include <cstring>
+ 
+ #include <cgicc/Cgicc.h>
+ #include <cgicc/HTTPHTMLHeader.h>

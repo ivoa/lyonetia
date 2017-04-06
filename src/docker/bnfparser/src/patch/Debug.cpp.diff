@@ -1,0 +1,12 @@
+--- src/Debug.cpp 2017-04-05 20:07:59.935469646 +0100
++++ src/Debug.cpp 2017-04-05 20:24:13.569089474 +0100
+@@ -34,7 +34,7 @@
+   basic_onullstream():
+     std::basic_ios<cT, traits>(&m_sbuf),
+ 	std::basic_ostream<cT, traits>(&m_sbuf)
+-  { init(&m_sbuf); }
++  { this->init(&m_sbuf); }
+ 
+ private:
+   basic_nullbuf<cT, traits> m_sbuf;
+

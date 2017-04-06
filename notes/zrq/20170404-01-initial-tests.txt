@@ -1,0 +1,219 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    The language of languages (BNF, EBNF, ABNF and more)
+    http://matt.might.net/articles/grammars-bnf-ebnf/
+
+    Augmented BNF for Syntax Specifications: ABNF
+    https://www.ietf.org/rfc/rfc2234.txt
+    https://tools.ietf.org/html/rfc5234
+
+
+    Pcrepattern man page
+    http://www.pcre.org/original/doc/html/pcrepattern.html
+
+    Regular expression
+    https://en.wikipedia.org/wiki/Regular_expression
+
+    Extended Backus–Naur form (EBNF)
+    https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form#Conventions
+
+    Augmented Backus–Naur form (ABNF)
+    https://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_form
+
+
+    bnfparser²
+    http://bnfparser2.sourceforge.net/
+
+    bnfparser² web service
+    http://arran.fi.muni.cz/bnfparser2/
+
+
+
+    RFC 1035 - Domain names - implementation and specification
+    http://arran.fi.muni.cz/bnfparser2/share/rfc1035-2.3.abnf
+
+    RFC 2234 - Augmented BNF for Syntax Specifications
+    4. ABNF definition of ABNF
+    http://arran.fi.muni.cz/bnfparser2/share/rfc2234-4.abnf
+    6.1 Core Rules
+    http://arran.fi.muni.cz/bnfparser2/share/rfc2234-6.1.abnf
+
+    RFC 3261 - Augmented BNF for the SIP Protocol
+    http://arran.fi.muni.cz/bnfparser2/share/rfc3261-25.abnf
+
+
+
+# -----------------------------------------------------
+# Build our container image.
+#[user@desktop] 
+
+    docker build \
+        --tag lyonetia/bnfparser:1.0 \
+        src/docker/bnfparser
+
+# -----------------------------------------------------
+# Run our container.
+#[user@desktop] 
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "lyonetia/bnfparser:1.0" \
+        bash
+
+# -----------------------------------------------------
+# Install the prerequisites.
+#[user@container] 
+
+    mkdir -p /var/local/projects/bnfparser
+    pushd /var/local/projects/bnfparser
+
+    #
+    # Install our build tools
+    dnf install -y \
+        make \
+        automake
+
+    dnf install -y \
+        gcc \
+        gcc-c++
+
+    #
+    # Install the pcrecpp library (http://www.pcre.org)
+    dnf install -y \
+        pcre \
+        pcre-cpp \
+        pcre-devel
+
+
+    #
+    # Install the GNU cgicc library (https://www.gnu.org/software/cgicc/index.html)
+    program=cgicc
+    version=3.2.16
+    project=${program}-${version:?}
+
+    tarname=${project:?}
+    tarfile=${tarname:?}.tar
+    zipfile=${tarfile:?}.gz
+
+    wget -O "${zipfile:?}" \
+        "http://ftp.gnu.org/gnu/${program:?}/${zipfile:?}"
+
+    tar -xvzf "${zipfile:?}"
+
+    pushd "${project:?}"
+
+        ./configure
+        make
+        make install
+
+    popd
+
+    #
+    # Install the SimpleOpt library (https://github.com/brofield/simpleopt)
+    program=simpleopt
+    version=3.5
+    project=${program}-${version:?}
+
+    tarname=${version:?}
+    tarfile=${tarname:?}.tar
+    zipfile=${tarfile:?}.gz
+
+    wget -O "${zipfile:?}" \
+        "https://github.com/brofield/${program:?}/archive/${zipfile:?}"
+
+    tar -xvzf "${zipfile:?}"
+
+    ln -s "$(pwd)/${project}/SimpleOpt.h" '/usr/include/SimpleOpt.h'
+
+# -----------------------------------------------------
+# Download the parser source.
+#[user@container] 
+
+    program=bnfparser2
+    version=0.2.0
+    project=${program}-${version:?}
+
+    tarname=${project:?}
+    tarfile=${tarname:?}.tar
+    zipfile=${tarfile:?}.gz
+
+    wget -O "${zipfile:?}" \
+        "https://sourceforge.net/projects/${program:?}/files/${program:?}/${project:?}/${zipfile:?}/download"
+
+    tar -xvzf "${zipfile:?}"
+
+# -----------------------------------------------------
+# Configure and build the bnfparser2 library.
+#[user@container] 
+
+    pushd "${project:?}"
+
+        autoconf
+        ./configure --prefix=/usr/local
+        gmake
+        gmake install
+
+    popd
+
+    export LD_LIBRARY_PATH=/usr/local/lib
+
+# -----------------------------------------------------
+# Test the bnfparser2 library.
+#[user@container] 
+
+bnfcheck
+    [--manual-includes] [-v LEVEL]
+    [-d DIR] [-e NUM] SYMBOL ([:[VARIANT]] SYNTAX)...
+
+
+    vi ADQL.bnf
+
+    vi query.adql
+
+
+    cat query.adql > bnfcheck ADQL.bnf
+
+
+# BF notation copied from the ADQL-2.1 working draft 2016-05-02.
+# WD-ADQL-2.1-20160502 (volute revision 3385)
+#
+
+#    <double_quote> ::= "
+#    <double_quote_symbol> ::= <double_quote><double_quote>
+
+
+
+    bnfcheck '<domain>' -v 7 /var/local/projects/bnfparser/bnfparser2-0.2.0/share/rfc1035-2.3.abnf
+
+    bnfcheck '<select_query>' -v 7 ADQL.bnf
+
+    
+
+
+
+
+

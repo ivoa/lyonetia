@@ -1,0 +1,84 @@
+;
+; Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+; All rights reserved.
+;
+; This program is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;
+; !syntax("adql-ebnf")
+
+    <SP>  ::= %x20 ; space
+    <TAB> ::= %x09 ; horizontal tab
+
+    <CR>  ::= %x0D ; carriage return
+    <LF>  ::= %x0A ; line feed
+
+    <NEWLINE> ::= <CR>|<LF>
+    <SPACE>   ::= <SP>|<TAB>
+
+    ; leading and trailing <NEWLINE> doesn't work
+    <opt_whitespace> ::= {<SPACE>}{NEWLINE}{<SPACE>}
+    <req_whitespace> ::= {<SPACE>}{NEWLINE}{<SPACE>}-
+
+    <whitespace> ::= <req_whitespace>
+
+    <comma>    ::= ","
+    <period>   ::= "."
+    <asterisk> ::= "*"
+    <double_quote> ::= %x22
+    <single_quote> ::= %x27
+
+    <lower_case> ::= a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z
+    <upper_case> ::= A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z
+    <letter> ::= <upper_case> | <lower_case>
+
+    <list_comma> ::= <opt_whitespace> <comma> <opt_whitespace>
+
+    <query> ::=
+
+        <opt_whitespace>
+        <select_query>
+        <opt_whitespace>
+
+    <select_query> ::=
+
+        "SELECT"
+        <whitespace>
+        <select_clause>
+
+    <select_clause> ::=
+        <asterisk> | <select_list>
+
+    <select_list> ::=
+        <select_field> { <list_comma> <select_field> }
+
+    <select_field> ::=
+        <derived_field> | <qualifier> <period> <asterisk>
+
+
+    <derived_field> ::= <value_expression> [ <as_clause> ]
+
+    <as_clause> ::= <whitespace> "AS" <whitespace> <identifier>
+
+    <qualifier> ::= <table_name> | <correlation_name>
+
+    <table_name>       ::= <identifier>
+    <correlation_name> ::= <identifier>
+
+    <identifier> ::= <regular_identifier> | <delimited_identifier>
+
+    <regular_identifier>   ::= "identifier"
+    <delimited_identifier> ::= "identifier"
+
+    <value_expression> ::= "value"
+
