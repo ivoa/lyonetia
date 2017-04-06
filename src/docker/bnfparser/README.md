@@ -25,7 +25,7 @@ This directory contains a **copy** of the BNF source files.
         sample
         syntax
     
-Because *&lt;stuff I haven't fixed yet&gt;*, you need to set the load library path before running the BNF parser. 
+Because *&lt;stuff I haven't fixed yet&gt;*, you will need to set the load library path before running the BNF parser. 
 
     export LD_LIBRARY_PATH=/usr/local/lib
     
@@ -68,9 +68,9 @@ Typing `exit` at the command line to exit the container.
     exit
 
 ## Working on the BNF
-The commands given above will run the using a **copy** of the `adql.ebnf` grammar, packaged in the container image.
+The commands given above will run the using a **copy** of the `adql.ebnf` grammar packaged in the container image.
 
-If you want to work on the `adql.ebnf` grammar and commit the changes back to this GitHub projecy, then the easiest way is to use a `--volume` option to mount the `src` directory from the host on top of the `src` directory in the container.
+If you want to work on the `adql.ebnf` grammar and commit the changes back to this GitHub project, then the easiest way is to use a `--volume` option to mount the `src` directory from the host over the `src` directory in the container.
 
     docker run \
         --rm --tty \
