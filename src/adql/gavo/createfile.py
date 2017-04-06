@@ -17,6 +17,9 @@ PUBLISHER_NAME = "Heidelberg GAVO Data Center"
 PUBLISHER_URL = "http://dc.g-vo.org"
 DEST_VERSION = "adql-2.1"
 
+CONSTANT_PREFIX = "select x from y where "
+CONSTANT_PREFIX = ""
+
 
 ############ tiny DOM start (snarfed and simplified from stanxml)
 
@@ -114,11 +117,13 @@ class UI(Tkinter.Tk):
       sticky=Tkinter.NW+Tkinter.SE)
 
     self.is_valid = Tkinter.IntVar()
+    self.is_valid.set(1)
     valid_box = Tkinter.Checkbutton(self, text="valid", var=self.is_valid)
     valid_box.grid(column=3, row=1,
       sticky=Tkinter.NW+Tkinter.SE)
 
     self.query_box = Tkinter.Text(self)
+    self.query_box.insert(Tkinter.END, CONSTANT_PREFIX)
     self.query_box.grid(column=1, row=2, columnspan=3,
       sticky=Tkinter.NW+Tkinter.SE)
   
@@ -134,9 +139,10 @@ class UI(Tkinter.Tk):
     self.dest_doc[T.query(uuid=str(uuid.uuid1()))[
       T.description[self.desc_entry.get()],
       T.adql(version=DEST_VERSION, 
-          valid=(self.is_valid and 'true') or 'false')[
+          valid=(self.is_valid.get() and 'true') or 'false')[
         self.query_box.get(1.0, Tkinter.END)]]]
     self.query_box.delete(1.0, Tkinter.END)
+    self.query_box.insert(Tkinter.END, CONSTANT_PREFIX)
 
 
 def main():
@@ -146,7 +152,7 @@ def main():
 
   if os.path.exists(dest_file_name):
     with open(dest_file_name) as f:
-      doc = _Element.from_element(etree.parse(f))
+      doc = _Element.from_element(etree.parse(f).getroot())
   else:
     doc = T.queries[
       T.contact[
@@ -157,7 +163,7 @@ def main():
         T.name[PUBLISHER_NAME],
         T.url[PUBLISHER_URL],
       ],
-      T.description["MISSING: Global descriptions of these queries"]]
+      T.description["MISSING: Global description of these queries"]]
 
   ui = UI(doc)
   ui.mainloop()
