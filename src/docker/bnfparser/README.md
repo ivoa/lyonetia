@@ -39,6 +39,8 @@ The following command will run the parser, using the **copy** of the `adql.ebnf`
 
     bnfcheck '<query>' adql.ebnf
 
+The literal string `<query>` matches the [top level term](src/adql.ebnf#L47) defined in the grammar, which indicates where in the grammar the parser should start matching the test queries.
+
 You can then enter test queries in the command line to see if they parse correctly:
 
     SELECT value
