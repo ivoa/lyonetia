@@ -30,15 +30,59 @@
     <opt_whitespace> ::= {<WHITESP>}
     <req_whitespace> ::= {<WHITESP>}<WHITESP>
 
-    <comma>    ::= ","
-    <period>   ::= "."
-    <asterisk> ::= "*"
+    <comma>      ::= ","
+    <period>     ::= "."
+    <asterisk>   ::= "*"
+    <ampersand>  ::= "&"
+    <underscore> ::= "_"
+
     <double_quote> ::= %x22
     <single_quote> ::= %x27
 
-    <lower_case> ::= a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z
-    <upper_case> ::= A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z
-    <letter> ::= <upper_case> | <lower_case>
+    <solidus>   ::= "/"
+    <backslash> ::= "\"
+
+    <plus_symbol>     ::= "+"
+    <minus_symbol>    ::= "-"
+    <divide_symbol>   ::= "/"
+    <multiply_symbol> ::= "*"
+    <modulo_symbol>   ::= "%"
+
+    <arithmetic_symbol> ::= <plus_symbol> | <minus_symbol> | <divide_symbol> | <multiply_symbol> | <modulo_symbol>
+
+    <left_square>    ::= "["
+    <right_square>   ::= "]"
+    <square_bracket> ::= <left_square> | <right_square>
+
+    <left_curly>     ::= "["
+    <right_curly>    ::= "]"
+    <curly_bracket>  ::= <left_curly> | <right_curly>
+
+    <left_round>     ::= ")"
+    <right_round>    ::= "("
+    <round_bracket>  ::= <left_round> | <right_round>
+
+    <any_bracket>    ::= <round_bracket> | <curly_bracket> | <square_bracket>
+
+    <dec_digit>  ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+    <hex_digit>  ::= "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"
+    <lower_case> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+    <upper_case> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+;   <lower_case> ::= %x61-7A
+;   <upper_case> ::= %x41-5A
+
+    <ascii_letter> ::= <upper_case> | <lower_case>
+
+    <simple_letter> ::= { <ascii_letter> | <dec_digit> | <underscore> }
+    <simple_word>   ::= <ascii_letter> { <simple_letter> }
+
+    <complex_letter> ::= { <ascii_letter> | <dec_digit> | <underscore> | <any_bracket> | <arithmetic_symbol> }
+    <complex_word>   ::= <complex_letter> { <complex_letter> }
+
+    <regular_identifier>   ::= <simple_word>
+    <delimited_identifier> ::= <double_quote> <complex_word> <double_quote>
+
+    <identifier> ::= <regular_identifier> | <delimited_identifier>
 
     <list_comma> ::= <opt_whitespace> <comma> <opt_whitespace>
 
@@ -69,11 +113,7 @@
 
     <table_name>       ::= <identifier>
     <correlation_name> ::= <identifier>
+    <value_expression> ::= <identifier>
 
-    <identifier> ::= <regular_identifier> | <delimited_identifier>
 
-    <regular_identifier>   ::= "identifier"
-    <delimited_identifier> ::= "identifier"
-
-    <value_expression> ::= "value"
 

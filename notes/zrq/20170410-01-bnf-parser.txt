@@ -52,41 +52,96 @@
     # Run the parser.
     bnfcheck '<query>' --delimiter=59 adql.ebnf
 
+        SELECT value ;
+
+        SELECT value, value ;
+
+        SELECT value AS alias ;
+
+        SELECT value AS alias, value AS alias ;
+
+        Ctrl^C
+
+# -----------------------------------------------------
+# Test our parser.
+#[user@bnfparser] 
 
     #
-    # Run the parser on our test queries.
+    # Single line queries.
     bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
 
-    ;
+        SELECT value ;
 
-    ;;
+        SELECT value, value ;
 
-    SELECT value ;
+        SELECT value AS alias ;
 
-    SELECT value, value ;
+        SELECT value AS alias, value AS alias ;
 
-    SELECT value AS identifier ;
-
-    SELECT value AS identifier, value AS identifier ;
-
-    SELECT
-        value ;
-
-    SELECT
-        value,
-        value
-        ;
-
-    SELECT
-        value AS identifier
-        ;
-
-    SELECT
-        value AS identifier,
-        value AS identifier
-        ;
 EOF
 
+    #
+    # Multiple line queries.
+    bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
+
+        SELECT
+            value
+            ;
+
+        SELECT
+            value,
+            value
+            ;
+
+        SELECT
+            value AS alias
+            ;
+
+        SELECT
+            value AS alias,
+            value AS alias
+            ;
+EOF
+
+    #
+    # Simple identifiers.
+    bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
+
+        SELECT
+            value_one
+            ;
+
+        SELECT
+            value_one,
+            value_two
+            ;
+
+        SELECT
+            value,
+            value_123
+            ;
+
+EOF
+
+    #
+    # Complex identifiers.
+    bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
+
+        SELECT
+            "value-one"
+            ;
+
+        SELECT
+            "value-one",
+            "value+two"
+            ;
+
+        SELECT
+            "value[123]",
+            "value(123)"
+            ;
+
+EOF
 
 # -----------------------------------------------------
 # Push our container images.
