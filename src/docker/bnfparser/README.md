@@ -89,8 +89,8 @@ You can edit the `adql.ebnf` grammar on the host using your normal text editor, 
 The following command will build the Docker container.
 
     docker build \
-        --tag "lyonetia/bnfparser:1.0" \
         --tag "lyonetia/bnfparser:latest" \
+        --tag "lyonetia/bnfparser:${buildtag:?}" \
         src/docker/bnfparser
 
 You should only need to do this if you are actually modifying the bnfparser<sup>2</sup> code or updating the contents of the container.
