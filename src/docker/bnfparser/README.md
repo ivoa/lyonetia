@@ -37,8 +37,8 @@ You can then enter test queries in the command line to see if they parse correct
 
     SELECT value
     SELECT value, value
-    SELECT value AS identifier
-    SELECT value AS identifier, value AS identifier
+    SELECT value AS alias
+    SELECT value AS alias, value AS alias
 
 Which, if everything is working correctly, should produce the following results:
 
@@ -49,10 +49,10 @@ Which, if everything is working correctly, should produce the following results:
     SELECT value, value
     [2] passed
     --------------------NEXT WORD--------------------
-    SELECT value AS identifier
+    SELECT value AS alias
     [3] passed
     --------------------NEXT WORD--------------------
-    SELECT value AS identifier, value AS identifier
+    SELECT value AS alias, value AS alias
     [4] passed
 
 Control 'C' will exit the parser.
@@ -70,6 +70,26 @@ In order to test multi-line queries, you need to override the default input deli
 The following command will run the parser, using semicolon `;` (character 59) as the input delimiter:
 
     bnfcheck '<query>' --delimiter=59 adql.ebnf
+
+You can now test multi-line queries, terminating each query with a semicolon.
+
+    SELECT
+        value
+        ;
+
+    SELECT
+        value,
+        value
+        ;
+
+    SELECT
+        value AS alias
+        ;
+
+    SELECT
+        value AS alias,
+        value AS alias
+        ;
 
 ## Working on the BNF
 The commands given above will run the using a **copy** of the `adql.ebnf` grammar packaged in the container image.
