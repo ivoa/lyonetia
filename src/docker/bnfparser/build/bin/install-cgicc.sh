@@ -30,7 +30,8 @@ zipfile=${tarfile:?}.gz
 
 #
 # Create our temp directory.
-tmpdir=$(mktemp -d)
+tmpdir=${program:?}-build
+mkdir "${tmpdir:?}"
 pushd "${tmpdir:?}"
 
     #

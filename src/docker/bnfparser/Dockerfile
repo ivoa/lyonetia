@@ -19,18 +19,19 @@ FROM firethorn/fedora:2.1.8
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Create our project directory.
-RUN mkdir -p /bnfparser
-WORKDIR /bnfparser
+# Create our build directory.
+RUN mkdir /tmp/build
+#VOLUME   /build
+WORKDIR   /tmp/build
 
 #
-# Add our binary files.
-COPY bin bin
-RUN  chmod -R a+x bin/*
+# Add our build scripts.
+COPY build/bin bin
+RUN  chmod -R a+rx bin/*
 
 #
-# Add our source files.
-COPY src  src
+# Add our patch files.
+COPY build/src src
 
 #
 # Install man, diff and patch.
@@ -74,17 +75,18 @@ RUN bin/install-simpleopt.sh
 RUN bin/install-bnfparser.sh
 
 #
+# Create our parser directory.
+RUN mkdir -p /bnfparser
+
+#
+# Add our parser source files.
+COPY parser /bnfparser
+
+#
 # Set the working directory.
-WORKDIR /bnfparser/src
+WORKDIR /bnfparser
 
-
-
-
-
-
-
-
-
-
-
+#
+# Remove our build directory.
+#RUN rm -rf /tmp/build
 

@@ -24,9 +24,25 @@
 # Build our container image.
 #[user@desktop] 
 
+    buildtag=1.0
+
     docker build \
-        --tag "lyonetia/bnfparser:1.1" \
+        --tag "lyonetia/bnfparser:latest" \
+        --tag "lyonetia/bnfparser:${buildtag:?}" \
         src/docker/bnfparser
+
+# -----------------------------------------------------
+# Push our container images.
+#[user@desktop] 
+
+    source ~/secret.sh
+
+    docker login \
+        --username $(secret docker.io.user) \
+        --password $(secret docker.io.pass)
+
+    docker push "lyonetia/bnfparser:${buildtag:?}"
+    docker push "lyonetia/bnfparser:latest"
 
 # -----------------------------------------------------
 # Run our container.
@@ -37,8 +53,8 @@
         --tty \
         --interactive \
         --volume "/etc/localtime:/etc/localtime:ro" \
-        --volume "$(pwd)/src/docker/bnfparser/src:/bnfparser/src" \
-        "lyonetia/bnfparser:1.1" \
+        --volume "$(pwd)/src/docker/bnfparser/src:/bnfparser/src:ro" \
+        "lyonetia/bnfparser:${buildtag:?}" \
         bash
 
 # -----------------------------------------------------
@@ -50,12 +66,37 @@
     export LD_LIBRARY_PATH=/usr/local/lib
 
     #
+    # Put core dumps into /tmp 
+    # http://stackoverflow.com/a/16048288
+    # echo '/tmp/core_%e.%p' > /proc/sys/kernel/core_pattern
+    # sysctl -w kernel.core_pattern='/tmp/core_%e.%p'
+
+    #
     # Run the parser on our BNF files.
-    bnfcheck '<query>' -v 6 adql.ebnf
+    bnfcheck '<query>' adql.ebnf
 
 
-SELECT value
-SELECT value,value
+    SELECT value;
+    SELECT value, value
+    SELECT value AS identifier
+    SELECT value AS identifier, value AS identifier
+
+
+    --------------------NEXT WORD--------------------
+    SELECT value
+    [1] passed
+    --------------------NEXT WORD--------------------
+    SELECT value, value
+    [2] passed
+    --------------------NEXT WORD--------------------
+    SELECT value AS identifier
+    [3] passed
+    --------------------NEXT WORD--------------------
+    SELECT value AS identifier, value AS identifier
+    [4] passed
+
+
+
 SELECT value, value
 SELECT value ,value
 SELECT value , value
@@ -70,11 +111,6 @@ SELECT value AS identifier,value AS identifier
 SELECT value AS identifier ,value AS identifier
 SELECT value AS identifier, value AS identifier
 SELECT value AS identifier , value AS identifier
-
-
-
-
-
 
 
 

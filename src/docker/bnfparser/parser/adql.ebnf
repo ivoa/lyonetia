@@ -25,12 +25,12 @@
 
     <NEWLINE> ::= <CR>|<LF>
     <SPACE>   ::= <SP>|<TAB>
+    <WHITESP> ::= <SP>|<TAB>|<CR>|<LF>
 
     ; leading and trailing <NEWLINE> doesn't work
-    <opt_whitespace> ::= {<SPACE>}{NEWLINE}{<SPACE>}
-    <req_whitespace> ::= {<SPACE>}{NEWLINE}{<SPACE>}-
 
-    <whitespace> ::= <req_whitespace>
+    <opt_whitespace> ::= {<WHITESP>}
+    <req_whitespace> ::= {<WHITESP>}<WHITESP>
 
     <comma>    ::= ","
     <period>   ::= "."
@@ -45,15 +45,13 @@
     <list_comma> ::= <opt_whitespace> <comma> <opt_whitespace>
 
     <query> ::=
-
         <opt_whitespace>
-        <select_query>
+        {<select_query>}
         <opt_whitespace>
 
     <select_query> ::=
-
         "SELECT"
-        <whitespace>
+        <req_whitespace>
         <select_clause>
 
     <select_clause> ::=
@@ -65,10 +63,9 @@
     <select_field> ::=
         <derived_field> | <qualifier> <period> <asterisk>
 
-
     <derived_field> ::= <value_expression> [ <as_clause> ]
 
-    <as_clause> ::= <whitespace> "AS" <whitespace> <identifier>
+    <as_clause> ::= <req_whitespace> "AS" <req_whitespace> <identifier>
 
     <qualifier> ::= <table_name> | <correlation_name>
 
