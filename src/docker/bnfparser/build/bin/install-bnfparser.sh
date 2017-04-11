@@ -72,3 +72,10 @@ popd
 # Delete our temp directory.
 rm -rf "${tmpdir:?}"
 
+#
+# Fix the shared library path.
+# http://xahlee.info/UnixResource_dir/_/ldpath.html
+# https://codeyarns.com/2014/01/14/how-to-add-library-directory-to-ldconfig-cache/
+ldconfig /usr/local/lib
+
+

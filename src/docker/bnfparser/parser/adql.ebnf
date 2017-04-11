@@ -27,8 +27,6 @@
     <SPACE>   ::= <SP>|<TAB>
     <WHITESP> ::= <SP>|<TAB>|<CR>|<LF>
 
-    ; leading and trailing <NEWLINE> doesn't work
-
     <opt_whitespace> ::= {<WHITESP>}
     <req_whitespace> ::= {<WHITESP>}<WHITESP>
 

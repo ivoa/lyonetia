@@ -31,7 +31,6 @@
         --tag "lyonetia/bnfparser:${buildtag:?}" \
         src/docker/bnfparser
 
-
 # -----------------------------------------------------
 # Run our container.
 #[user@desktop] 
@@ -50,14 +49,16 @@
 #[user@bnfparser] 
 
     #
-    # Fix the library path.
-    export LD_LIBRARY_PATH=/usr/local/lib
+    # Run the parser.
+    bnfcheck '<query>' --delimiter=59 adql.ebnf
+
 
     #
-    # Run the parser on our BNF files.
+    # Run the parser on our test queries.
     bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
 
     ;
+
     ;;
 
     SELECT value ;

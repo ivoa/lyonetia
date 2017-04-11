@@ -70,6 +70,7 @@ RUN bin/install-cgicc.sh
 # https://github.com/brofield/simpleopt
 RUN bin/install-simpleopt.sh
 
+#
 # Build and install the bnfparser²
 # http://bnfparser2.sourceforge.net/
 RUN bin/install-bnfparser.sh
