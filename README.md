@@ -20,13 +20,13 @@ The following wiki pages explore some ideas on how develop the tools and methods
 
 One of the aims of this project is collect a set of test queries that can be used both to validate the BNF grammar produced by this project, and to validate ADQL parser implementations and eventually TAP serices.
 
-The collection of is ADQL queries is stored as part of the source code [here](tree/master/src/adql).
+The collection of is ADQL queries is stored as part of the [project source code](../../tree/master/src/adql).
 
-The project team welcome contributions to the collection of ADQL queries.
+The project team welcomes contributions from anyone who has examples of ADQL queries that can be used to test aspects of the BNF grammar. We are particularly interested in examples of ADQL queries that demomstrate specific science use cases.
 
 To contribute to the collection clone the GitHub project, choose an appropriate name to represent your contribution (e.g. your institute acronym), create a sub-directory and add your queries.
 
-At the moment the format for contributing queries is based on an [example XML file](blob/master/src/adql/roe/example.xml). As the project evolves we may develop a stricter XML schema for contributions.
+At the moment the format for contributing queries is based on an [example XML file](../../blob/master/src/adql/roe/example.xml). As the project evolves we may develop a stricter XML schema for contributions.
 
 ## Project funding 
 
