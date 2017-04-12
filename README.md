@@ -7,8 +7,6 @@ Prior to this, the BNF definition of the language grammar has been treated as a 
  
 The October 2016 decision added a new requirement that the BNF definition of the language grammar needed to be machine readable and had to be validated against a set of standard queries.
 
-In order to accomplish this, this project was set up to develop the tools and test data needed to create a machine readable version of the grammar. 
-
 ## Initial import
 As a starting point, the BNF grammar definition from the ADQL-2.1 working draft dated [2nd May 2016](http://www.ivoa.net/documents/ADQL/20160502/index.html) was imported into the *Lyonetia* project on the [15th June 2016](https://github.com/ivoa/lyonetia/commit/0a30d7fa4ee306bf49c0aefbbf50b845918fbe16).
 
@@ -20,10 +18,15 @@ The following wiki pages explore some ideas on how develop the tools and methods
 
 ## Test queries
 
-The 
+One of the aims of this project is collect a set of test queries that can be used both to validate the BNF grammar produced by this project, and to validate ADQL parser implementations and eventually TAP serices.
 
+The collection of is ADQL queries is stored as part of the source code [here](tree/master/src/adql).
 
+The project team welcome contributions to the collection of ADQL queries.
 
+To contribute to the collection clone the GitHub project, choose an appropriate name to represent your contribution (e.g. your institute acronym), create a sub-directory and add your queries.
+
+At the moment the format for contributing queries is based on an [example XML file](blob/master/src/adql/roe/example.xml). As the project evolves we may develop a stricter XML schema for contributions.
 
 ## Project funding 
 
