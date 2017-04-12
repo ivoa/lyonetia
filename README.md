@@ -1,5 +1,5 @@
 # lyonetia
-A project for working on the BNF specification of ADQL, named after the <a href='http://ukmoths.org.uk/systematic-list/#Lyonetiinae'>Lyonetiinae</a> family of moths.
+A project for working on the BNF specification of ADQL, named after the <a href='http://ukmoths.org.uk/species/lyonetia-clerkella'>Lyonetiinae</a> family of moths.
 
 At the [October 2016 interop in Trieste](http://www.adass2016.inaf.it/index.php/13-ivoa-interop) the DAL group decided to [delay putting the ADQL 2.1 working draft forward for the next stage of review](http://wiki.ivoa.net/internal/IVOA/InteropOct2016DAL/adql-20161022-002.pdf#5) because there were questions about the validity of the [Backus–Naur form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) (BNF) definition of the language grammar included in the specification.
 
