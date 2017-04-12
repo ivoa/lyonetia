@@ -14,16 +14,15 @@ The following command will start the container and give you a command line shell
 
 ## Running the parser
 
-By default, the command line shell will be started in the BNF src directory inside the container.
+By default, the command line shell will be started in the `/bnfparser` directory inside the container.
 
     pwd
-        /bnfparser/src
+        /bnfparser
 
 This directory contains a **copy** of the BNF source files.
 
     ls
         adql.ebnf
-        patch
         sample
         syntax
     
@@ -32,7 +31,7 @@ The following command will run the parser, using the **copy** of the `adql.ebnf`
     bnfcheck '<query>' adql.ebnf
 
 The literal string `<query>` should match the [top level term](src/adql.ebnf#L47) defined in the grammar, which indicates which grammar element the input should match.
-
+    
 You can then enter test queries in the command line to see if they parse correctly:
 
     SELECT value
@@ -99,7 +98,7 @@ If you want to work on the `adql.ebnf` grammar and commit the changes back to th
     docker run \
         --rm --tty \
         --interactive \
-        --volume "$(pwd)/src/docker/bnfparser/src:/bnfparser/src:ro" \
+        --volume "$(pwd)/src/docker/bnfparser/parser:/bnfparser:ro" \
         "lyonetia/bnfparser" \
         bash
 
