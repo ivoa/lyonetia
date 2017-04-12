@@ -23,7 +23,6 @@ This directory contains a **copy** of the BNF source files.
 
     ls
         adql.ebnf
-        patch
         sample
         syntax
     
