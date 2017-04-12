@@ -64,20 +64,23 @@
 
     <any_bracket>    ::= <round_bracket> | <curly_bracket> | <square_bracket>
 
-    <dec_digit>  ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-    <hex_digit>  ::= "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"
-    <lower_case> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
-    <upper_case> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
-;   <lower_case> ::= %x61-7A
-;   <upper_case> ::= %x41-5A
+;   <dec_digit>  ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+;   <hex_digit>  ::= "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"
+;   <lower_case> ::= "a"  | "b"  | "c"  | "d"  | "e"  | "f"  | "g"  | "h"  | "i"  | "j"  | "k"  | "l"  | "m"  | "n"  | "o"  | "p"  | "q"  | "r"  | "s"  | "t"  | "u"  | "v"  | "w"  | "x"  | "y"  | "z"
+;   <upper_case> ::= "A"  | "B"  | "C"  | "D"  | "E"  | "F"  | "G"  | "H"  | "I"  | "J"  | "K"  | "L"  | "M"  | "N"  | "O"  | "P"  | "Q"  | "R"  | "S"  | "T"  | "U"  | "V"  | "W"  | "X"  | "Y"  | "Z"
+
+    <dec_digit>  ::= %x30 | %x31 | %x32 | %x33 | %x34 | %x35 | %x36 | %x37 | %x38 | %x39
+    <hex_digit>  ::= %x41 | %x42 | %x43 | %x44 | %x45 | %x46 | %x61 | %x62 | %x63 | %x64 | %x65 | %x66
+    <lower_case> ::= %x61 | %x62 | %x63 | %x64 | %x65 | %x66 | %x67 | %x68 | %x69 | %x6A | %x6B | %x6C | %x6D | %x6E | %x6F | %x70 | %x71 | %x72 | %x73 | %x74 | %x75 | %x76 | %x77 | %x78 | %x79 | %x7A
+    <upper_case> ::= %x41 | %x42 | %x43 | %x44 | %x45 | %x46 | %x47 | %x48 | %x49 | %x4A | %x4B | %x4C | %x4D | %x4E | %x4F | %x50 | %x51 | %x52 | %x53 | %x54 | %x55 | %x56 | %x57 | %x58 | %x59 | %x5A
 
     <ascii_letter> ::= <upper_case> | <lower_case>
 
-    <simple_letter> ::= { <ascii_letter> | <dec_digit> | <underscore> }
-    <simple_word>   ::= <ascii_letter> { <simple_letter> }
+    <simple_char> ::= { <ascii_letter> | <dec_digit> | <underscore> }
+    <simple_word>  ::= <ascii_letter> { <simple_char> }
 
-    <complex_letter> ::= { <ascii_letter> | <dec_digit> | <underscore> | <any_bracket> | <arithmetic_symbol> }
-    <complex_word>   ::= <complex_letter> { <complex_letter> }
+    <complex_char> ::= { <ascii_letter> | <dec_digit> | <underscore> | <any_bracket> | <arithmetic_symbol> }
+    <complex_word> ::= <complex_char> { <complex_char> }
 
     <regular_identifier>   ::= <simple_word>
     <delimited_identifier> ::= <double_quote> <complex_word> <double_quote>
