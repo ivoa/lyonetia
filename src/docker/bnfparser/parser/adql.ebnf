@@ -96,27 +96,41 @@
 
     <select_query> ::=
         "SELECT"
-        <req_whitespace>
         <select_clause>
 
     <select_clause> ::=
-        <asterisk> | <select_list>
+        <opt_whitespace> <asterisk>
+      | <req_whitespace> <select_list>
 
     <select_list> ::=
         <select_field> { <list_comma> <select_field> }
 
     <select_field> ::=
-        <derived_field> | <qualifier> <period> <asterisk>
+        ( <table_name> | <table_alias> ) <period> <asterisk>
+        | <value_expression> [ <req_whitespace> "AS" <req_whitespace> <value_alias> ]
 
-    <derived_field> ::= <value_expression> [ <as_clause> ]
 
-    <as_clause> ::= <req_whitespace> "AS" <req_whitespace> <identifier>
+    <value_alias>  ::= <identifier>
+    <table_alias>  ::= <identifier>
 
-    <qualifier> ::= <table_name> | <correlation_name>
+    <column_name>          ::= <simple_column_name> | <complex_column_name>
+    <simple_column_name>   ::= <identifier>
+    <complex_column_name>  ::= <table_name> <period> <simple_column_name>
 
-    <table_name>       ::= <identifier>
-    <correlation_name> ::= <identifier>
-    <value_expression> ::= <identifier>
+    <table_name>           ::= <simple_table_name> | <complex_table_name>
+    <simple_table_name>    ::= <identifier>
+    <complex_table_name>   ::= <schema_name> <period> <simple_table_name>
+
+    <schema_name>          ::= <simple_schema_name> | <complex_schema_name>
+    <simple_schema_name>   ::= <identifier>
+    <complex_schema_name>  ::= <catalog_name> <period> <simple_schema_name>
+
+    <catalog_name>         ::= <simple_catalog_name>
+    <simple_catalog_name>  ::= <identifier>
+
+
+
+    <value_expression> ::= <column_name>
 
 
 
