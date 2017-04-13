@@ -1,78 +1,92 @@
 
-    SELECT value ;
+    SELECT value_name FROM table_name ;
 
-    SELECT value, value ;
+    SELECT value_name AS alias FROM table_name ;
 
-    SELECT value AS alias ;
+    SELECT value_name AS alias FROM table_name AS table_alias;
 
-    SELECT value AS alias, value AS alias ;
+    SELECT value_name AS alias, value_name AS alias FROM table_name ;
 
+    SELECT value_name AS alias, value_name AS alias FROM table_name AS alias;
 
-    SELECT
-        value
-        ;
+    SELECT value_name AS alias, value_name AS alias FROM table_name, table_name ;
 
-    SELECT
-        value,
-        value
-        ;
-
-    SELECT
-        value AS alias
-        ;
-
-    SELECT
-        value AS alias,
-        value AS alias
-        ;
+    SELECT value_name AS alias, value_name AS alias FROM table_name AS alias, table_name AS alias;
 
 
     SELECT
-        value_one
+        value_name
+    FROM
+        table_name 
         ;
 
     SELECT
-        value_one,
-        value_two
+        value_name,
+        value_name
+    FROM
+        table_name,
+        table_name 
         ;
 
     SELECT
-        value,
-        value_123
+        value_name AS alias
+    FROM
+        table_name AS alias
+        ;
+
+    SELECT
+        value_name AS alias,
+        value_name AS alias
+    FROM
+        table_name AS alias,
+        table_name AS alias
         ;
 
 
     SELECT
-        "value-one"
+        value_name_one
+    FROM
+        table_name_one 
         ;
 
     SELECT
-        "value-one",
-        "value+two"
+        value_name_one,
+        value_name_two
+    FROM
+        table_name_one,
+        table_name_two
         ;
 
     SELECT
-        "value[123]",
-        "value(123)"
+        value_name,
+        value_name_123
+    FROM
+        table_name,
+        table_name_123 
         ;
 
 
-    SELECT value ;
+    SELECT
+        "value_name-one"
+    FROM
+        "table_name-one"
+        ;
 
-    SELECT Value ;
+    SELECT
+        "value_name-one",
+        "value_name+two"
+    FROM
+        "table_name-one",
+        "table_name+two"
+        ;
 
-    SELECT VALUE ;
-
-    SELECT value, Value, VALUE ;
-
-
-    SELECT value AS alias ;
-
-    SELECT Value AS Alias ;
-
-    SELECT VALUE AS ALIAS ;
-
-    SELECT value AS alias, Value AS Alias, VALUE AS ALIAS ;
+    SELECT
+        "value_name[123]",
+        "value_name(123)"
+    FROM
+        "table_name[123]",
+        "table_name(123)"
+        ;
 
 
 

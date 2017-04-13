@@ -89,18 +89,21 @@
 
     <list_comma> ::= <opt_whitespace> <comma> <opt_whitespace>
 
+
     <query> ::=
-        <opt_whitespace>
         {<select_query>}
         <opt_whitespace>
 
+
     <select_query> ::=
-        "SELECT"
         <select_clause>
+        <from_clause>
 
     <select_clause> ::=
-        <opt_whitespace> <asterisk>
-      | <req_whitespace> <select_list>
+        <opt_whitespace>
+        "SELECT"
+        <req_whitespace>
+        ( <asterisk> | <select_list> )
 
     <select_list> ::=
         <select_field> { <list_comma> <select_field> }
@@ -108,6 +111,19 @@
     <select_field> ::=
         ( <table_name> | <table_alias> ) <period> <asterisk>
         | <value_expression> [ <req_whitespace> "AS" <req_whitespace> <value_alias> ]
+
+
+    <from_clause> ::=
+        <req_whitespace>
+        "FROM"
+        <req_whitespace>
+        <from_list>
+
+    <from_list> ::=
+        <from_field> { <list_comma> <from_field> }
+
+    <from_field> ::=
+        <table_name> [ <req_whitespace> "AS" <req_whitespace> <table_alias> ]
 
 
     <value_alias>  ::= <identifier>

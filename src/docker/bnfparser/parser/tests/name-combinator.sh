@@ -110,7 +110,7 @@ value_loop()
                 for cat_name in ${cat_names[@]}
                 do
 
-                    table_loop "${cat_name}.${sch_name}${tab_name}.${col_name}" "${value_alias}" "${table_alias}"
+                    table_loop "${cat_name}.${sch_name}.${tab_name}.${col_name}" "${value_alias}" "${table_alias}"
 
                 done
             done
