@@ -52,13 +52,11 @@
     # Run the parser.
     bnfcheck '<query>' --delimiter=59 adql.ebnf
 
-        SELECT value ;
+        SELECT value_name FROM table_name ;
 
-        SELECT value, value ;
+        SELECT value_name AS alias FROM table_name ;
 
-        SELECT value AS alias ;
-
-        SELECT value AS alias, value AS alias ;
+        SELECT value_name AS alias FROM table_name AS table_alias;
 
         Ctrl^C
 
@@ -70,13 +68,11 @@
     # Single line queries.
     bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
 
-        SELECT value ;
+        SELECT value_name FROM table_name ;
 
-        SELECT value, value ;
+        SELECT value_name AS alias FROM table_name ;
 
-        SELECT value AS alias ;
-
-        SELECT value AS alias, value AS alias ;
+        SELECT value_name AS alias FROM table_name AS table_alias;
 
 EOF
 
@@ -85,21 +81,17 @@ EOF
     bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
 
         SELECT
-            value
+            value_name
+        FROM
+            table_name 
             ;
 
         SELECT
-            value,
-            value
-            ;
-
-        SELECT
-            value AS alias
-            ;
-
-        SELECT
-            value AS alias,
-            value AS alias
+            value_name,
+            value_name
+        FROM
+            table_name,
+            table_name 
             ;
 EOF
 
@@ -108,19 +100,26 @@ EOF
     bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
 
         SELECT
-            value_one
+            value_name_one
+        FROM
+            table_name_one 
             ;
 
         SELECT
-            value_one,
-            value_two
+            value_name_one,
+            value_name_two
+        FROM
+            table_name_one,
+            table_name_two
             ;
 
         SELECT
-            value,
-            value_123
+            value_name,
+            value_name_123
+        FROM
+            table_name,
+            table_name_123 
             ;
-
 EOF
 
     #
@@ -128,20 +127,43 @@ EOF
     bnfcheck '<query>' --delimiter=59 adql.ebnf << EOF
 
         SELECT
-            "value-one"
+            "value_name-one"
+        FROM
+            "table_name-one"
             ;
 
         SELECT
-            "value-one",
-            "value+two"
+            "value_name-one",
+            "value_name+two"
+        FROM
+            "table_name-one",
+            "table_name+two"
             ;
 
         SELECT
-            "value[123]",
-            "value(123)"
+            "value_name[123]",
+            "value_name(123)"
+        FROM
+            "table_name[123]",
+            "table_name(123)"
             ;
 
 EOF
+
+# -----------------------------------------------------
+# Test our parser using SQL file.
+#[user@bnfparser] 
+
+    cat tests/simple-tests.sql | bnfcheck '<query>' --delimiter=59 adql.ebnf
+
+
+# -----------------------------------------------------
+# Test our parser using generated queries.
+#[user@bnfparser] 
+
+    source tests/name-combinator.sh
+
+    select_loop | bnfcheck '<query>' --delimiter=59 adql.ebnf
 
 # -----------------------------------------------------
 # Push our container images.
