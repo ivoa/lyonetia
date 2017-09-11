@@ -1,6 +1,6 @@
 # Docker container for bnfparser<sup>2</sup>
 
-This patr of the project creates a [Docker](https://www.docker.com "Docker's Homepage") container for the [bnfparser<sup>2</sup>](http://bnfparser2.sourceforge.net/) parser.
+This part of the project creates a [Docker](https://www.docker.com "Docker's Homepage") container for the [bnfparser<sup>2</sup>](http://bnfparser2.sourceforge.net/) parser.
 
 
 ## Running the container
