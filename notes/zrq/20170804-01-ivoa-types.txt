@@ -1,0 +1,1507 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+---+ VO data types
+
+This review of the data types defined in the VO specifications was initially done for my own benefit,
+to help me understand how the different methods for describing data types in the VO fitted together.
+
+The review looks specifically at the relationships between types, attributes and columns,
+particularly those with similar names in different standards and how they relate to each other.
+
+This review is based on the follwoing specifications:
+
+   * [[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html][REC-VODataService-1.1-20101202]]
+   * [[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html][REC-VOTable-1.3-20130920.html]]
+   * [[http://www.ivoa.net/documents/VOSI/20170524/REC-VOSI-1.1.html][REC-VOSI-1.1.html]]
+   * [[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html][REC-DALI-1.1.html]]
+   * [[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html][WD-TAP-1.1-20170707.html]]
+
+Still to do are:
+
+   * !TapRegEx
+   * !ADQL
+
+----
+#VoDataService
+---+ !VODataService
+
+The [[#VoDataService][VODataService]] specification defines an XML schema for describing data collections and the services that access them.
+
+The data types defined in [[#VoDataService][VODataService]] are intended to be used to describe the data in VO data sets and the services and protocols used to access them.
+
+#DataType
+---++ !DataType
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#param][Section 3.5 (Data Parameters)]]
+of the [[#VoDataService][VODataService]] specification
+defines the [[#DataType][DataType]] XML element.
+
+[[#DataType][DataType]] includes the following attributes:
+
+   * =[[#DataTypeArraySize][arraysize]]= the number of elements in an array
+   * =[[#DataTypeDelim][delim]]= the delimter between elements in an array
+   * =[[#DataTypeExtendedType][extendedType]]= the name of an extended type
+   * =[[#DataTypeExtendedSchema][extendedSchema]]= the URL of the schema for an extended type
+
+#DataTypeArraySize
+---++ !DataType =arraysize=
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#param][Section 3.5 (Data Parameters)]]
+of the [[#VoDataService][VODataService]] specification
+defines the =[[#DataTypeArraySize][arraysize]]= attribute.
+
+The specification text describes the =[[#DataTypeArraySize][arraysize]]= attribute as follows:
+
+   * _"The arraysize attribute indicates the parameter is an array of values of the named type."_
+   * _"Its value describes the shape of the array, and the delim attribute may be used to indicate the delimiter that should appear between elements of an array value."_
+   * _"The attribute's presence indicates that parameter holds an array values; the attribute's value indicates the length of the array along each dimension of the multi-dimensional array."_
+
+#ArrayShape
+---++ !ArrayShape
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#param][Section 3.5 (Data Parameters)]]
+of the [[#VoDataService][VODataService]] specification
+defines the [[#DataTypeArrayShape][ArrayShape]] restriction,
+which sets the syntax for the =[[#DataTypeArraySize][arraysize]]= attribute.
+
+The specification text describes the [[#DataTypeArrayShape][ArrayShape]] as follows:
+
+   * _"the VOTable arraysize format (vs:ArrayShape): !LxMxN..., where each x-delimited positive integer is a length along a dimension of a multi-dimensional array. A single integer indicates a one dimensional array. Instead of an integer, the last length can be set to "*" which indicates a variable length."_
+
+Note - The reference to _"VOTable arraysize format (vs:ArrayShape)"_ should probably be _"vs:ArrayShape format "_.
+
+The XML schema defines the [[#ArrayShape][ArrayShape]] string syntax as follows:
+<verbatim>
+    <!--
+      -  this definition is taken from the VOTable arrayDEF type
+      -->
+    <xs:simpleType  name="ArrayShape">
+      <xs:annotation>
+        <xs:documentation>
+          An expression of a the shape of a multi-dimensional array
+          of the form LxNxM... where each value between gives the
+          integer length of the array along a dimension.  An
+          asterisk (*) as the last dimension of the shape indicates 
+          that the length of the last axis is variable or
+          undetermined. 
+        </xs:documentation>
+      </xs:annotation>
+
+      <xs:restriction base="xs:token">
+        <xs:pattern  value="([0-9]+x)*[0-9]*[*]?"/>
+      </xs:restriction>
+    </xs:simpleType>
+</verbatim>
+
+As the comment in the XML schema suggests, the [[#ArrayShape][ArrayShape]] string syntax
+is similar to, but not explicitly related to, the [[#ArrayDef][arrayDEF]] string format
+defined in the [[#VoTable][VOTable]] specification.
+
+The [[#ArrayShape][ArrayShape]] string syntax is used in several places in the 
+[[#VoDataService][VODataService]] XML schema to define the content of
+ =[[#DataTypeArraySize][arraysize]]= attributes on elements derived from
+[[#DataType][DataType]], including [[#VoTableType][VOTableType]] and
+[[#TapType][TAPType]].
+
+The [[#ArrayShape][ArrayShape]] string syntax is not used directly in any of the other VO specifications.
+
+#DataTypeDelim
+---++ !DataType =delim=
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#param][Section 3.5 (Data Parameters)]]
+of the [[#VoDataService][VODataService]] specification
+defines the =[[#DataTypeDelim][delim]]= attribute.
+
+The specification text describes the =[[#DataTypeDelim][delim]]= attribute as follows:
+
+   * _"the string that is used to delimit element of an array value when arraysize is not "1""_
+
+The XML schema defines a default value the =[[#DataTypeDelim][delim]]= attribute as a single white space.
+<verbatim>
+    <xs:attribute name="delim" type="xs:string" default=" ">
+</verbatim>
+
+The specification text and comments in the XML schema encourages applications to allow optional
+spaces before and after the delimiter (e.g. "1, 5" when delim=",").
+However, this is not explicitly encoded in the XML schema itself.
+
+The =[[#DataTypeDelim][delim]]= attribute is not referred to by any of the other VO specifications.
+
+All the other VO specifications use white space as the delimiter,
+either explicitly defined in the specification text, or by implication
+in the examples.
+
+The definitions for arrays and complex numbers in the [[#VoTable][VOTable]] specification explicitly declares white space as the delimiter.
+
+   * The [[#VoTable][VOTable]] =TABLEDATA= serialization for [[#VoTableArrays][arrays]] of numeric values explicity uses white space as the delimiter.
+   * The [[#VoTable][VOTable]] =TABLEDATA= serialization for =[[#VoTableFloatComplex][floatComplex]]= and =[[#VoTableDoubleComplex][doubleComplex]]= explicity uses white space as the delimiter.
+
+Although none of the data types defined in the [[#DaliSpec][DALI]] specifcation explicitly declare a delimiter,
+all of the examples in the text use white space.
+
+   * The example for [[#DaliInterval][Interval]] uses white space as the delimiter.
+   * The example for [[#DaliPoint][Point]] uses white space as the delimiter.
+   * The example for [[#DaliCircle][Circle]] uses white space as the delimiter.
+   * The example for [[#DaliPolygon][Polygon]] uses white space as the delimiter.
+
+#DataTypeExtendedType
+---++ !DataType =extendedType=
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#param][Section 3.5 (Data Parameters)]]
+of the [[#VoDataService][VODataService]] specification
+defines the =[[#DataTypeExtendedType][extendedType]]= attribute.
+
+The specification text describes the =[[#DataTypeExtendedType][extendedType]]= attribute as follows:
+
+   * _"The data value represented by this type can be interpreted as of a custom type identified by the value of this attribute. "_
+   * _"The name implies a particular expected format for the data value that can be parsed into a value in memory."_
+   * _" If an application does not recognize this extendedType, it should attempt to handle value assuming the type given by the element's value. "string" (or its equivalent) is a recommended default type."_
+   * _" This element may make use of the extendedSchema attribute and/or any arbitrary (qualified) attribute to refine the identification of the type. "_
+
+Looking at the body of standards as a whole, seems to suggest tha that the =[[#DataTypeExtendedType][extendedType]]= attribute
+is functionally equivalent to the [[#VoTableXtype][xtype]] attribute defined in the [[#VoTable][VOTable]] specification.
+
+However, as far as we can tell, this is not explicitly stated anywhere, and there in no mapping defined between the  
+(=[[#DataTypeExtendedType][extendedType]]= | =[[#DataTypeExtendedSchema][extendedSchema]]=) attribute pair defined in [[#VoDataService][VODataService]]
+and the ([[#VoTableXtype][xtype]] with prefix) attribute defined in the [[#VoTable][VOTable]] specification.
+
+The [[#VoDataService][VODataService]] specification does not provide an example of how the =[[#DataTypeExtendedType][extendedType]]= attribute could be used.
+
+The =[[#DataTypeExtendedType][extendedType]]= attribute is not referred to in any of the other VO specifications.
+
+#DataTypeExtendedSchema
+---++ !DataType =extendedSchema=
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#param][Section 3.5 (Data Parameters)]]
+of the [[#VoDataService][VODataService]] specification
+defines the =[[#DataTypeExtendedSchema][extendedType]]= attribute.
+
+The specification text describes the =[[#DataTypeExtendedSchema][extendedType]]= attribute as follows:
+
+   * _"An identifier for the schema that the value given by the extended attribute is drawn from."_
+
+The specification does not provide an example of how the =[[#DataTypeExtendedType][extendedSchema]]= attribute would be used.
+
+The =[[#DataTypeExtendedSchema][extendedSchema]]= attribute is not used in the [[#VoDataService][VODataService]] specification.
+
+The =[[#DataTypeExtendedSchema][extendedSchema]]= attribute is not used in any of the other VO specifications.
+
+#TableDataType
+---++ !TableDataType
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes][Section 3.5.3 (Table Column Data Types)]]
+of the [[#VoDataService][VODataService]] specification
+defines the [[#TableDataType][TableDataType]] XML element.
+
+[[#TableDataType][TableDataType]] extends the [[#DataType][DataType]] element.
+
+The XML schema describes [[#TableDataType][TableDataType]] as:
+
+   * _"an abstract parent for a class of data types that can be used to specify the data type of a table column."_
+
+#VoTableType
+---++ !VOTableType
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes][Section 3.5.3 (Table Column Data Types)]]
+of the [[#VoDataService][VODataService]] specification
+defines the [[#VoTableType][VOTableType]] XML element
+
+The [[#VoTableType][VOTableType]] XML element extends the [[#DataType][DataType]] element.
+
+The [[#VoTableType][VOTableType]] XML element inherits the following attributes from [[#DataType][DataType]]:
+
+   * =[[#DataTypeArraySize][arraysize]]= the number of elements in an array
+   * =[[#DataTypeDelim][delim]]= the delimter between elements in an array
+   * =[[#DataTypeExtendedType][extendedType]]= the name of the extended type
+   * =[[#DataTypeExtendedSchema][extendedSchema]]= the schema URL of the extended type
+
+[[#VoTableType][VOTableType]] defines the following set of allowed values:
+
+   * =boolean=
+   * =bit=
+   * =unsignedByte=
+   * =short=
+   * =int=
+   * =long=
+   * =char=
+   * =unicodeChar=
+   * =float=
+   * =double=
+   * =floatComplex=
+   * =doubleComplex=
+
+The specification text describes [[#VoTableType][VOTableType]] as follows :
+
+   *  _"data types that correspond to the parameter and column types defined in the VOTable schema"_
+
+The XML schema comments describe [[#VoTableType][VOTableType]] as follows :
+
+   * _"a data type supported explicitly by the VOTable format"_.
+
+The definition of [[#VoTableType][VOTableType]] does not provide any further details about the sizes,
+ranges or content of the data types.
+It is left to the reader to refer to the [[#VoTable][VOTable]] specification for details about the data types.
+
+The definition of [[#VoTableType][VOTableType]] states that string values of arbitrary length are
+represented by a data type of =char= with =arraysize="*"=.
+In order to support strings with unicode characters it may be clearer to explicitly state *ASCII*
+strings should be represented by a data type of =char= with =arraysize="*"= and *Unicode* strings
+should be represented by a data type of =unicodeChar= and =arraysize="*"=.
+
+Note - the bibliography reference to the [[#VoTable][VOTable]] specification explicitly refers to
+[[http://www.ivoa.net/Documents/VOTable/20091130/REC-VOTable-1.2.html][version 1.2 (20091130)]] of
+the specification, which has since been superceded by
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html][version 1.3 (20130920)]].
+
+#TapDataType
+---++ !TAPDataType
+
+The [[#TapDataType][TAPDataType]] element is not explicitly described in the text of the [[#VoDataService][VODataService]] specification.
+
+The [[#VoDataService][VODataService]] XML schema describes [[#TapDataType][TAPDataType]] as follows:.
+
+   * _"an abstract parent for the specific data types supported by the Table Access Protocol"_
+
+The XML schema for the [[#TapDataType][TAPDataType]] element defines the following attribute:
+
+   * =[[#TapDataTypeSize][size]]=
+
+Note - the [[#TapDataType][TAPDataType]] element name reflects the historical situation where the data types were originally defined in the [[#TableAccessProtocol][TAP]] specification. The data type definitions have since been moved to the [[#ADQL][ADQL]] specification, but for backward compatibility the XML element name has not been changed.
+
+#TapType
+---++ !TAPType
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes][Section 3.5.3 (Table Column Data Types)]]
+of the [[#VoDataService][VODataService]] specification
+defines the [[#TapType][TAPType]] XML element.
+
+The [[#TapType][TAPType]] element inherits the following attributes from [[#DataType][DataType]]:
+
+   * =[[#DataTypeArraySize][arraysize]]= the number of elements in an array
+   * =[[#DataTypeDelim][delim]]= the delimter between elements in an array
+   * =[[#DataTypeExtendedType][extendedType]]= the name of the extended type
+   * =[[#DataTypeExtendedSchema][extendedSchema]]= the schema URL of the extended type
+
+The [[#TapType][TAPType]] inherits the following attribute from [[#TapDataType][TAPDataType]]:
+
+   * =[[#TapDataTypeSize][size]]= the length of a variable-length value 
+
+[[#TapType][TAPType]] defines the following set of allowed values:
+
+   * =BOOLEAN=
+   * =SMALLINT=
+   * =INTEGER=
+   * =BIGINT=
+   * =REAL=
+   * =DOUBLE=
+   * =TIMESTAMP=
+   * =CHAR=
+   * =VARCHAR=
+   * =BINARY=
+   * =VARBINARY=
+   * =POINT=
+   * =REGION=
+   * =CLOB=
+   * =BLOB=
+
+The specification text describes [[#TapType][TAPType]] as follows :
+
+   * _"data types that correspond column types defined in the Table Access Protocol (v1.0) [TAP]"_
+
+The explicit reference to version 1.0 of the [[#TableAccessProtocol][TAP]] specification is out of date.
+
+The [[#TableAccessProtocol][TAP]] specification no longer contains the definition of these data types.
+
+The [[#TapType][TAPType]] element name reflects the historical situation where the data types were originally
+defined in the [[#TableAccessProtocol][TAP]] specification. The data type definitions have since been moved
+to the [[#ADQL][ADQL]] specification, but for compatibility reasons, the XML element name has not been changed.
+
+The definition of [[#TapType][TAPType]] does not provide any further details about the sizes,
+ranges or content of the data types.
+It is left to the reader to refer to the <strike>[[#TableAccessProtocol][TAP]]</strike>
+(now [[#ADQL][ADQL]]) specification for details about the data types.
+
+The text at the end the section refers to a mapping between =[[#TapSchema][TAP_SCHEMA]]= types
+and [[#Votable][VOTable]] types in the [[#TableAccessProtocol][TAP]] specification. 
+
+   * _"Note that the TAP standard [TAP] defines an explicit mapping between TAP_SCHEMA types and VOTable types."_
+
+This mapping is no longer part of the [[#TableAccessProtocol][TAP]] specification. 
+
+The definition of [[#TapType][TAPType]] states that string values should be represented
+by a data type of =VARCHAR=, the text does not say whether this should use a
+=[[#TapDataTypeSize][size]]= or an =[[#DataTypeArraySize][arraysize]]= attribute.
+
+Note - the [[#TapType][TAPType]] element name reflects the historical situation where
+the data types were originally defined in the [[#TableAccessProtocol][TAP]] specification.
+The data type definitions have since been moved to the [[#ADQL][ADQL]] specification,
+but for backward compatibility the XML element name has not been changed.
+
+#TapDataTypeSize
+---++ !TAPType =size=
+
+[[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes][Section 3.5.3 (Table Column Data Types)]]
+of the [[#VoDataService][VODataService]] specification
+defines the =[[#TapDataTypeSize][size]]= attribute.
+
+Technically, =[[#TapDataTypeSize][size]]= is an attribute of the abstract [[#TapDataType][TAPDataType]] parent element,
+which is then inherited by the [[#TapType][TAPType]] element.
+
+The text describing for the [[#TapType][TAPType]] element describes the =[[#TapDataTypeSize][size]]= attribute as follows:
+
+   * _"The length of the variable-length data type."_
+   * _"In the context of TAP, this attribute is only meaning when the data type is CHAR or BINARY; see discussion below."_
+
+This restriction implies that =CHAR= and =BINARY= values are not arrays of values and have an inherent _'size'_ property, which is distinct from the _'arraysize'_ property.
+
+In the discussion that follows, the [[#VoDataService][VODataService]] specification cites the following two examples as equivalent:
+<verbatim> 
+    <dataType xsi:type="vs:VOTableType" arraysize="*"> char </dataType>
+
+    <dataType xsi:type="vs:TAPType"> VARCHAR </dataType>
+</verbatim> 
+
+A third example describes a fixed length string, using the =[[#TapDataTypeSize][size]]= rather than the =[[#DataTypeArraySize][arraysize]]= attribute
+<verbatim> 
+    <dataType xsi:type="vs:TAPType" size="8" > CHAR </dataType>
+</verbatim> 
+
+However, the [[#VoDataService][VODataService]] specification does not explicitly explain the difference between
+the folllowing examples:
+<verbatim> 
+    <dataType xsi:type="vs:TAPType" size="8" > CHAR </dataType>
+
+    <dataType xsi:type="vs:TAPType" arraysize="8" > CHAR </dataType>
+</verbatim> 
+
+The comments in the XML schema for [[#TapDataType][TAPDataType]] describes the =[[#TapDataTypeSize][size]]= attribute as follows:
+
+   * _"This corresponds to the size Column attribute in the TAP_SCHEMA and can be used with data types that are defined with a length (CHAR, BINARY)."_  
+
+This establishes a link between the [[#TapDataType][TAPDataType]] =[[#TapDataTypeSize][size]]= attribute and the
+=[[#TapShemaColSize][size]]= column in =[[#TapSchema][TAP_SCHEMA]]=.
+
+In the currenet version of the [[#TableAccessProtocol][TAP]] specification the corresponding =[[#TapShemaColSize][size]]= column is described as :
+
+   * _"retained for backwards compatibility to TAP-1.0"_
+
+The original text in version 1.0 of the [[#TableAccessProtocol][TAP]] specification describes the =[[#TapSchemaSize][size]]= column as follows :
+
+   * _"The “size” gives the length of variable length datatypes, for example varchar(256);"_
+
+The [[#TableAccessProtocol][TAP]] specification does not link the =[[#TapShemaColSize][size]]= column back to [[#TapDataType][TAPDataType]] in the [[#VoDataService][VODataService]] specification.
+
+#VoDataServiceTable
+---++ !VODataService Table
+
+... TBD
+
+#VoDataServiceTableSet
+---++ !VODataService !TableSet
+
+... TBD
+
+----
+#VoTable
+---+ !VOTable
+
+The [[#VoTable][VOTable]] specification defines an XML based serialization format for exchanging tabular data in the VO.
+
+#VOTableTypes
+---++ !VOTable data types
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#primitives][Section 2.1 (Primitives)]]
+of the [[#VoTable][VOTable]] specification
+defines a core set of primitive data types.
+
+The following table descibes the types, their semantic meaning, the corresponding FITS data type and the size in bytes:
+
+|         Datatype |            Meaning | FITS | Bytes |
+|        =boolean= |            Logical |   L  |     1 |
+|            =bit= |                Bit |   X  |     * |
+|   =unsignedByte= |    Byte (0 to 255) |   B  |     1 |
+|          =short= |      Short Integer |   I  |     2 |
+|            =int= |            Integer |   J  |     4 |
+|           =long= |       Long integer |   K  |     8 |
+|           =char= |    ASCII Character |   A  |     1 |
+|    =unicodeChar= |  Unicode Character |      |     2 |
+|          =float= |     Floating point |   E  |     4 |
+|         =double= |             Double |   D  |     8 |
+|   =floatComplex= |      Float Complex |   C  |     8 |
+|  =doubleComplex= |     Double Complex |   M  |    16 | 
+
+#VOTableSerial
+---++ !VOTable serialization
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#sec:datatypes][Section 6 (Definitions of Primitive Datatypes)]]
+of the [[#VoTable][VOTable]] specification describes the =BINARY=, =BINARY2= and =TABLEDATA= serializations of each of the primative data types.
+
+#VoTableBoolean
+---+++ !VOTable =boolean= 
+
+Case insensitive long form:
+   * TRUE FALSE
+   * True False
+   * true false
+
+Case insensitive short form:
+   * T F
+   * t f
+
+Numeric, one or zero:
+   * 1 0
+
+This results in a slightly different definition of how to serialize boolean values
+compared to the [[#DaliBoolean][DALI]] definition, which uses a defintion from the
+[[https://www.w3.org/TR/xmlschema-2/][W3C XML schema specification]].
+
+#VoTableBit
+---+++ !VOTable =bit= 
+
+    Array of bits, padded to fit into bytes.
+
+#VoTableUnsignedByte
+---+++ !VOTable =unsignedByte= 
+
+    8 bit (unsigned) integers, 0 to 255.
+
+#VoTableShort
+---+++ !VOTable =short= 
+
+    16 bit signed integers, -32768 to 32767.
+    
+#VoTableInt
+---+++ !VOTable =int= 
+
+    32 bit signed integers, -2147483648 to 2147483647.
+
+#VoTableLong
+---+++ !VOTable =long= 
+
+    64 bit signed integers, -9223372036854775808 to 9223372036854775807.
+
+#VoTableFloat
+---+++ !VOTable =float= 
+
+    ANSI/IEEE-754 32-bit floating point numbers.
+
+#VoTableDouble
+---+++ !VOTable =double= 
+
+    ANSI/IEEE-754 64-bit double precision floating point numbers.
+
+#VoTableChar
+---+++ !VOTable =char= 
+
+    ASCII (7-bit) characters.
+
+#VoTableUnicode
+---+++ !VOTable =unicodeChar= 
+
+The description for the =BINARY= serialization of =[[#VoTableUnicode][unicodeChar]]= defines it as [[https://en.wikipedia.org/wiki/USC-2][Unicode (UCS-2)]] fixed width 2-byte characters.
+
+   * _"Each Unicode character is represented in the BINARY/BINARY2 serialization by two bytes, using the big-endian UCS-2 encoding (ISO-10646-UCS-2)"_
+
+The UCS-2 character set includes all of the characters in the [[https://en.wikipedia.org/wiki/Plane_(Unicode)#Basic_Multilingual_Plane][Basic Multilingual Plane (BMP)]],
+which contains characters for _almost_ all modern languages.
+
+The description for the =TABLEDATA= serialization includes an example showing how a =[[#VoTableUnicode][unicodeChar]]= that is outside the ASCII character
+set can be represented in an XML document by using a [[https://en.wikipedia.org/wiki/Numeric_character_reference][numeric character reference (NCR)]].
+
+   * _"The representation of a Unicode character in the =TABLEDATA= serialization follows the XML specifications, and e.g. the Cyrillic uppercase ``Ya'' can be written &amp;#x042F; in UTF-8."_
+
+The reference to [[https://en.wikipedia.org/wiki/UTF-8][UTF-8]] in this description may be misleading,
+because a UTF-8 document can contain the multi-byte Cyrillic uppercase ``Ya'' character, Я, as-is, without
+needing to use a numeric character reference.
+
+The reason for using numeric character references is if the document character set is not able to represent the ``Ya'' character, Я.
+
+As a result, declaring a UTF-8 encoding for a [[#VoTable][VOTable]] document containing =TABLEDATA= data may be problematic,
+<verbatim>
+    <?xml version=“1.0” encoding=“utf-8”?>
+</verbatim>
+as this would mean the [[#VoTable][VOTable]] document would be able to contain complex multibyte characters
+that are beyond the range of the UCS-2 fixed-width character set.
+
+It may be better to specify the character encoding for VOTable documents as =UCS-2=,
+<verbatim>
+    <?xml version=“1.0” encoding=“ucs-2”?>
+</verbatim>
+This would make the the =TABLEDATA= serialization equivalent to the =BINARY= serialization,
+and require numeric character references for all characters outside the =UCS-2= two byte
+fixed size.
+
+Note - There is a paragraph needed to link this section and the section describing the different [[#VoTableMimeType][MIME types]]
+and how they would effect the serialization of =[[#VoTableUnicode][unicodeChar]]= strings.
+
+Note - since 2005 it is no longer possible to encode all of the mandatory components defined in the official
+[[https://en.wikipedia.org/wiki/GB_18030#As_a_national_standard][GB 18030-2005]] character set of the People's Republic of China
+in a fixed width 2 byte character set. Support for the GB 18030-2005 character set is officially
+required for all software products sold in the PRC.
+
+#VoTableFloatComplex
+---+++ !VOTable =floatComplex= 
+
+The description for the =BINARY= serialization of =[[#VoTableFloatComplex][floatComplex]]= defines it as a pair of 32-bit, single precision, floating point numbers.
+
+   * _"a sequence of pairs of 32-bit single precision floating point numbers in big-endian order"_
+
+The description for the =TABLEDATA= serialization of =[[#VoTableFloatComplex][floatComplex]]= defines it as a pair of floating point numbers separated by white space.
+
+   * _"two representations of a Single Precision Floating Point numbers separated by whitespace, representing the real and imaginary part respectively"_
+
+Note that this effectively fixes the delimter for the =TABLEDATA= serialization to white space, regardless of the =[[#DataTypeDelim][delim]]= attribute
+set in the [[#VoDataService][VODataService]] description of the source data table.
+
+#VoTableDoubleComplex
+---+++ !VOTable =doubleComplex= 
+
+The description for the =BINARY= serialization of =[[#VoTableDoubleComplex][doubleComplex]]= defines it as a pair of 64-bit, double precision, floating point numbers.
+
+   * _"a sequence of pairs of 64-bit double precision floating point numbers in big-endian order"_
+
+The description for the =TABLEDATA= serialization of =[[#VoTableFloatComplex][floatComplex]]= defines it as a pair of floating point numbers separated by white space.
+
+   * _"two representations of a Double Precision Floating Point numbers separated by whitespace, representing the real and imaginary part respectively"_
+
+Note that this effectively fixes the delimter for the =TABLEDATA= serialization to white space, regardless of the =[[#DataTypeDelim][delim]]= attribute
+set in the [[#VoDataService][VODataService]] description of the source data table.
+
+#VoTableXtype
+---++ !VOTable =xtype=
+
+Section [[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC27][4.3 (Extended Datatype))]] of the
+[[#VoTable][VOTable]] specification describes the =[[#VoTableXtype][xtype]]= attribute as bridging the gap between
+the FITS based primitive [[#VoTableTypes][VOTableTypes]] and the data types
+used to express [[#TableAccessProtocol][TAP]] [[#AstoDataQueryLang][ADQL]]
+database queries and their results.
+
+The [[#VoTable][VOTable]] specification does not define a definitive list of standard xtype values.
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3][Section 3.3 (Literal Values)]]
+of the [[#DaliSpec][DALI]] specification suggests that services use a prefis for non-standard xtype values.
+However, the [[#DaliSpec][DALI]] specification does not define a definitive list of standard xtype values.
+
+However, the specification does not explicitly state that the 
+[[#VoTable][VOTable]] =[[#VoTableXtype][xtype]]= attribute
+is related to the
+[[#TapSchema][TAP_SCHEMA]] =[[#TapSchemaColumnXType][xtype]]= column
+used in [[#TapSchema][TAP_SCHEMA]] metadata tables,
+or the
+[[#VoDataService][VODataService]] =[[#DataTypeExtendedType][extendedType]]= attribute
+that is used in the
+[[#TapSpec][TAP]] =[[#TapTables][/tables]]=
+[[#VosiSpec][VOSI]] response.
+
+#VoTableTimestamp
+---++ !VOTable =timestamp=
+
+The [[#VoTable][VOTable]] specification cites an example of using the =[[#VoTableXtype][xtype]]= attribute to describe a =[[#VoTableTimestamp][timestamp]]= value.
+
+   * __a UTC date/time string following the ISO-8601 standard (YYYY-MM-DDThh:mm:ss followed by a decimal point and fractions of seconds)"_
+
+The [[#VoTable][VOTable]] specification does not link to the [[#DaliSpec][DALI]] specification,
+which has a more detailed description of how =[[#DaliTimestamp][timestamp]]= values should be
+represented using =[[#VoTableXtype][xtype]]=.
+
+#VoTableArrays
+---++ !VOTable arrays
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC12][Section 2.2]] of the
+[[#VoTable][VOTable]] specification uses a number of examples to show how a
+combination of =datatype= and =arraysize= attributes can be used to describe
+arrays of values in the metadata for a FIELD.
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC36][Section 5.1]] of the 
+[[#VoTable][VOTable]] specification describes the =TABLEDATA= serialization of arrays as follows:
+
+   * _"If a cell contains an array of numbers or a complex number, it should be encoded as multiple numbers separated by whitespace. However in the case of character and Unicode strings (declared in the corresponding FIELD as an array of char or unicodeChar datatype), no separator should exist."_
+
+It uses the following example to illustrate the difference between arrays of numbers and arrays of characters:
+<verbatim>
+    <TABLE>
+      <FIELD name="aString" datatype="char" arraysize="10"/>
+      <FIELD name="aShort"  datatype="short"/>
+      <FIELD name="varInts" datatype="int"  arraysize="*"/>
+      <FIELD name="Floats"  datatype="float"arraysize="3"/>
+      <DATA><TABLEDATA>
+        <TR> <TD>Apple</TD>  <TD/>       <TD>1 2 4 8 16</TD> <TD>1.62 4.56 3.44</TD> </TR>
+        <TR> <TD>Orange</TD> <TD>15</TD> <TD>23 -11 9</TD>   <TD>2.33 4.66 9.53</TD> </TR>
+      </TABLEDATA></DATA>
+    </TABLE>
+</verbatim>
+
+#VoTableArrayDelim
+---+++ !VOTable =delim=
+
+The [[#VoTable][VOTable]] specification does not include anything to describe the delimiter for arrays of values.
+
+#VoTableField
+---+++ !VOTable Field
+
+... TBD 
+
+#VoTableArraySize
+---+++ !VOTable =arraysize=
+
+The text of the [[#VoTable][VOTable]] specification does not explicitly define the
+=[[#VoTableArraySize][arraysize]]= attribute.
+
+The XML specification for the =[[#VoTableArraySize][arraysize]]= attribute
+does not apply a restriction to the content of the attribute.
+<verbatim>
+    <xs:complexType name="Field">
+      ....
+      <xs:attribute name="arraysize" type="xs:string"/>
+      ....
+    </xs:complexType>
+</verbatim>
+
+The [[#VoTable][VOTable]] specification does not link the [[#VoTable][VOTable]]
+=[[#VoTableArraySize][arraysize]]= attribute with the =[[#DataType][DataType]]=
+=[[#DataTypeArraySize][arraysize]]= attribute defined in the [[#VoDataService][VODataService]]
+specification.
+
+#VoTableArrayDef
+---+++ !VOTable =arrayDEF=
+
+The [[#VoTable][VOTable]] XML schema defines the [[#VoTableArrayDef][arrayDEF]] syntax restriction as follows:
+<verbatim>
+    <xs:simpleType  name="arrayDEF">
+      <xs:restriction base="xs:token">
+        <xs:pattern  value="([0-9]+x)*[0-9]*[*]?(s\W)?"/>
+      </xs:restriction>
+    </xs:simpleType>
+</verbatim>
+
+However, the [[#VoTableArrayDef][arrayDEF]] syntax restriction is *not* used in the definition
+of the =[[#VoTableArraySize][arraysize]]= attribute:
+<verbatim>
+    <xs:complexType name="Field">
+      ....
+      <xs:attribute name="arraysize" type="xs:string"/>
+      ....
+    </xs:complexType>
+</verbatim>
+
+This means that the content of the [[#VoTable][VOTable]] =[[#VoTableArraySize][arraysize]]=
+attribute is unrestricted, and may contain any string.
+
+In contrast, the [[#VoDataService][VODataService]] does restrict the
+content of the of the [[#DataType][DataType]] =[[#DataTypeArraySize][arraysize]]=
+attrribute, with the [[#ArrayShape][ArrayShape]] restriction.
+
+This means it is possible to create a value for =arraysize=
+that is valid in [[#VoTable][VOTable]] but is not valid in
+the [[#VosiSpec][VOSI]] =[[#VosiTables][/tables]]=
+response, which uses the [[#ArrayShape][ArrayShape]] syntax restriction
+defined in the [[#VoDataService][VODataService]] schema.
+
+The only reference to the [[#VoTableArrayDef][arrayDEF]] syntax restriction
+in the other VO specifications is a comment in the definition of the
+[[#ArrayShape][ArrayShape]] in the [[#VoDataService][VODataService]] schema.
+
+The text of the [[#VoTable][VOTable]] specification does not link the
+[[#VoTableArrayDef][arrayDEF]] string syntax with the [[#ArrayShape][ArrayShape]] string
+syntax defined in the [[#VoDataService][VODataService]] schema.
+
+The [[#VoTableArrayDef][arrayDEF]] string syntax is not used anywhere else in [[#VoTable][VOTable]] XML schema.
+
+The [[#VoTableArrayDef][arrayDEF]] string syntax is not used in any of the other VO specifications.
+
+#VoTableArrayVarString
+---+++ Arrays of Variable-Length Strings
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC56][Appendix A.3 (Arrays of Variable-Length Strings)]]
+refers to the Substring Array convention, described in an appendix of the FITS specification.
+
+The text in this specification suggests that a similar convention could be used
+in [[#VoTable][VOTable]].
+
+   * _"A convention similar to the FITS one could be introduced in VOTable in the arraysize attribute ..."_
+
+However, the text does not go beyond suggesting this as a possibility, and does not
+declare whether this is reccomended practice or not.
+
+Provision for this extension is included in the regular expression
+for the [[#VoTableArrayDef][arrayDEF]] syntax restiction.
+<verbatim>
+    <xs:simpleType  name="arrayDEF">
+      <xs:restriction base="xs:token">
+        <xs:pattern  value="([0-9]+x)*[0-9]*[*]?(s\W)?"/>
+      </xs:restriction>
+    </xs:simpleType>
+</verbatim>
+
+However, because [[#VoTable][VOTable]] [[#VoTableArrayDef][arrayDEF]] and
+[[#VoDataService][VODataService]] [[#ArrayShape][ArrayShape]]
+are not directly linked, adding support for this to [[#VoTable][VOTable]]
+makes it is possible to create a value for =arraysize=
+that is valid in [[#VoTable][VOTable]] but is not valid in
+the [[#VosiSpec][VOSI]] =[[#VosiTables][/tables]]=
+response, which uses the [[#ArrayShape][ArrayShape]] syntax restriction
+defined in the [[#VoDataService][VODataService]] schema.
+
+#VoTableMimeType
+---+++ MIME type
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC47][Section 8 (MIME type)]]
+describes the format of MIME types that can be used to describe a [[#VoTable][VOTable]] document.
+
+The text includes the following set of examples:
+
+   * =text/xml=
+   * =text/xml; charset="iso-8859-1"=
+   * =application/x-votable+xml=
+   * =application/x-votable+xml; serialization=tabledata=
+   * =application/x-votable+xml; serialization=TABLEDATA; charset=iso-8859-1=
+
+The text in this section states that if the optional =charset= parameter is not supplied,
+then default of =US-ASCII= is assumed.
+This may conflict with the discussion of the =[[#VoTableUnicode][unicodeChar]]= data type,
+which assumes that the default =charset= is =UTF-8=.
+
+The specification does not go into details about how changing the MIME type =charset=
+could change the way that strings of =[[#VoTableUnicode][unicodeChar]]= are serialized.
+
+----
+#DaliSpec
+---+ !DALI
+
+The [[#DaliSpec][DALI]] specification defines the base web service interface common to all Data Access Layer (DAL) services.
+
+#DaliTables
+---++ !DALI tables
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc2.6][Section 2.6 (VOSI-tables)]]
+of the [[#DaliSpec][DALI]] specification refers to the [[#VosiTables][VOSI-tables]] web resource,
+defined by the Grid and Web Wervices working group.
+
+#DaliTypes
+---++ !DALI types
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3][Section 3.3 (Literal values)]]
+of the [[#DaliSpec][DALI]] specification specifies how a number of data types should be expressed
+by [[#DaliSpec][DALI]] services.
+
+Note that although the following data types and the rules for representing them may be used for literal values
+in parameters passed to [[#DaliSpec][DALI]] services,
+these definitions are also referred to by other VO specifications to describe how to represent data values in
+[[#VOTable][VOTable]] results, [[#VosiSpec][VOSI]] =[[#VosiTables][/tables]]= responses
+and [[#TapSchema][TAP_SCHEMA]] metadata tables.
+
+This may mean that _'Literal values'_ might not be the most appropriate title for this section.
+
+#DaliNumbers
+---+++ !DALI Numbers
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.1][Section 3.3.1 (Numbers)]]
+refers to the [[#VoTable][VOTable]] specification.
+
+   * _"Integer and real numbers must be represented in a manner consistent with the specification for numbers in VOTable"_
+
+However, it is not clear which [[#VOTableSerial][VOTable serializations]], =BINARY=, =BINARY2= or =TABLEDATA=
+apply in which situations.
+
+#DaliBoolean
+---+++ !DALI Boolean
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.2][Section 3.3.2 (Boolean)]]
+refers to part 2 of the [[https://www.w3.org/TR/xmlschema-2/][W3C XML schema specification]].
+
+This results in a slightly different definition of how boolean values should be expressed compared to the
+definition given in the [[#VoTableBoolean][VOTable]] specification.
+
+#DaliTimestamp
+---+++ !DALI Timestamp
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.3][Section 3.3.3 (Timestamp)]]
+defines three representations for date and time values as follows:
+
+   * For astronomical values the time and date format follows the convention established for FITS, mandating UTC, but omitting the timzone in the representation, =YYYY-MM-DD['T'hh:mm:ss[.SSS]]=.
+
+   * For civil values, relating to events at locations on the Earth, the format includes an optional 'Z' to to explicitly specify the UTC time zone, =YYYY-MM-DD['T'hh:mm:ss[.SSS]['Z']]=.
+
+   * Julian Date (JD) or Modified Julian Date (MJD) values should follow the rules for double precision numbers.
+
+The specification also describes how to represent [[#DaliTimestamp][timestamp]]
+values in the metadata for a [[#VoTable][VOTable]] FIELD using =timestamp= for
+the =[#VoTableXtype][xtype]= attrbute.
+
+<verbatim>
+    <FIELD datatype="char", arraysize="*", xtype="timestamp">
+</verbatim>
+
+----
+Note - the specification text includes the following:
+
+   * _"Julian Date (JD) or Modified Julian Date (MJD), these follow the rules for double precision numbers above"_
+
+However, apart from the reference to the [[#VoTable][VOTable]] in the section on [[#DaliNumbers][numeric values]]
+there are no explicit rules for double precision numbers in the preceeding text.
+
+#DaliInterval
+---+++ !DALI Interval
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.4][Section 3.3.4 (Interval)]]
+defines how to represent numeric intervals as pairs of numeric values.
+
+The specification describes how to represent numeric [[#DaliInterval][intervals]]
+in the metadata for a [[#VoTable][VOTable]] FIELD,
+by setting =arraysize= to 2 and using =interval= for the =[[#VoTableXtype][xtype]]= attrbute.
+
+<verbatim>
+    <FIELD datatype="short",  arraysize="2", xtype="interval">
+    <FIELD datatype="int",    arraysize="2", xtype="interval">
+    <FIELD datatype="long",   arraysize="2", xtype="interval">
+    ....
+    <FIELD datatype="float",  arraysize="2", xtype="interval">
+    <FIELD datatype="double", arraysize="2", xtype="interval">
+</verbatim>
+
+All of the examples shown in the specification text use space as the delimiter.
+However, the specification does not explicity define a delimiter, 
+nor does it refer to the =[[#DataTypeDelim][delim]]= attribute
+defined in [[#VoDataService][VODataService]].
+
+#DaliTimeInterval
+---+++ !DALI Time Interval (proposed)
+
+*PROPOSED*
+
+The [[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html][version (1.1)]]
+of the [[#DaliSpec][DALI]] specification
+does not describe how to represent time intervals.
+
+Given that we have already used =timestamp= and =interval= to cover the separate cases,
+we will need to define a new =[[#VoTableXtype][xtype]]= value to describe an interval
+of timestamps.
+
+We propose =[[#DaliTimeInterval][timestamp-interval]]= as the
+=[[#VoTableXtype][xtype]]= value to represent intervals of timestamps.
+
+Given that [[#DaliTimestamp][timestamp]] is serialized as an array of characters,
+and given the way that the geometric types, [[#DaliPoint][Point]],
+[[#DaliCircle][Circle]], and [[#DaliPolygon][Polygon]] are represented.
+Following a similar patten, an [[#DaliInterval][Interval]] of 
+[[#DaliTimestamp][Timestamps]] should probably be reprsented as a space delimited
+sequence of two [[#DaliTimestamp][Timestamps]].
+<verbatim>
+    <FIELD datatype="char", arraysize="*", xtype="timestamp-interval">
+</verbatim>
+
+For example:
+<verbatim>
+    1970-01-01T00:00:00.000Z 2017-08-16T17:12:54.621Z
+</verbatim>
+
+#DaliPoint
+---+++ !DALI Point
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.5][Section 3.3.5 (Point)]]
+of the [[#DaliSpec][DALI]] specification
+defines how to represent a geometric point as an array of two floating point numbers.
+<verbatim>
+    <FIELD ... datatype="float"  arraysize="2" xtype="point">
+    ....
+    <FIELD ... datatype="double" arraysize="2" xtype="point">
+</verbatim>
+
+The specification text states that the _usual_ representation is to use longitude and latitude values in spherical coordinates.
+
+The text also implies that other coordinate systems can be used:
+
+   * _"although they are usually longitude and latitude values in spherical coordinates this is specified in the coordinate metadata and not in the values"_
+
+However, the text does not show how to a specifiy a different coordinate system.
+
+The example shown in the specification text uses space as the delimiter:
+<verbatim>
+    12.3 45.6
+</verbatim>
+
+The specification does not explicity define a delimiter, 
+nor does it refer to the =[[#DataTypeDelim][delim]]= attribute
+defined in [[#VoDataService][VODataService]].
+
+#DaliCircle
+---+++ !DALI Circle
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.6][Section 3.3.6 (Circle)]]
+of the [[#DaliSpec][DALI]] specification
+defines how to represent a circle as an array of three floating point numbers.
+<verbatim>
+    <FIELD ... datatype="float"  arraysize="3" xtype="circle">
+    ...
+    <FIELD ... datatype="double" arraysize="3" xtype="circle">
+</verbatim>
+
+The specification text implies that the _usual_ representation is to use longitude, latitude and radius in spherical coordinates.
+However, the text does not show how to a specifiy a different coordinate system.
+
+The example shown in the specification text uses space as the delimiter:
+<verbatim>
+    12.3 45.6 0.5
+</verbatim>
+
+The specification does not explicity define a delimiter, 
+nor does it refer to the =[[#DataTypeDelim][delim]]= attribute
+defined in [[#VoDataService][VODataService]].
+
+----
+Note - the text in the [[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html][current version (1.1)]] repeats the same range restriction twice.
+
+   * _"For circles in a spherical coordinate system ... longitude values must fall within [0,360], latitude values within [-90,90], and radius values in (0,180]"_
+
+   * _"In spherical coordinates, all longitude values must fall within [0,360] and all latitude values within [-90,90]"_
+
+#DaliPolygon
+---+++ !DALI Polygon
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.7][Section 3.3.7 (Polygon)]]
+of the [[#DaliSpec][DALI]] specification
+defines how to represent a polygon as an array of floating point numbers.
+<verbatim>
+    <FIELD ... datatype="float"  arraysize="*" xtype="polygon">
+    ....
+    <FIELD ... datatype="double" arraysize="*" xtype="polygon">
+</verbatim>
+
+Note that the polygon is modelled as a one-dimensional array of numbers,
+rather than a two-dimensional array of pairs of numbers.
+<verbatim>
+    <FIELD ... datatype="float"  arraysize="2,*" xtype="polygon">
+</verbatim>
+
+The text of the specification implies that the _usual_ representation is to use spherical coordinates.
+However, the text does not show how to a specifiy a different coordinate system.
+
+The example shown in the specification text uses space as the delimiter:
+<verbatim>
+    10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+</verbatim>
+
+However, the specification does not explicity define a delimiter, 
+nor does it refer to the =[[#DataTypeDelim][delim]]= attribute
+defined in [[#VoDataService][VODataService]].
+
+#DaliResponseFormat
+---+++ !DALI RESPONSEFORMAT
+
+[[http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.4.3][Section 3.4.3 (RESPONSEFORMAT)]] of the 
+[[#DaliSpec][DALI]] specification
+describes the =RESPONSEFORMAT= parameter that enables a client to request different
+MIME types and response formats from a [[#DaliSpec][DALI]] service.
+
+... TDB
+
+Note - need to cross reference this with =charset= from the VOTable MIME types.
+
+----
+#VosiSpec
+---+ VOSI
+
+The [[#VosiSpec][VOSI]] specification defines a number of
+web service interface methods and resources that are
+common to all of the VO services.
+
+#VosiTables
+---++ VOSI =/tables=
+
+[[http://www.ivoa.net/documents/VOSI/20170524/REC-VOSI-1.1.html#tth_sEc3.3][Section 3.3 (Table metadata)]]
+of the [[#VosiSpec][VOSI]] specification describes a resource that describes the content of database tables
+accessible from a VO service.
+
+The [[#VosiTables][VOSI Tables]] XML schema imports the [[#VoDataServiceTable][Table]] and [[#VoDataServiceTableSet][TableSet]]
+elements from the [[#VoDataService][VODataService]] specification.
+
+The [[#VosiTables][VOSI Tables]] XML schema inherits both the [[#VoTableType][VOTableType]] and [[#TapType][TAPType]]
+elements from the [[#VoDataService][VODataService]] specification, along with their attributes.
+
+The [[#VoTableType][VOTableType]] and [[#TapType][TAPType]] elements inherit the following attributes
+from [[#DataType][DataType]]:
+
+   * =[[#DataTypeArraySize][arraysize]]= the number of elements in an array
+   * =[[#DataTypeDelim][delim]]= the delimter between elements in an array
+   * =[[#DataTypeExtendedType][extendedType]]= the name of the extended type
+   * =[[#DataTypeExtendedSchema][extendedSchema]]= the schema URL of the extended type
+
+The [[#TapType][TAPType]] element inherits the following attribute
+from [[#TapDataType][#TAPDataType]]:
+
+   * =[[#TapDataTypeSize][size]]=
+
+Note - the examples given in the text of the [[#Vosi][VOSI]] specification
+use =vs:TAP= rather than =vs:[[#TapType][TAPType]]= for the =xsi:type= attribute.
+
+<verbatim>
+    <column>
+      <name>cfhtlsID </name>
+      <dataType xsi:type="vs:TAP" size="30">adql:VARCHAR</dataType>
+    </column>
+</verbatim>
+
+Note - the examples given in the text of the [[#Vosi][VOSI]] specification use
+a prefix for the =adql:VARCHAR= data type, which is not a valid value for
+a [[#TapType][TAPType]] data type.
+
+----
+#TableAccessProtocol
+---+ !TAP
+
+The [[#TableAccessProtocol][TAP]] specification describes the Table Access Protocol web service.
+
+#TapTables
+---++ TAP =/tables=
+
+[[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc2.5][Section 2.5 (/tables)]]
+of the [[#TableAccessProtocol][TAP]] specification
+describes the =[[#TapTables][/tables]]= resource.
+
+The text in the [[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html][current version (WD-TAP-1.1-20170707)]]
+of the specification refers to the [[#VoDataService][VODataService]] specification
+for details of the =[[#TapTables][/tables]]= resource content.
+
+However, the content, and more importantly, the behaviour, of the
+[[#VosiSpec][VOSI]] =[[#VosiTables][/tables]]= resource
+is described in
+[[http://www.ivoa.net/documents/VOSI/20170524/REC-VOSI-1.1.html#tth_sEc3.3][Section 3.3 (Table metadata)]]
+of the [[#VosiSpec][VOSI]] specification.
+Which does then import the [[#VoDataServiceTable][Table]] and [[#VoDataServiceTableSet][TableSet]]
+XML elements from the [[#VoDataService][VODataService]] specification.
+
+The text of the specification _recommends_ using [[#VoTableType][VOTableType]] rather than [[#TapType][TAPType]],
+but it does not explicitly exclude the use of [[#TapType][TAPType]].
+
+   * _"The use of !VOTableType (rather than !TAPType) in the VOSI-tables output is recommended because the values map directly"_
+   * _"!TAPType may be used when !VOTableType does not provide a suitable alternative"_
+
+This is in contrast to the text of the [[#VosiSpec][VOSI]] specification, which includes a number of examples
+using a [[#TapType][TAP]] =adql:VARCHAR= data type:
+<verbatim>
+    <column>
+      <name>cfhtlsID </name>
+      <dataType xsi:type="vs:TAP" size="30">adql:VARCHAR</dataType>
+    </column>
+</verbatim>
+
+In addition, the text of the [[#VoDataService][VODataService]] specification
+cites the following two examples as equivalent:
+<verbatim> 
+    <dataType xsi:type="vs:VOTableType" arraysize="*"> char </dataType>
+    ....
+    <dataType xsi:type="vs:TAPType"> VARCHAR </dataType>
+</verbatim> 
+and a third example describes a fixed length string, using =[[#TapDataTypeSize][size]]=
+rather than =[[#DataTypeArraySize][arraysize]]=:
+<verbatim> 
+    <dataType xsi:type="vs:TAPType" size="8" > CHAR </dataType>
+</verbatim> 
+Which conflicts with both the recomendation to use [[#VoTableType][VOTableType]]
+rather than [[#TapType][TAPType]] in =[[#TapTables][TAP /tables]]= and the advisory
+regarding the planned obsolescence of the [[#TapSchema][TAP_SCHEMA]]
+=[[#TapSchemaColumnSize][size]]= column in future versions of the
+[[#TableAccessProtocol][TAP]] specification.
+
+#TapSchema
+---++ =TAP_SCHEMA=
+
+[[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc4][Section 4 (TAP_SCHEMA)]]
+of the [[#TableAccessProtocol][TAP]] specification
+describes the =[[#TapSchema][TAP_SCHEMA]]= metadata tables.
+
+The specification text states that TAP_SCHEMA amd VOSI /tables should be equivalent.
+
+   * _"The VOSI tables resource provides the same metadata as the TAP_SCHEMA but in a rigorously controlled format"_
+   * _"the information in the TAP_SCHEMA is equivalent to that defined by the VODataService"_
+
+However, as shown below there are a number of inconsitencies between the various specifications which
+mean that this is not always the case.
+
+#TapSchemaSchema
+---++ =TAP_SCHEMA.schema=
+
+[[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc4.1][Section 4.1 (Schema)]]
+of the [[#TableAccessProtocol][TAP]] specification
+describes the content and structure of the
+=[[#TapSchemaSchema][TAP_SCHEMA.schema]]= metadata table.
+
+#TapSchemaTables
+---++ =TAP_SCHEMA.tables=
+
+[[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc4.2][Section 4.2 (Tables)]]
+of the [[#TableAccessProtocol][TAP]] specification
+describes the content and structure of the
+=[[#TapSchemaTables][TAP_SCHEMA.tables]]= metadata table.
+
+Note -The definition of =[[#TapSchemaTables][TAP_SCHEMA.tables]]= does not state that values in the =schema_name= column
+must match the corresponding =schema_name= column in the =[[#TapSchemaSchema][TAP_SCHEMA.schema]]= table.
+
+#TapSchemaColumns
+---++ =TAP_SCHEMA.columns=
+
+[[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc4.3][Section 4.3 (Columns)]]
+of the [[#TableAccessProtocol][TAP]] specification
+describes the content and structure of the
+=[[#TapSchemaColumns][TAP_SCHEMA.columns]]= metadata table.
+
+| column name | datatype | arraysize | xtype | not-null |
+|    table_name |      char | * | null | true |
+|   column_name |      char | * | null | true |
+|      datatype |      char | * | null | true |
+|     arraysize |      char | * | null | false |
+|         xtype |      char | * | null | false |
+|        "size" |       int | 1 | null | false |
+|   description |      char | * | null | false |
+|         utype |      char | * | null | false |
+|          unit |      char | * | null | false |
+|           ucd |      char | * | null | false |
+|       indexed |   boolean | 1 | null | true |
+|     principal |   boolean | 1 | null | true |
+|           std |   boolean | 1 | null | true |
+|  column_index |       int | 1 | null | false |
+
+The specification text explains that
+[[#TapSchema][TAP_SCHEMA]] uses a combination of
+=[[#TapSchemaColumnDataType][datatype]]=,
+=[[#TapSchemaColumnArraySize][arraysize]]=
+and
+=[[#TapSchemaColumnArraySize][xtype]]=
+to descibe the type of a database column.
+
+#TapSchemaColumnDataType
+---++ =TAP_SCHEMA.columns.datatype=
+
+The text of the specification restricts =[[#TapSchemaColumnDataType][TAP_SCHEMA.columns.datatype]]=
+to use the data types defined in the [[#VoTable][VOTable]] specification.
+
+   * _"The allowed values for datatype ... are specified in VOTable"_
+
+[[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#primitives][Section 2.1 (Primitives)]]
+of the [[#VoTable][VOTable]] specification defines the following data types:
+
+|         Datatype |            Meaning | FITS | Bytes |
+|        =boolean= |            Logical |   L  |     1 |
+|            =bit= |                Bit |   X  |     * |
+|   =unsignedByte= |    Byte (0 to 255) |   B  |     1 |
+|          =short= |      Short Integer |   I  |     2 |
+|            =int= |            Integer |   J  |     4 |
+|           =long= |       Long integer |   K  |     8 |
+|           =char= |    ASCII Character |   A  |     1 |
+|    =unicodeChar= |  Unicode Character |      |     2 |
+|          =float= |     Floating point |   E  |     4 |
+|         =double= |             Double |   D  |     8 |
+|   =floatComplex= |      Float Complex |   C  |     8 |
+|  =doubleComplex= |     Double Complex |   M  |    16 | 
+
+In contrast, the =[[#TapTables][/tables]]= resource defined in
+[[http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc2.5][Section 2.5 (/tables)]]
+of the [[#TableAccessProtocol][TAP]] specification
+is based on the [[#VosiSpec][VOSI]] =[[#VosiTables][/tables]]= resource,
+which in turn, uses the [[#VoDataServiceTable][Table]] and [[#VoDataServiceTableSet][TableSet]]
+data type elements from the [[#VoDataService][VODataService]] specification.
+
+The [[#VoTableType][VOTableType]] defines a similar set of data types to [[#VoTable][VOTable]],
+albeit defined in a separate list in a separate specification:
+
+   * =boolean=
+   * =bit=
+   * =unsignedByte=
+   * =short=
+   * =int=
+   * =long=
+   * =char=
+   * =unicodeChar=
+   * =float=
+   * =double=
+   * =floatComplex=
+   * =doubleComplex=
+
+However, the [[#VosiSpec][VOSI]] specification also allows the [[#TapType][TAPType]] data type
+to be used to describe database columns.
+The [[#TapType][TAPType]] data type defines a different set of data types, based on the data type
+stored inside the database, rather than an external serialization of the data:
+
+   * =BOOLEAN=
+   * =SMALLINT=
+   * =INTEGER=
+   * =BIGINT=
+   * =REAL=
+   * =DOUBLE=
+   * =TIMESTAMP=
+   * =CHAR=
+   * =VARCHAR=
+   * =BINARY=
+   * =VARBINARY=
+   * =POINT=
+   * =REGION=
+   * =CLOB=
+   * =BLOB=
+
+This second set of data types means that the following example,
+based on examples given in both the [[#VosiSpec][VOSI]] and the
+[[#VoDataService][VODataService]] specifications,
+would be valid in the =[[#TapTables][/tables]]= response,
+but the same data type would not be valid in the corresponding
+[[#TapSchema][TAP_SCHEMA]] =[[#TapSchemaColumnDataType][datatype]]=.
+<verbatim>
+    <column>
+      <name>cfhtlsID </name>
+      <dataType xsi:type="vs:TapType" size="30">VARCHAR</dataType>
+    </column>
+</verbatim>
+
+TBD - link to the actual data in live TAP services.
+
+#TapSchemaColumnArraySize
+---++ TAP_SCHEMA.columns.arraysize
+
+The text of the specification describes the =[[#TapSchemaColumnArraySize][arraysize]]=
+column as _"the length of variable length datatypes"_.
+
+   * _"The arraysize column gives the length of variable length datatypes using the VOTable array shape syntax."_
+
+This does not explicitly state whether this is the number of elements in the array, or the size (in bytes) of the array.
+
+The example given is for an array of characters, where the size in bytes is equal to the number of elements.
+
+   * _"a database column of type varchar(256) would be described with datatype 'char' and arraysize '256*'"_
+
+Based on examples given in some of the other VO specifications it is possible to infer that
+this is the number of elements and not the size in bytes.
+However, the specification could make this clearer by explicitly stating that it is
+the _"number of elements in the array"_.
+
+The specification text explicitly refers to the [[#VoTable][VOTable]] specification for a definition
+of the =[[#TapSchemaColumnArraySize][arraysize]]= syntax.
+
+   * _"... the syntax for arraysize are specified in VOTable (Ochsenbein and Williams et al., 2013)"_
+
+The XML schema for the [[#VoTable][VOTable]] specification defines
+the [[#VoTableArrayDef][arrayDEF]] syntax restriction which includes
+support for the the FTS [[#VoTableArrayVarString][Substring Array]]
+convention:
+<verbatim>
+    <xs:simpleType  name="arrayDEF">
+      <xs:restriction base="xs:token">
+        <xs:pattern  value="([0-9]+x)*[0-9]*[*]?(s\W)?"/>
+      </xs:restriction>
+    </xs:simpleType>
+</verbatim>
+
+However, the [[#VoTableArrayDef][arrayDEF]] restriction is not actually
+used in the definition of the [[#VoTable][VOTable]] [[#VoTableField][Field]]
+=[[#VoTableArraySize][arraysize]]= attribute.
+<verbatim>
+    <xs:complexType name="Field">
+      ....
+      <xs:attribute name="arraysize" type="xs:string"/>
+      ....
+    </xs:complexType>
+</verbatim>
+
+The [[#VoDataService][VODataService]] [[#ArrayShape][ArrayShape]]
+syntax restriction, used in both the
+[[#VoTableType][VOTableType]] and the [[#TapType][TAPType]]
+elements defined in the [[#VoDataService][VODataService]] XML schema
+does not include support for the the FTS
+[[#VoTableArrayVarString][Substring Array]] convention:
+<verbatim>
+    <xs:simpleType  name="ArrayShape">
+      <xs:restriction base="xs:token">
+        <xs:pattern  value="([0-9]+x)*[0-9]*[*]?"/>
+      </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="VOTableType">
+      <xs:simpleContent>
+        <xs:restriction base="vs:TableDataType">
+          ....
+          <xs:attribute name="arraysize" type="vs:ArrayShape" default="1"/>
+          ....
+        </xs:restriction>
+      </xs:simpleContent>
+   </xs:complexType>
+
+    <xs:complexType name="TAPType">
+      ....
+      <xs:simpleContent>
+        <xs:restriction base="vs:TAPDataType">
+          ....
+          <xs:attribute name="arraysize" type="vs:ArrayShape" default="1"/>
+          ....
+        </xs:restriction>
+      </xs:simpleContent>
+    </xs:complexType>
+</verbatim>
+
+This means that whether you use the 'no restriction' definition of the
+[[#VoTable][VOTable]] =[[#VoTableArraySize][arraysize]]= attribute,
+or the [[#VoTable][VOTable]] [[#VoTableArrayDef][arrayDEF]] restriction,
+it is possible to construct a string that _would_ be valid in
+[[#TapSchema][TAP_SCHEMA]] =[[#TapSchemaColumnArraySize][arraysize]]=
+but *would not* be valid in the
+[[#VoDataService][VODataService]] [[#ArrayShape][ArrayShape]]
+restriction used in the corresponding
+[[#TapSpec][TAP]] =[[#TapTables][/tables]]=
+[[#VosiSpec][VOSI]] response.
+
+#TapSchemaColumnXType
+---++ TAP_SCHEMA.columns.xtype
+
+The text of the specification refers to the types defined in the [[#DaliSpec][DALI]] specification.
+
+   * _"Values for xtype are not restricted per se but implementors should use standard values such as those defined in DALI ... before inventing new xtype(s)."_
+
+However, the specification does not state that the 
+[[#TapSchema][TAP_SCHEMA]] =[[#TapSchemaColumnXType][xtype]]= column
+is related to the
+[[#VoTable][VOTable]] =[[#VoTableXtype][xtype]]= attribute
+used in 
+[[#VoTable][VOTable]] results,
+or the
+[[#VoDataService][VODataService]] =[[#DataTypeExtendedType][extendedType]]= attribute
+that is used in the
+[[#TapSpec][TAP]] =[[#TapTables][/tables]]=
+[[#VosiSpec][VOSI]] response.
+
+#TapSchemaColumnSize
+---++ TAP_SCHEMA.columns.size
+
+The text of the specification states that the =[[#TapSchemaColumnSize][size]]= 
+column is kept for backwards compatibility and will be removed in the next major
+version of the [[#TableAccessProtocol][TAP]] specification.
+
+
+
+
+
+
+
+
+TAP spec.
+---------
+
+[[][Section 3.2 (Successful Queries)]]
+
+   * _"generated names must be unique (within the output table)"_
+
+   * _"VOTable structure follows the rules in section 2.9 and must be returned with an allowed VOTable MIME type (application/x-votable+xml or text/xml)."_
+    Refer to VOTable MIME types ?
+    VOTable charset ?
+    CSV charset ?
+
+   * _"... Full details of CSV format are defined in (Shafranovich, n.d.). "_
+   Should this be in DALI ?
+ 
+   * _"TSV formatted data  ... Column values may not contain the TAB character. 
+   How should tabs be escaped ?
+
+[[][Section 3.5 (Mapping Table Datatypes)]]
+
+   * _"This section describes the bi-directional mapping between VOTable and RDBMS + geometric datatypes and extends the basic rules for serialising such values in VOTable described in (Dowler and Demleitner et al., 2013)."_
+
+   * _"Mapping for specially structured values use xtype(s) specified in [DALI]. "_
+
+
+----
+#AstroQueryLang
+---+ !ADQL
+
+The [[#AstroQueryLang][ADQL]] specification defines ...
+
+
+
+
+Wiki pages
+http://wiki.ivoa.net/twiki/bin/view/IVOA/DataTypes20170804
+http://wiki.ivoa.net/twiki/bin/view/IVOA/MetaData20170804
+
+
+
+
+
+Text files are not ASCII!
+
+Python 3 source code files should be UTF-8
+(PEP-8 is the style guide adopted by LSST)
+https://www.python.org/dev/peps/pep-0008/#source-file-encoding
+
+Java source code files should be UTF-8
+(Google style guide)
+https://google.github.io/styleguide/javaguide.html#s2.2-file-encoding
+
+
+
+
+
+---++ Proposed changes
+
+Mark the [[#VoDataService][VODataService]] =[[#SizeAttrib][size]]= as deprecated and update documentation to reflect this.
+
+
+
+<!--
+      * Set ALLOWTOPICRENAME = IVOA.TWikiAdminGroup
+-->
+
+
+
+
+
+
+
+
+
+
+Hi François, Marco,
+
+Two weeks ago I set out on a project to pull together the various data types and serialization rules in the VO specifications.
+
+Initially this was just for my own use, so that I could a) figure out what types I needed to declare in the ADQL specification, b) comment sensibly on the recent changes to the TAP and DALI specifications and c) provide help and advice to colleagues from LSST trying to figure out how the IVOA specifications fitted together.
+
+The results ended up more complicated than I was expecting.
+http://wiki.ivoa.net/twiki/bin/view/IVOA/DataTypes20170804
+
+I didn't find much that was technically *wrong*. However I did find a number of opportunities for improving the cross referencing links between the standards. I also found a number of issues relating to mis-matches where different standards used slightly different words or ways of describing things which left opportunities for incompatible values or conflicting results.
+
+Right now I need to get back to editing the ADQL specification, but when I have some time in the future I hope to take the results of this survey and put together a set of key changes needed to bring all of the standards into line with each other.
+
+Perhaps this might be a useful resource for the DAL working group to use to work on the next iteration of our standards to make them more consistent.
+
+Regards,
+Dave
+
+ps Please let me know if you find errors or typos.
+I tried to check as much as I could but it is easy to get lost in the complexity.
+
+--------
+Dave Morris
+Research Software Engineer
+Wide Field Astronomy Unit
+Institute for Astronomy
+University of Edinburgh
+--------
+

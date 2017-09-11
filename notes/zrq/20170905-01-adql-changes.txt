@@ -1,0 +1,461 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Types wiki page.
+    # http://wiki.ivoa.net/twiki/bin/view/IVOA/DataTypes20170804
+    #
+
+
+
+    TODO list ....
+
+
+    * section 1.1 - Role within the VO Architecture
+
+            Fix architecture diagram
+
+    * section 2.1.2 - Keywords and Identifiers
+
+        indentation of keywords
+
+        identifiers and keywords SHALL -> MUST
+        text for quotes is a concession rather than a feature
+
+        "ADQL allows making use of the same quoting mechanism to handle case sensitiveness if needed"
+
+        Needs better text ..
+
+
+    * section 2.1.3 - Literals
+
+        Boolean defined as [True|False] - different from DALI
+
+        Typo RDBM[s]
+
+        Text for DATETIME and TIMESTAMP is confusing
+        Separate DATETIME and TIMESTAMP
+        Text for DATETIME and TIMESTAMP refers to ISO8601 - TIMESTAMP should refer to DALI 
+
+
+    * section 2.2 - Query syntax
+    
+        Change text
+            "A full and complete syntax"
+            "A more detailed description"
+
+    * Section 2.2.1 - Table subqueries and Joins
+
+        Wrong - Subqueries are NOT allowed in BETWEEN
+
+        Wrong - "The join condition does not support embedded sub joins"
+
+            In the BNF they are
+
+            <table_reference> contains <joined_table>,
+            <joined_table> contins <qualified_join>,
+            <qualified_join> contains <table_reference>
+
+    * section 2.3 - Mathematical and Trigonometrical Functions
+    
+        Update details for rand()
+        Update details for mod(), -ve values and operator form.
+
+        Should these functions be sections rather than table rows.
+
+
+    * section 3 - ADQL Type System
+    
+        Replace "column metadata" with "service metadata"
+
+        Remove reference to TAPType, replace with references to VOSI and TAP_SCHEMA
+
+        Table 3 
+
+            * reverse the mapping - ADQL type is the primary column, not VOTable
+            
+            * remove xtype prefix
+            * remove REGION
+            * change POINT to float[2]
+            * add VARCHAR as char[*]
+            * add CIRCLE as float[3]
+            * add POLYGON as float[n]
+            * add INTERVAL as short,int,long,float,double[2]
+
+            * add byte size from VOTable
+
+        Add text to describe CLOB
+
+        Remove 'for instance' example.
+        String concatenation is a particularly bad example, it does NOT appply CLOB, probably not TIMESTAMP either.
+        In fact, TIMESTAMP should behave as a TIMESTAMP, not as char[*].
+        BETWEEN should be valid for TIMESTAMP, but it is not for char[*].
+        strlen(TIMESTAMP) doesn't make sense
+
+ZRQ - here
+
+    * section 3 - behaviour for numeric arrays is a punt.
+
+        "Implementation defined" in the above table means that an implementation is free to reject attempts to (de-)serialize values in these types.
+        They are to be considered unsupported by ADQL, and the language provides no means to manipulate "native" representations of them."
+
+        Chnage this to explicitly refer to numeric arrays.
+
+    * section 3 - remove text (REGION)
+
+        "References to REGION-typed columns must be valid wherever the ADQL region nonterminal is allowed"
+
+    * section 3 - what does this actually mean ?
+
+        "References to POINT-typed columns must be valid wherever the ADQL point nonterminal is allowed."
+
+
+    * section 4 - change "which optional or additional" to just "which optional"
+
+    * section 4 - change "then a client SHOULD NOT assume that the service supports"
+                  become "then a client SHOULD assume that the service does NOT support"
+
+
+    * section 4.2.1 - remove REGION
+    * section 4.2.1 - remove text (REGION)
+    
+    * section 4.2.1 - obsolete text (coordsys param)
+    * section 4.2.1 - simplify text
+    
+       FROM "As can also be seen in the following sections, all these functions have
+            arguments being a geometrical, a string and/or a numerical value expression.
+            When these values represent spherical coordinates the units MUST be in
+            degrees (square degrees for area). If the cartesian coordinate system is used,
+            the vector coordinates MUST be normalized."
+
+       FROM Regarding the legal ranges, for spherical coordinates, these SHOULD be
+            [0, 360] and [-90, 90]. In a cartesian coordinate system, there are no inherent
+            limits apart from the already mentioned constraint that vectors should be
+            normalized. It remains up to the service making use of ADQL to define the
+            errors that should be raised when using values outside these ranges.
+
+
+       TO   "If the arguments for a geometric function represent spherical coordinates
+            the values SHOULD be limited to [0, 360] and [-90, 90],
+            and the units MUST be in degrees.
+            
+            If the arguments for a geometric function represent cartesian coordinates
+            there are no inherent limits to the range of values, but
+            vector coordinates MUST be normalized."
+
+            It remains up to the service implementation to define the errors that
+            should be raised when using values outside these constraints.
+
+    * section 4.2.1 - redundant text
+
+            "Generally speaking, all these geometrical functions cover three different
+            topics: data types, predicates and utility calculations. Each of these are
+            covered below."
+
+    * section 4.2.5 - AREA
+    * section 4.2.5 - update example (coordsys param)
+    * section 4.2.5 - check
+
+       FROM "Inappropriate geometries for this construct (e.g. POINT) SHOULD ei-
+            ther return zero or throw an error message, the later to be defined by the
+            service making use of ADQL."
+
+       TO   "The AREA of a POINT is zero."
+
+    * section 4.2.5 - fix text ', where'
+
+    * section 4.2.6 - BOX
+    * section 4.2.6 - update example (coordsys param)
+    * section 4.2.6 - fix case
+
+        "special case of Polygon"
+        "special case of POLYGON"
+
+    * section 4.2.6 - obsolete text (coordsys param)
+       "The function arguments specify [[the coordinate system]], the center position and both the width and height (arms) values"
+
+    * section 4.2.6 - obsolete text (char[*] serialization)
+
+            "To see what this function would return when listed in the select clause,
+            see Section 4.2.18."
+
+    * section 4.2.7 - CENTROID
+    * section 4.2.7 - update example (coordsys param)
+
+    * section 4.2.8 - CIRCLE
+    * section 4.2.8 - update example (coordsys param)
+    * section 4.2.8 - update text (coordsys param)
+    * section 4.2.8 - fix text ', where'
+    * section 4.2.8 - obsolete text (char[*] serialization)
+
+    * section 4.2.8 - CONTAINS
+    * section 4.2.9 - update example (coordsys param)
+    * section 4.2.9 - fix text ', where'
+
+    * section 4.2.10 - COORD1
+    * section 4.2.10 - update example (coordsys param)
+    * section 4.2.10 - fix text ', where'
+
+    * section 4.2.11 - COORD2
+    * section 4.2.11 - update example (coordsys param)
+    * section 4.2.11 - fix text ', where'
+
+    * section 4.2.12 - COORDSYS
+    * section 4.2.12 - remove examples
+    * section 4.2.12 - change text
+
+        This function extracts the coordinate system string value from a given geometry.
+        This function returns the formal name of the coordinate system for a given geometry as a string.
+
+    * section 4.2.13 - DISTANCE
+    * section 4.2.13 - update example (coordsys param)
+    * section 4.2.13 - fix text ', where'
+
+    * section 4.2.14 - INTERSECTS
+    * section 4.2.14 - update example (coordsys param)
+    * section 4.2.14 - fix text ', where'
+
+    * section 4.2.15 - POINT
+    * section 4.2.15 - update text (coordsys param)
+    * section 4.2.15 - update example (coordsys param)
+    * section 4.2.15 - fix text ', where'
+    * section 4.2.15 - obsolete text (char[*] serialization)
+
+    * section 4.2.16 - POLYGON
+    * section 4.2.16 - update text (coordsys param)
+
+    * section 4.2.17 - REGION
+    * section 4.2.17 - remove REGION
+
+    * section 4.2.18 - Geometry in SELECT
+    * section 4.2.18 - obsolete description for char[*] serialization
+
+            This whole sections is based on the assumption that geometric
+            values will be serialized as text strings.
+            
+            Changes to DALI mean geometric values are serialized as
+            arrays of numbers.
+
+            This whole section goes.
+
+
+    * section 4.3 - User functions
+    * section 4.3.1 - Overview
+
+        Does <user_defined_function_param> actually do anything ?
+
+        Does anyone actually use <default_function_prefix> ?
+
+        Is this the place to add the TLA prefix ?
+
+        Last sentence is redundant ?
+
+    * section 4.3.1 - Metadata
+
+        URI is not ADQL specific
+        ivo://ivoa.net/std/TAPRegExt#features-udf
+
+        Suggest change to
+        ivo://ivoa.net/std/TAPRegExt#features-adql-udf
+
+    * section 4.4 - String functions
+    * section 4.4.1 - Lower
+
+        typo "outside th[e] ASCII set"
+
+    * section 4.5 - Set operators
+    * section 4.5.1 - UNION
+
+        Change text, remove citation.
+
+            The UNION operator combines the results of two queries, accepting all rows from both the first and second set of results.
+            Duplicate records are removed unless UNION ALL is used.
+
+        Change text, remove 'only'
+            column value [only]
+
+    * section 4.5.2 - EXCEPT
+
+        Change text, remove citation.
+
+            The EXCEPT operator combines the results of two queries, only accepting rows that are in the first set of results but are not in the second.
+            Duplicate records are removed unless EXCEPT ALL is used.
+
+        Change text, remove 'only'
+            column value [only]
+
+    * section 4.5.3 - INTERSECT
+
+        Change text, remove citation.
+
+            The EXCEPT operator combines the results of two queries, only accepting rows that are in both sets of results.
+            Duplicate records are removed unless INTERSECT ALL is used.
+
+        Change text, remove 'only'
+            column value [only]
+
+    * section 4.6 - Common table expressions
+    * section 4.6.1 - WITH
+
+        Change text, remove citation.
+
+            The WITH operator creates a temporary named result set
+            that can be referred to elsewhere in the main query.
+
+        Extend example to show before and after;
+
+            SELECT
+                *
+            FROM
+                (
+                SELECT
+                    *
+                FROM
+                    alpha_source
+                WHERE
+                    id % 10 = 0
+                )
+            WHERE
+                ra BETWEEN 10 AND 20
+            AND
+                ....
+
+
+
+
+            WITH alpha_subset AS
+                (
+                SELECT
+                    *
+                FROM
+                    alpha_source
+                WHERE
+                    id % 10 = 0
+                )
+
+            SELECT
+                *
+            FROM
+                alpha_subset
+            WHERE
+                ra BETWEEN 10 AND 20
+            AND
+                ....
+
+    * section 4.7 - Type operations
+    * section 4.7.1 - CAST
+    
+        Change text, remove duplicate
+
+            The ADQL CAST() function only supports type conversion between the standard numeric data types.
+            The ADQL CAST() function supports type conversion between the numeric data types.
+
+        Remove table (4) - redundant and confusing, all no apart from numeric-numeric.
+        Remove table (5) - redundant, all yes apart from self.
+
+    * section 4.8 - Unit operations
+    * section 4.8.1 - IN_UNIT
+
+        Change text to use common text for errors.
+
+            "then the query is rejected as erroneous"
+
+    * section 4.9 - Bitwise operators
+
+    * section 4.10 - Cardinality            
+
+    * Appendix A - BNF Grammar
+
+        Remove link to unmaintained grammar
+
+        "An easier to navigate version of the BNF grammar can be found at
+        http://www.ivoa.net/internal/IVOA/IvoaVOQL/adql-bnf-v2.0.html"
+
+
+            
+
+
+
+Proposal - TAPRegExt
+
+    Change "features-adql-geo" to  "features-adql-geom" to avoid conflicts with GIS implementations.
+    http://ivoa.net/documents/TAPRegExt/20151117/WD-TAPRegExt-1.1-20151117.pdf
+
+    Check how many implementatons are actually using this ..
+    Change now, before it gets used.
+
+
+Proposal - ADQL/TAP
+
+    Error message mechanism and format ? 
+
+
+Proposal - TAPRegExt
+
+    Move features from TAPRegExt to an ADQL resource ?
+
+        ivo://ivoa.net/std/TAPRegExt
+    to
+        ivo://ivoa.net/std/ADQL
+
+Proposal - ADQL/TAPRegExt
+
+    Optional feature for arrays
+    http://mail.ivoa.net/pipermail/dal/2017-July/007736.html
+
+        <languageFeature type="ivo://ivoa.net/std/TAPRegExt#features-arrays"/>
+
+    Optional feature for arrays of numbers and geometric shapes.
+    http://mail.ivoa.net/pipermail/dal/2017-September/007805.html
+
+        <languageFeature type="ivo://ivoa.net/std/TAPRegExt#features-adql-arrays">
+            <feature>
+                <form>numeric</form>
+            </feature>
+            <feature>
+                <form>geometric</form>
+            </feature>
+        </languageFeature>
+
+Proposal - ADQL/TAPRegExt
+
+    * Registration for geometric types (POINT, CIRCLE and POLYGON).
+    * Tie these types to their corresponding constructors ?
+
+Proposal - DALI
+
+    Move types from literals to a different section,
+    because the types and xtypes define serialization
+    ued by other specifications.
+
+        
+
+
+    TODO - functions in GROUP BY
+    TODO - functions in ORDER BY
+
+
+
+
+
+
+

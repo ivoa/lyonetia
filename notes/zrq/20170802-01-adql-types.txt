@@ -1,0 +1,429 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    grep -n -r 'VOTableType' */*.tex
+
+        TAP/TAP.tex:449:TAP\_SCHEMA described in section~\ref{sec:tap-schema}. The use of VOTableType 
+        TAP/TAP.tex:451:map directly; TAPType may be used when VOTableType does not provide a suitable
+        TAP/TAP.tex:1358:Changed arraysize in TAP\_SCHEMA to allow the complete VOTable arraysize syntax
+            and specified that the effective datatype in TAP is specified as in VOTable using datatype,
+            arraysize, and xtype. Recommend use of VOTableType in VOSI-tables output.
+
+    grep -n -r 'TAPType' */*.tex
+
+        ADQL/ADQL.tex:614:Examples of such metadata includes VODataService's \verb:TAPType:
+        TAP/TAP.tex:450:(rather than TAPType) in the VOSI-tables output is recommended because the values 
+        TAP/TAP.tex:451:map directly; TAPType may be used when VOTableType does not provide a suitable
+
+
+
+
+    grep -n -r 'xtype' */*.tex
+
+        ADQL/ADQL.tex:640:        \textbf{xtype} &
+
+        DALI/DALI.tex:623:etc. We define some general purpose values for the \xmlel{xtype} attribute of 
+        DALI/DALI.tex:627:use non-standard \xmlel{xtype} values for non-standard datatypes, but if they 
+        DALI/DALI.tex:629:followed by the non-standard xtype) so client software can easily determine 
+        DALI/DALI.tex:630:if a value is standard or not. For example, an \xmlel{xtype} for a 
+        DALI/DALI.tex:704:\verb|xtype="timestamp"|; the arraysize may be set to a more specific value if it is known (e.g. 
+        DALI/DALI.tex:737:\verb|arraysize="2"|, \verb|xtype="interval"|.
+        DALI/DALI.tex:741:\verb|datatype="long"|, \verb|arraysize="2"|, \verb|xtype="interval"|.
+        DALI/DALI.tex:750:\verb|xtype="point"|. For points in a 
+        DALI/DALI.tex:764:\verb|xtype="circle"|. For circles 
+        DALI/DALI.tex:779:\verb|xtype="polygon"|. The 
+        DALI/DALI.tex:1278:\item added explicit allowance for the use of non-standard xtypes with an 
+        DALI/DALI.tex:1315:xtype values for serialising such values in VOTable. Added VOTable serialisation 
+        DALI/DALI.tex:1316:and xtype for timestamp values. (Needed by SIA-2.0 and TAP-1.1)
+
+        TAP/TAP.tex:784:the query) in the query and the datatype, arraysize, and xtype 
+        TAP/TAP.tex:881:The mapping to and from VOTable makes use of the datatype, arraysize, and xtype 
+        TAP/TAP.tex:885:metadata. Mapping for specially structured values use xtype(s) specified
+        TAP/TAP.tex:921:VOTable: datatype, arraysize, and xtype. For backwards compatibility, implementors
+        TAP/TAP.tex:941:\textbf{column name} & \textbf{datatype} & \textbf{arraysize} & \textbf{xtype} & \textbf{not-null} \\
+        TAP/TAP.tex:959:\textbf{column name} & \textbf{datatype} & \textbf{arraysize} & \textbf{xtype} & \textbf{not-null} \\
+        TAP/TAP.tex:988:\textbf{column name} & \textbf{datatype} & \textbf{arraysize} & \textbf{xtype} & \textbf{not-null} \\
+        TAP/TAP.tex:993:xtype & char & * & null & false \\
+        TAP/TAP.tex:1011:are specified in VOTable \citep{std:VOTable}. Values for xtype are not restricted per se but 
+        TAP/TAP.tex:1013:inventing new xtype(s). 
+        TAP/TAP.tex:1061:\textbf{column name} & \textbf{datatype} & \textbf{arraysize} & \textbf{xtype} & \textbf{not-null} \\
+        TAP/TAP.tex:1079:\textbf{column name} & \textbf{datatype} & \textbf{arraysize} & \textbf{xtype} & \textbf{not-null} \\
+        TAP/TAP.tex:1358:Changed arraysize in TAP\_SCHEMA to allow the complete VOTable arraysize syntax and specified that
+            the effective datatype in TAP is specified as in VOTable using datatype,arraysize, and xtype.
+            Recommend use of VOTableType in VOSI-tables output.
+        TAP/TAP.tex:1384:Completed the mapping table from VOTable to RDBMS datatypes using DALI-1.1 xtype values.
+
+        votable/VOTable.attr.tex:37:   \attr{xtype}\\
+        votable/VOTable.attr.tex:130:   \attr{xtype}\\
+        votable/VOTable.attr.tex:147:   \attr{xtype}\\
+        votable/votable.tex:1066:\item	The \attr{xtype} attribute, added in VOTable 1.2, specifies an
+        votable/votable.tex:1143:\subsection{\texorpdfstring{Extended Datatype \attr{xtype}}
+        votable/votable.tex:1144:                           {Extended Datatype xtype}} \label{sec:xtype}
+        votable/votable.tex:1146:The \attr{xtype} attribute expands the basic
+        votable/votable.tex:1157:The \attr{xtype} attribute is the way to 
+        votable/votable.tex:1164:\attr{xtype}.
+        votable/votable.tex:1166:The actual values of the \attr{xtype} attribute are not defined
+        votable/votable.tex:2250:\item  The \attr{xtype} attribute was added 
+        votable/votable.tex:2251:	(see  \Arefs{sec:xtype}{section 4.3})
+
+--------------------------
+VODataService (REC-VODataService-1.1-20101202)
+http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html
+
+    In section 3.5.3 (Table Column Data Types), the VODataService schema defines two XML types that derive from vs:TableDataType.
+    http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes
+
+
+DataType
+TableDataType
+VOTableType
+TAPType
+
+    vs:VOTableType, which refers to the VOTable specification.
+
+        "Data types that correspond to the parameter and column types defined in the VOTable schema [VOTable]."
+
+        Allowed Values:
+            boolean,
+            bit,
+            unsignedByte,
+            short,
+            int,
+            long,
+            char,
+            unicodeChar,
+            float,
+            double,
+            floatComplex,
+            doubleComplex
+
+       String values of arbitrary length are represent by a value of char with arraysize="*"
+
+        <xs:complexType name="VOTableType">
+          <xs:annotation>
+            <xs:documentation>
+              a data type supported explicitly by the VOTable format
+            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleContent>
+            <xs:restriction base="vs:TableDataType">
+              <xs:enumeration value="boolean"/>
+              <xs:enumeration value="bit"/>
+              <xs:enumeration value="unsignedByte"/>
+              <xs:enumeration value="short"/>
+              <xs:enumeration value="int"/>
+              <xs:enumeration value="long"/>
+              <xs:enumeration value="char"/>
+              <xs:enumeration value="unicodeChar"/>
+              <xs:enumeration value="float"/>
+              <xs:enumeration value="double"/>
+              <xs:enumeration value="floatComplex"/>
+              <xs:enumeration value="doubleComplex"/>
+              <xs:attribute name="arraysize" type="vs:ArrayShape" default="1"/>
+              <xs:attribute name="delim" type="xs:string" default=" "/>
+              <xs:attribute name="extendedType" type="xs:string"/>
+              <xs:attribute name="extendedSchema" type="xs:anyURI"/>
+              <xs:anyAttribute namespace="##other" />
+            </xs:restriction>
+          </xs:simpleContent>
+        </xs:complexType>
+
+    vs:TAPType
+    VODataService defines the TAPType type, which refers to the TAP (1.0) specification.
+    ** The TAP 1.1 draft no longer defines any types.
+    ** The current ADQL 1.2 draft does define these types.
+
+        "Data types that correspond column types defined in the Table Access Protocol (v1.0) [TAP]."
+
+        Allowed Values:
+            BOOLEAN,
+            SMALLINT,
+            INTEGER,
+            BIGINT,
+            REAL,
+            DOUBLE,
+            TIMESTAMP,
+            CHAR,
+            VARCHAR,
+            BINARY,
+            VARBINARY,
+            POINT,
+            REGION,
+            CLOB,
+            BLOB
+
+        String values are represented via VARCHAR.
+
+        <xs:complexType name="TAPType">
+          <xs:annotation>
+            <xs:documentation>
+              a data type supported explicitly by the Table Access Protocol (v1.0).
+            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleContent>
+            <xs:restriction base="vs:TAPDataType">
+              <xs:enumeration value="BOOLEAN"/>
+              <xs:enumeration value="SMALLINT"/>
+              <xs:enumeration value="INTEGER"/>
+              <xs:enumeration value="BIGINT"/>
+              <xs:enumeration value="REAL"/>
+              <xs:enumeration value="DOUBLE"/>
+              <xs:enumeration value="TIMESTAMP"/>
+              <xs:enumeration value="CHAR"/>
+              <xs:enumeration value="VARCHAR"/>
+              <xs:enumeration value="BINARY"/>
+              <xs:enumeration value="VARBINARY"/>
+              <xs:enumeration value="POINT"/>
+              <xs:enumeration value="REGION"/>
+              <xs:enumeration value="CLOB"/>
+              <xs:enumeration value="BLOB"/>
+              <xs:attribute name="arraysize" type="vs:ArrayShape" default="1"/>
+              <xs:attribute name="delim" type="xs:string" default=" "/>
+              <xs:attribute name="extendedType" type="xs:string"/>
+              <xs:attribute name="extendedSchema" type="xs:anyURI"/>
+              <xs:attribute name="size" type="xs:positiveInteger"/>
+              <xs:anyAttribute namespace="##other" />
+            </xs:restriction>
+          </xs:simpleContent>
+        </xs:complexType>
+
+        In addition to arraysize, vs:TAPType also defines a 'size' attribute.
+        
+            "The length of the variable-length data type."
+            "In the context of TAP, this attribute is only meaning when the data type is CHAR or BINARY"
+
+        VODataService includes three examples
+
+            "A representation of a string type using the vs:VOTableType set of types:"
+
+                <column>
+                  <name> id </name>
+                  <description> the object identifier </description>
+                  <ucd> meta.id </ucd>
+                  <dataType xsi:type="vs:VOTableType" arraysize="*"> char </dataType>
+                </column>
+
+            "the same column described using the vs:TAPType set of types:"
+
+                <column>
+                  <name> id </name>
+                  <description> the object identifier </description>
+                  <ucd> meta.id </ucd>
+                  <dataType xsi:type="vs:TAPType"> VARCHAR </dataType>
+                </column>
+
+            ** implication here is that TAPType:VARCHAR means we don't need the arraysize="*" attibute ?
+
+            "the same column again described using the length string: vs:TAPType set of types, assuming a fixed-length string:"
+
+                <column>
+                  <name> id </name>
+                  <description> the object identifier </description>
+                  <ucd> meta.id </ucd>
+                  <dataType xsi:type="vs:TAPType" size="8" > CHAR </dataType>
+                </column>
+
+        The example do not explain the difference between
+
+              <dataType xsi:type="vs:TAPType"      size="8" > CHAR </dataType>
+              <dataType xsi:type="vs:TAPType" arraysize="8" > CHAR </dataType>
+
+        Propose we deprecate the 'size' attribute.
+        (see Gregory's email)
+
+
+    Both vs:TAPType and vs:VOTableType define the following attibutes :
+
+        extendedType
+
+            "The data value represented by this type can be interpreted as of a custom type identified by the value of this attribute."
+        
+        extendedSchema
+
+            "An identifier for the schema that the value given by the extended attribute is drawn from."
+
+        delim
+
+            "The string that is used to delimit element of an array value when arraysize is not "1"."
+            This attribute is optional, but there is no default specified.
+
+    None of the VOTable, DALI, TAP or ADQL specifications refer to or define 'extendedType', 'extendedSchema' or 'delim' attributes.
+    None of the examples of arrays include a delimiter.
+
+
+
+
+
+
+
+
+    References to TAP and TAP_SCHEMA
+
+        The note at the end of section (3) contains the following references to the TAP specification:
+
+            "Note that the TAP standard [TAP] defines an explicit mapping between TAP_SCHEMA types and VOTable types."
+            ** TAP 1.1 does not define the type mappings ??
+
+        Followed by this note:
+
+            "The motivation for specifying a column's data type using the xsi:type
+            mechanism is mainly to allow for the possibility that the official TAP data
+            types will evolve. This allows the IVOA to define new data type sets
+            without updating the VODataService standard."
+            ** TAP data types have evolved - TAP 1.1 no longer defines any types.
+
+
+        The bibliography reference for VOTable specifically points to VOTable-1.20 [http://www.ivoa.net/Documents/VOTable/20091130]
+        Latest version is VOTable-1.3 [http://www.ivoa.net/documents/VOTable/20130920/]
+        * VOTable front page doesn't link to 'latest version' [http://www.ivoa.net/documents/VOTable].
+
+
+
+--------------------------
+VOTable (REC-VOTable-1.3-20130920)
+http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf
+
+    In section 2.1 VOTable defines the list of primitive types.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC11
+
+    In section 2.2 VOTable defines arrays of primitive types.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC12
+    Arrays are handled the 'datatype' and 'arraysize' attributes.
+    No details about how the array elements are serialzed or delimited.
+
+    In section 4.1 VOTable defines the arraysize attribute for a FIELD.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC25
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf#subsection.28
+
+        "The arraysize attribute exists when the corresponding table cell contains
+        more than one of the specified datatype, as explained in section 2.2."
+
+        "Note that strings are not a primitive type, and have to be described as
+        an array of characters"
+
+    In section 4.1 VOTable defines the xtype attribute for a FIELD.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC25
+
+        "The xtype attribute, added in VOTable 1.2, specifies an extended (or external) datatype.
+        It is meant to give details about the column contents beyond the primitive datatype,
+        like timestamps."
+
+    In section 4.3 VOTable adds more detail to the definition of xtype.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC27
+
+        4.3  Extended Datatype xtype
+    
+        "The xtype attribute expands the basic datatype primitives (in Table 1) representing the
+        storage units which are valid in any of the VOTable serializations, and corresponds
+        therefore exactly to the FITS definitions.
+        It fills the gap between the datatypes known by FITS and those required to express queries
+        (Astronomical Data Query Language or ADQL, see [12]) and their results in tabular form
+        (Table Access Protocol or TAP, see [11])."
+
+        "The xtype attribute is the way to specify that a parameter represents a timestamp
+        (an instant in an absolute time frame), materialized by a UTC date/time string following
+        the ISO-8601 standard (YYYY-MM-DDThh:mm:ss eventually followed by a decimal point and
+        fractions of seconds); parameters required to specify a spatial position may also have
+        an associated xtype."
+
+        "The actual values of the xtype attribute are not defined in this VOTable specification"
+
+    The title of section 4.3 includes the words 'Extended Datatype', however the text does not
+    make it clear if the VOTable 'vt:xtype' attribute is linked to the to 'vs:extendedType'
+    defined in VODataService.
+
+
+    In section 5.1 VOTable defines the TABLEDATA serialization for arrays.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC36
+
+        "If a cell contains an array of numbers or a complex number, it should be encoded as multiple numbers separated by whitespace."
+        "However in the case of character and Unicode strings (declared in the corresponding FIELD as an array of char or unicodeChar datatype), no separator should exist."
+
+    In section 6 VOTable defines the serialization for the primitive data types listed in section 2.1.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC43
+
+    It explicitly sets the delimiter to whitespace for floatComplex and doubleComplex.
+
+        "The representation of a Floating Complex number in the TABLEDATA serialization is
+        made of two representations of a Single Precision Floating Point numbers separated
+        by whitespace, representing the real and imaginary part respectively."
+
+        "The representation of a Double Complex number in the TABLEDATA serialization is
+        made of two representations of a Double Precision Floating Point numbers separated
+        by whitespace, representing the real and imaginary part respectively."
+
+--------------------------
+TAP (WD-TAP-1.1-20170707)
+http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html
+
+    In section 4.3, the TAP specification defines the columns in the TAP_SCHEMA.columns table.
+    This includes the datatype and xtype columns : 
+
+        "The type of a database column is described in the TAP_SCHEMA.columns table using three (3)
+        columns with an additional (deprecated) column from TAP-1.0 for backwards compatibility."
+
+        "The allowed values for datatype and the syntax for arraysize are specified in VOTable
+        (Ochsenbein and Williams et al., 2013)."
+
+        "Values for xtype are not restricted per se but implementors should use standard values
+        such as those defined in DALI (Dowler and Demleitner et al., 2013) before inventing new xtype(s)." 
+
+        ** Bibliography references for DAI is out of date (should be 2017).
+        ** DALI only defines 
+
+
+--------------------------
+DALI (REC-DALI-1.1)
+http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html
+
+    In section 3.3 on literal values DALI introduces the idea of a prefix for 'non-standard' xtype values.
+    http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3
+
+        "We define some general purpose values for the xtype attribute of the VOTable
+        FIELD and PARAM elements for simple structured values: interval, point, circle,
+        and polygon (see below)."
+
+        "Services may use non-standard xtype values for non-standard datatypes,
+        but if they do so they should include a simple prefix
+        (a string followed by a colon followed by the non-standard xtype)
+        so client software can easily determine if a value is standard or not."
+        
+        "For example, an xtype for a non-standard 3D-vector might be geom:vector3d."
+
+    It doesn't actually say that interval, point, circle, and polygon are standard values for xtype.
+    It doesn't define or refere to a definative list of standard values for xtype.
+
+    In section 3.3, the last sentence defines the 'timestamp' xtype in an example.
+    http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.3
+
+        "Timestamp values serialised on VOTable or in service parameters must have the following
+        metadata in the FIELD element: datatype="char", arraysize="*", xtype="timestamp";
+        the arraysize may be set to a more specific value if it is known
+        (e.g. arraysize="10" for dates only)."
+    
+    
+
+    In the HTML version of the TAP specificaton, references to the "size" column are displayed as ßize"
+    http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc4.3
+
+
