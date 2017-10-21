@@ -36,43 +36,42 @@
 
     * section 2.1.2 - Keywords and Identifiers
 
-        indentation of keywords
+DONE    indentation of keywords
 
-        identifiers and keywords SHALL -> MUST
+DONE    identifiers and keywords SHALL -> MUST
         text for quotes is a concession rather than a feature
 
-        "ADQL allows making use of the same quoting mechanism to handle case sensitiveness if needed"
+DONE    "ADQL allows making use of the same quoting mechanism to handle case sensitiveness if needed"
 
-        Needs better text ..
+DONE    Needs better text ..
 
 
     * section 2.1.3 - Literals
 
         Boolean defined as [True|False] - different from DALI
 
-        Typo RDBM[s]
+DONE    Typo RDBM[s]
 
         Text for DATETIME and TIMESTAMP is confusing
         Separate DATETIME and TIMESTAMP
         Text for DATETIME and TIMESTAMP refers to ISO8601 - TIMESTAMP should refer to DALI 
 
-
     * section 2.2 - Query syntax
     
-        Change text
+DONE    Change text
             "A full and complete syntax"
             "A more detailed description"
 
     * Section 2.2.1 - Table subqueries and Joins
 
-        Wrong - Subqueries are NOT allowed in BETWEEN
+DONE    Wrong - Subqueries are NOT allowed in BETWEEN
 
-        Wrong - "The join condition does not support embedded sub joins"
+DONE    Wrong - "The join condition does not support embedded sub joins"
 
-            In the BNF they are
+            In the BNF they are:
 
             <table_reference> contains <joined_table>,
-            <joined_table> contins <qualified_join>,
+            <joined_table> contains <qualified_join>,
             <qualified_join> contains <table_reference>
 
     * section 2.3 - Mathematical and Trigonometrical Functions
@@ -85,27 +84,27 @@
 
     * section 3 - ADQL Type System
     
-        Replace "column metadata" with "service metadata"
+DONE    Replace "column metadata" with "service metadata"
 
-        Remove reference to TAPType, replace with references to VOSI and TAP_SCHEMA
+DONE    Remove reference to TAPType, replace with references to VOSI and TAP_SCHEMA
 
         Table 3 
 
-            * reverse the mapping - ADQL type is the primary column, not VOTable
+DONE        * reverse the mapping - ADQL type is the primary column, not VOTable
             
-            * remove xtype prefix
-            * remove REGION
-            * change POINT to float[2]
+DONE        * remove xtype prefix
+DONE        * remove REGION
+DONE        * change POINT to float[2]
             * add VARCHAR as char[*]
-            * add CIRCLE as float[3]
-            * add POLYGON as float[n]
+DONE        * add CIRCLE as float[3]
+DONE        * add POLYGON as float[n]
             * add INTERVAL as short,int,long,float,double[2]
 
             * add byte size from VOTable
 
-        Add text to describe CLOB
+DONE    Add text to describe CLOB
 
-        Remove 'for instance' example.
+DONE    Remove 'for instance' example.
         String concatenation is a particularly bad example, it does NOT appply CLOB, probably not TIMESTAMP either.
         In fact, TIMESTAMP should behave as a TIMESTAMP, not as char[*].
         BETWEEN should be valid for TIMESTAMP, but it is not for char[*].
@@ -118,25 +117,32 @@ ZRQ - here
         "Implementation defined" in the above table means that an implementation is free to reject attempts to (de-)serialize values in these types.
         They are to be considered unsupported by ADQL, and the language provides no means to manipulate "native" representations of them."
 
-        Chnage this to explicitly refer to numeric arrays.
+DONE    Removed text
+TODO    Replace with specific section on arrays
 
     * section 3 - remove text (REGION)
 
         "References to REGION-typed columns must be valid wherever the ADQL region nonterminal is allowed"
+DONE    Removed text
 
     * section 3 - what does this actually mean ?
 
         "References to POINT-typed columns must be valid wherever the ADQL point nonterminal is allowed."
-
+DONE    Commented text
 
     * section 4 - change "which optional or additional" to just "which optional"
+
+DONE    Removed text
 
     * section 4 - change "then a client SHOULD NOT assume that the service supports"
                   become "then a client SHOULD assume that the service does NOT support"
 
+DONE    Changed text
 
     * section 4.2.1 - remove REGION
     * section 4.2.1 - remove text (REGION)
+
+DONE    Removed text
     
     * section 4.2.1 - obsolete text (coordsys param)
     * section 4.2.1 - simplify text
@@ -165,63 +171,100 @@ ZRQ - here
             It remains up to the service implementation to define the errors that
             should be raised when using values outside these constraints.
 
+DONE    Changed text
+
     * section 4.2.1 - redundant text
 
             "Generally speaking, all these geometrical functions cover three different
             topics: data types, predicates and utility calculations. Each of these are
             covered below."
 
+DONE    Removed text
+
     * section 4.2.5 - AREA
     * section 4.2.5 - update example (coordsys param)
+
+DONE    Changed text
+
     * section 4.2.5 - check
 
-       FROM "Inappropriate geometries for this construct (e.g. POINT) SHOULD ei-
+        FROM "Inappropriate geometries for this construct (e.g. POINT) SHOULD ei-
             ther return zero or throw an error message, the later to be defined by the
             service making use of ADQL."
 
-       TO   "The AREA of a POINT is zero."
+        TO   "The AREA of a POINT is zero."
+
+DONE    Changed text
 
     * section 4.2.5 - fix text ', where'
 
+DONE    Changed text
+
     * section 4.2.6 - BOX
     * section 4.2.6 - update example (coordsys param)
+
+DONE    Changed text
+
     * section 4.2.6 - fix case
 
         "special case of Polygon"
         "special case of POLYGON"
 
+DONE    Changed text
+
     * section 4.2.6 - obsolete text (coordsys param)
        "The function arguments specify [[the coordinate system]], the center position and both the width and height (arms) values"
+
+DONE    Changed text
 
     * section 4.2.6 - obsolete text (char[*] serialization)
 
             "To see what this function would return when listed in the select clause,
             see Section 4.2.18."
 
+DONE    Deleted text
+
     * section 4.2.7 - CENTROID
     * section 4.2.7 - update example (coordsys param)
 
+DONE    Changed text
+
     * section 4.2.8 - CIRCLE
     * section 4.2.8 - update example (coordsys param)
+
+DONE    Changed text
+
     * section 4.2.8 - update text (coordsys param)
     * section 4.2.8 - fix text ', where'
     * section 4.2.8 - obsolete text (char[*] serialization)
+
+DONE    Changed text
 
     * section 4.2.8 - CONTAINS
     * section 4.2.9 - update example (coordsys param)
     * section 4.2.9 - fix text ', where'
 
+DONE    Changed text
+
     * section 4.2.10 - COORD1
     * section 4.2.10 - update example (coordsys param)
     * section 4.2.10 - fix text ', where'
+
+DONE    Changed text
 
     * section 4.2.11 - COORD2
     * section 4.2.11 - update example (coordsys param)
     * section 4.2.11 - fix text ', where'
 
+DONE    Changed text
+
     * section 4.2.12 - COORDSYS
     * section 4.2.12 - remove examples
+
+DONE    Changed text
+
     * section 4.2.12 - change text
+
 
         This function extracts the coordinate system string value from a given geometry.
         This function returns the formal name of the coordinate system for a given geometry as a string.
@@ -230,9 +273,13 @@ ZRQ - here
     * section 4.2.13 - update example (coordsys param)
     * section 4.2.13 - fix text ', where'
 
+DONE    Changed text
+
     * section 4.2.14 - INTERSECTS
     * section 4.2.14 - update example (coordsys param)
     * section 4.2.14 - fix text ', where'
+
+DONE    Changed text
 
     * section 4.2.15 - POINT
     * section 4.2.15 - update text (coordsys param)
@@ -240,11 +287,17 @@ ZRQ - here
     * section 4.2.15 - fix text ', where'
     * section 4.2.15 - obsolete text (char[*] serialization)
 
+DONE    Changed text
+
     * section 4.2.16 - POLYGON
     * section 4.2.16 - update text (coordsys param)
 
+DONE    Changed text
+
     * section 4.2.17 - REGION
     * section 4.2.17 - remove REGION
+
+DONE    Deleted text
 
     * section 4.2.18 - Geometry in SELECT
     * section 4.2.18 - obsolete description for char[*] serialization
@@ -255,19 +308,23 @@ ZRQ - here
             Changes to DALI mean geometric values are serialized as
             arrays of numbers.
 
-            This whole section goes.
-
+DONE    Deleted text
 
     * section 4.3 - User functions
     * section 4.3.1 - Overview
 
         Does <user_defined_function_param> actually do anything ?
-
         Does anyone actually use <default_function_prefix> ?
+
+DONE    Deleted text
 
         Is this the place to add the TLA prefix ?
 
+DONE    Added text
+
         Last sentence is redundant ?
+
+DONE    Deleted text
 
     * section 4.3.1 - Metadata
 
@@ -282,6 +339,8 @@ ZRQ - here
 
         typo "outside th[e] ASCII set"
 
+DONE    Changed text
+
     * section 4.5 - Set operators
     * section 4.5.1 - UNION
 
@@ -290,8 +349,12 @@ ZRQ - here
             The UNION operator combines the results of two queries, accepting all rows from both the first and second set of results.
             Duplicate records are removed unless UNION ALL is used.
 
+DONE    Changed text
+
         Change text, remove 'only'
             column value [only]
+
+DONE    Deleted text
 
     * section 4.5.2 - EXCEPT
 
@@ -300,8 +363,12 @@ ZRQ - here
             The EXCEPT operator combines the results of two queries, only accepting rows that are in the first set of results but are not in the second.
             Duplicate records are removed unless EXCEPT ALL is used.
 
+DONE    Changed text
+
         Change text, remove 'only'
             column value [only]
+
+DONE    Deleted text
 
     * section 4.5.3 - INTERSECT
 
@@ -310,8 +377,12 @@ ZRQ - here
             The EXCEPT operator combines the results of two queries, only accepting rows that are in both sets of results.
             Duplicate records are removed unless INTERSECT ALL is used.
 
+DONE    Changed text
+
         Change text, remove 'only'
             column value [only]
+
+DONE    Deleted text
 
     * section 4.6 - Common table expressions
     * section 4.6.1 - WITH
@@ -321,45 +392,11 @@ ZRQ - here
             The WITH operator creates a temporary named result set
             that can be referred to elsewhere in the main query.
 
-        Extend example to show before and after;
+DONE    Changed text
 
-            SELECT
-                *
-            FROM
-                (
-                SELECT
-                    *
-                FROM
-                    alpha_source
-                WHERE
-                    id % 10 = 0
-                )
-            WHERE
-                ra BETWEEN 10 AND 20
-            AND
-                ....
+            Extend example to show before and after
 
-
-
-
-            WITH alpha_subset AS
-                (
-                SELECT
-                    *
-                FROM
-                    alpha_source
-                WHERE
-                    id % 10 = 0
-                )
-
-            SELECT
-                *
-            FROM
-                alpha_subset
-            WHERE
-                ra BETWEEN 10 AND 20
-            AND
-                ....
+DONE    Changed text
 
     * section 4.7 - Type operations
     * section 4.7.1 - CAST
@@ -369,8 +406,12 @@ ZRQ - here
             The ADQL CAST() function only supports type conversion between the standard numeric data types.
             The ADQL CAST() function supports type conversion between the numeric data types.
 
+DONE    Deleted text
+
         Remove table (4) - redundant and confusing, all no apart from numeric-numeric.
         Remove table (5) - redundant, all yes apart from self.
+
+DONE    Deleted tables
 
     * section 4.8 - Unit operations
     * section 4.8.1 - IN_UNIT
@@ -379,9 +420,7 @@ ZRQ - here
 
             "then the query is rejected as erroneous"
 
-    * section 4.9 - Bitwise operators
-
-    * section 4.10 - Cardinality            
+DONE    Changed text
 
     * Appendix A - BNF Grammar
 
@@ -390,10 +429,14 @@ ZRQ - here
         "An easier to navigate version of the BNF grammar can be found at
         http://www.ivoa.net/internal/IVOA/IvoaVOQL/adql-bnf-v2.0.html"
 
+DONE    Changed text
 
-            
 
 
+Proposal - TAPRegExt
+
+    Change features-udf to features-adql-udf
+    ivo://ivoa.net/std/TAPRegExt#features-udf
 
 Proposal - TAPRegExt
 
@@ -403,19 +446,9 @@ Proposal - TAPRegExt
     Check how many implementatons are actually using this ..
     Change now, before it gets used.
 
-
 Proposal - ADQL/TAP
 
     Error message mechanism and format ? 
-
-
-Proposal - TAPRegExt
-
-    Move features from TAPRegExt to an ADQL resource ?
-
-        ivo://ivoa.net/std/TAPRegExt
-    to
-        ivo://ivoa.net/std/ADQL
 
 Proposal - ADQL/TAPRegExt
 
@@ -447,11 +480,34 @@ Proposal - DALI
     because the types and xtypes define serialization
     ued by other specifications.
 
-        
-
+    TODO - INTERSECTS http://mail.ivoa.net/pipermail/dal/2017-September/007802.html        
 
     TODO - functions in GROUP BY
     TODO - functions in ORDER BY
+
+    TODO - scalar-subqueries
+    https://mariadb.com/kb/en/library/sql-99/scalar-subqueries/
+
+    TODO - row-subqueries
+    https://mariadb.com/kb/en/library/sql-99/row-subqueries/
+
+
+Proposal - ObsCore
+
+    Why is the table name given in MixedCase ?
+
+    TODO - type prefix
+
+        Data type names use the adql prefix, e.g. adql:CHAR  
+
+    TODO - coordsys
+
+        Examples all include COORDSYS param.
+
+            POINT('ICRS',user_ra,user_dec)
+
+
+
 
 
 
