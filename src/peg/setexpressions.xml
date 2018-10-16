@@ -1,0 +1,69 @@
+<queries>
+  <contact>
+    <name>Markus Demleitner</name>
+    <url>mailto:msdemlei@ari.uni-heidelberg.de</url>
+  </contact>
+  <publisher>
+    <name>Heidelberg GAVO Data Center</name>
+    <url>http://dc.g-vo.org</url>
+  </publisher>
+  <description>MISSING: Global description of these queries</description>
+  <query uuid="16cdfdc2-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select x from t1 union select x from t2
+</adql>
+  </query>
+  <query uuid="1cd5382a-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select x from t1 intersect select x from t2
+</adql>
+  </query>
+  <query uuid="21149188-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select x from t1 except select x from t2
+</adql>
+  </query>
+  <query uuid="25282b72-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select x from t1 where x&gt;2 union select x from t2
+</adql>
+  </query>
+  <query uuid="32eebe4c-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select * from t1 union select x from t2 intersect select x from t3  except select x from t4
+</adql>
+  </query>
+  <query uuid="3aa8630e-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select * from (select * from t1 except select * from t2) as q union select * from  t3
+</adql>
+  </query>
+  <query uuid="3e9fec2a-450b-11e6-8afd-a735f38de45d">
+    <description>Valid set expressions</description>
+    <adql valid="true" version="adql-2.1">select * from t1 union select foo from (select * from t2 except select * from t1) as q
+</adql>
+  </query>
+  <query uuid="c5158c64-450c-11e6-8c47-9df4f9c4341c">
+    <description>individual set limits</description>
+    <adql valid="true" version="adql-2.1">select top 3 * from t1 union select top 4 * from t2 except select * from t3
+</adql>
+  </query>
+  <query uuid="d8333422-450c-11e6-8c47-9df4f9c4341c">
+    <description>individual set limits</description>
+    <adql valid="true" version="adql-2.1">select top 7 * from t1 union (select top 4 * from t2 except select * from t3) except (select top 30 x from t4 except select top 3 y from t5)
+</adql>
+  </query>
+<query uuid="04059d6c-4cfe-11e6-b43c-5d3a7f1259a0"><description>metadata inference</description><adql valid="true" version="adql-2.1">select dist, height from spatial union select dist, height from spatial
+</adql></query><query uuid="32ce371c-4cfe-11e6-b43c-5d3a7f1259a0"><description>metadata inference</description><adql valid="true" version="adql-2.1">select dist, height from spatial
+	union select dist, ra1 as height from spatial2
+	intersect select mass as dist, mag as height from misc
+	except select "left-right" as dist, "plAin" as height from quoted
+</adql></query><query uuid="5c93a1ae-4cfe-11e6-b43c-5d3a7f1259a0"><description>metadata inference</description><adql valid="true" version="adql-2.1">select dist, height from spatial
+  union select ra1 as dist, dec as height from (
+    select * from spatial
+    except select mag as ra1, mass as dec, speed as dist from misc) as q
+where dist&gt;2
+</adql></query><query uuid="7e1c042a-4d02-11e6-a088-7368e607ac72"><description>with set limit</description><adql valid="true" version="adql-2.1">select top 3 * from x union (select top 40 a from y except select * from z)
+</adql></query><query uuid="8f1cd39e-4d02-11e6-a088-7368e607ac72"><description>deep set limit</description><adql valid="true" version="adql-2.1">select * from (select TOP 30 * from x) as q union
+		select TOP 4 * from u
+</adql></query></queries>

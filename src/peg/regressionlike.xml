@@ -1,0 +1,76 @@
+<queries>
+  <contact>
+    <name>Markus Demleitner</name>
+    <url>mailto:msdemlei@ari.uni-heidelberg.de</url>
+  </contact>
+  <publisher>
+    <name>Heidelberg GAVO Data Center</name>
+    <url>http://dc.g-vo.org</url>
+  </publisher>
+  <description>Regression test-like queries (in DaCHS, these are used
+  to make assertions on how these things morph)</description>
+  <query uuid="68842e74-4cff-11e6-866d-736653f6053b">
+    <description>misc statements</description>
+    <adql valid="true" version="adql-2.1">select alphaFloat, deltaFloat from ppmx.data
+		where contains(point('ICRS', alphaFloat, deltaFloat), 
+			circle('ICRS', 23, 24, 0.2))=1
+</adql>
+  </query>
+  <query uuid="72395eda-4cff-11e6-866d-736653f6053b">
+    <description>misc statements</description>
+    <adql valid="true" version="adql-2.1">select round(x,2)as a, truncate(x,-2) as b from foo
+</adql>
+  </query>
+  <query uuid="963253e6-4cff-11e6-866d-736653f6053b">
+    <description>triple join</description>
+    <adql valid="true" version="adql-2.1">SELECT ra1, dec, mass FROM
+	(SELECT * FROM spatial) as q LEFT OUTER JOIN spatial2
+		USING (ra1, dist) JOIN misc ON (dist=mass)
+</adql>
+  </query>
+  <query uuid="b0b1b018-4cff-11e6-866d-736653f6053b">
+    <description>comma join with subquery</description>
+    <adql valid="true" version="adql-2.1">SELECT ra1, dec, mass FROM
+	(spatial join spatial2 using (ra1)), misc
+</adql>
+  </query>
+  <query uuid="092d9d96-4d01-11e6-9a71-e546d984d6dc">
+    <description>wild whitespace</description>
+    <adql valid="true" version="adql-2.1">select		distinct top
+
+
+    10 x, y from foo
+</adql>
+  </query>
+  <query uuid="2ed3d060-4d01-11e6-9a71-e546d984d6dc">
+    <description>misc numerics</description>
+    <adql valid="true" version="adql-2.1">select log10(x), log(x), rand(), rand(5), 
+			TRUNCATE(x), TRUNCATE(x,3) from foo", 
+
+</adql>
+  </query>
+  <query uuid="43838e06-4d01-11e6-9a71-e546d984d6dc">
+    <description>unary logic</description>
+    <adql valid="true" version="adql-2.1">select x from something where y not in (1,2)
+</adql>
+  </query>
+  <query uuid="5462509a-4d01-11e6-9a71-e546d984d6dc">
+    <description>ordering</description>
+    <adql valid="true" version="adql-2.1">select top 100 * from spatial where dist&gt;10 order by dist, height
+</adql>
+  </query>
+  <query uuid="6c7e723a-4d01-11e6-9a71-e546d984d6dc">
+    <description>aliased upload</description>
+    <adql valid="true" version="adql-2.1">select * from TAP_UPLOAD.abc as o
+</adql>
+  </query>
+  <query uuid="7f399b5c-4d01-11e6-9a71-e546d984d6dc">
+    <description>column reference from tap upload</description>
+    <adql valid="true" version="adql-2.1">select TAP_UPLOAD.abc.c from TAP_UPLOAD.abc
+</adql>
+  </query>
+<query uuid="3d21f920-4d02-11e6-87b5-4131381c4631"><description>multi join</description><adql valid="true" version="adql-2.1">select * from spatial natural join spatial2 join misc on (dist=speed)
+</adql></query><query uuid="61b37638-4d02-11e6-87b5-4131381c4631"><description>star and subquery</description><adql valid="true" version="adql-2.1">select * from spatial join 
+	(select ra1+dec, dist-2 as foo, dec from spatial2 offset 0) as q"
+	ON ( width = dec )
+</adql></query></queries>
