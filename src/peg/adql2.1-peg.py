@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ##################################################################
-# pegparse.py:                                                   #
+# adql2.1-peg.py:                                                #
 #     Python Script which parses the ADQL 2.1 standard using PEG #
 ##################################################################
 
@@ -37,7 +37,7 @@ def test_file(file_name, parser):
 	        run_test(el, parser)
 
 if __name__=="__main__":
-    with open("adql21-gm.peg", "r") as grammar_file:
+    with open("adql2.1.peg", "r") as grammar_file:
         adql_grammar = grammar_file.read()
         print "CREATING GRAMMAR.."
         parser = ParserPEG(adql_grammar, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True)
