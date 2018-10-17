@@ -25,27 +25,28 @@ from xml.etree import ElementTree as etree
 global parser
 
 def assert_valid(query, uuid):
+    print query
     try:
 	parser.parse(query)
     except Exception, msg:
-        sys.stderr.write("Doesn't parse but should:\n%s\n\n"%( msg))
+        sys.stderr.write("Query '%s' doesn't parse but should:\n%s\n\n"%(query, msg))
     else:
-        sys.stderr.write("Successfully analysed as a valid query\n")
+        print "Successfully analysed as a valid query"
 
 def assert_invalid(query, uuid):
+    print query
     try:
  	parser.parse(query)
     except NoMatch:
-        sys.stderr.write("Can't parse invalid query\n")
+        print "Can't parse invalid query\n"
         pass
     except Exception, msg:
-	sys.stderr.write("Raises non-parse exception:\n%s\n\n"%( msg))
+	sys.stderr.write("Query '%s' Raises non-parse exception:\n%s\n\n"%(query, msg))
     else:
-        sys.stderr.write("Parses but shouldn't\n")
+        sys.stderr.write("Query '%s' parses but shouldn't\n" % (query))
 
 def run_test(query_el):
     adql = query_el.find("adql")
-    sys.stderr.write("%s" % (adql.text.upper()))
     if adql.get("valid")=="true":
         assert_valid(adql.text.upper(), query_el.get("uuid"))
     else:
