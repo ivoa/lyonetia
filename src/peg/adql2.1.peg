@@ -12,7 +12,7 @@ query_specification <- _ 'SELECT'
 	__ select_list
 	__ table_expression;
 table_expression <-
-	__ from_clause
+	from_clause
 	(__ join)* 
 	(__ where_clause)? 
 	(__ group_by)? 
@@ -58,7 +58,7 @@ group_by		<- 'GROUP BY' __ identifier (_ ',' identifier)*;
 having			<- 'HAVING' __ '(' _ search_condition _ ')';
 offset 			<- 'OFFSET' __ unsigned_integer;
 identifier		<- (regular_identifier / delimited_identifier) ("." (regular_identifier / delimited_identifier / '*'))?;
-delimited_identifier	<- r'"' (r'\\"' / r'[^"]')* r'"' / r"'" (r"\\'" / r"[^\']")* r"'";
+delimited_identifier	<- '"' ('""' / r'[^"]')+ '"';
 regular_identifier	<- (!reserved_keywords letter (letter / digit / "_")*);
 function 			<- function_name '(' (search_column (_ ',' _ search_column)*)? ')';
 function_name		<- 'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'COS' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN' / 'SQRT' / 'TAN';
@@ -76,6 +76,6 @@ letter			<- r'[a-zA-Z]';
 reserved_keywords	<- 'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '=' / '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' / 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY' / 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' / 'TRUNCATE'/ function_name;
 ANY_CHAR		<- letter / digit / ' ' / '\t' / ',' / ';' / '.';
 _			<- comment / (Space / EOL)*;
-__			<- comment / (Space / EOL)+;
+__			<- (comment / Space / EOL)+;
 Space			<- ' '+ / '\t';
 EOL			<- '\r\n' / '\n' / '\r';
