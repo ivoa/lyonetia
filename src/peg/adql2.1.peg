@@ -12,35 +12,38 @@ query_specification <- _ 'SELECT'
 	__ select_list
 	__ table_expression;
 table_expression <-
-	from_clause
-	(__ join)* 
+	from_clause 
 	(__ where_clause)? 
 	(__ group_by)? 
 	(__ having)? 
 	(__ order_by)? 
 	(__ offset)?;
-
-
-set_quantifier <-  'ALL' / 'DISTINCT';
+set_quantifier <- 'DISTINCT' / 'ALL';
 set_limit		<- 'TOP' __ unsigned_integer;
-
 select_list		<- '*' /  select_item (_ ',' _ select_item)*;
 select_item		<- select_column (__ ('AS' __)? identifier)?;
-select_column		<- identifier / numeric_expression / binary_operation / function;
+select_column		<- binary_operation
+	/ identifier
+	/ numeric_expression
+	/ math_function
+	/ general_set_function
+	/ string_literal;
 from_clause		<- 'FROM' __ (from_list / subquery);
-from_list		<- table_item (_ ',' _ table_item)*;
-subquery		<- '(' _ query _ ')' (__ 'AS')? __ identifier;
 
+from_list		<- table_item (_ ',' _ table_item)*;
+subquery		<- '(' _ query_expression _ ')' (__ 'AS')? __ identifier;
 join			<- 
-	join_method? 'JOIN' 
-	__ (identifier (__ join_condition)? / '(' query ')');
-join_type <-  'INNER' 
+	identifier (__ join_method? 'JOIN' 
+	__ '('? (table_item (__ join_condition)? ')'? / query_expression  / _ join _ ')'))+;
+join_type <-  
+	'INNER' 
 	/ (('LEFT' /  'RIGHT' / 'FULL') __)? 'OUTER';
 join_method		<-
 	('NATURAL' __)? 
 	(join_type __)?;
 	
-join_condition		<- 'ON' __ search_list / 'USING' __ '(' identifier (_ ',' identifier)* ')';
+join_condition		<- 'ON' __ search_list
+	/ 'USING' __ '(' identifier (_ ',' _ identifier)* ')';
 
 where_clause	<- 'WHERE' __ search_list;
 search_list		<- search_condition 
@@ -50,26 +53,51 @@ search_condition		<- unary_operation
 	/ ternary_operation 
 	/ list_operation 
 	/ exists_operation 
-	/ function;
-search_column		<- identifier / numeric_expression / function;
-unary_operation 	<- 'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
-binary_operation	<- '('? search_column _ ("=" / "!=" / "<=" / ">=" / ">" / "<" / "I"?"LIKE" / "||") _ search_column ')'?;
+	/ math_function;
+search_column		<- math_function
+	/ general_set_function
+	/ identifier
+	/ string_literal
+	/ numeric_expression;
+unary_operation 	<- search_column __ 'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
+binary_operation	<- '('? search_column _ ("||" _ string_literal / ("=" / "!=" / "<=" / ">=" / ">" / "<" / "ILIKE" / "LIKE") _ search_column) ')'?;
 ternary_operation	<- search_column __ ('NOT' __)? 'BETWEEN' __ search_column __ 'AND' __ search_column;
-list_operation		<- ('NOT' __)? 'IN' (search_column / '(' search_column (_ ',' search_column)* ')' / '(' query ')');
-exists_operation 	<- ('NOT' __)? 'EXISTS' '(' query ')';
-table_item		<- identifier (__ ('AS' __)? identifier)?;
+list_operation		<- search_column __ ('NOT' __)? 'IN' (search_column / '(' search_column (_ ',' search_column)* ')' / '(' query_expression ')');
+exists_operation 	<- ('NOT' __)? 'EXISTS' __ '(' query_expression ')';
+table_item		<- (join / identifier) (__ ('AS' __)? identifier)?;
 order_by		<- 'ORDER BY' __ order_by_list;
 order_by_list		<- order_by_item (_ ',' _ order_by_item)*;
 order_by_item		<- (identifier / unsigned_integer) (__ order_by_sort)?;
 order_by_sort		<- 'ASC' / 'DESC';
 group_by		<- 'GROUP BY' __ identifier (_ ',' identifier)*;
-having			<- 'HAVING' __ '(' _ search_condition _ ')';
+having			<- 'HAVING' __ search_condition;
 offset 			<- 'OFFSET' __ unsigned_integer;
-identifier		<- (regular_identifier / delimited_identifier) ("." (regular_identifier / delimited_identifier / '*'))?;
+identifier		<- (regular_identifier / delimited_identifier) ("." (regular_identifier / delimited_identifier / '*'))*;
 delimited_identifier	<- '"' ('""' / r'[^"]')+ '"';
 regular_identifier	<- (!reserved_keywords letter (letter / digit / "_")*);
+string_literal 		<- "'" ("''" / r"[^']")+ "'";
 function 			<- function_name '(' (search_column (_ ',' _ search_column)*)? ')';
+math_function 	<- no_param_math '()'
+	/ opt_param_math '(' search_column? ')'
+	/ two_param_math '(' _ search_column ',' _ search_column ')'
+	/ one_param_math '(' _ search_column _ ')'
+	/ onep_param_math '(' _ search_column (_ ',' _ search_column)* _ ')';
+// No params
+no_param_math 	<- 'PI';
+// Optional parameter 
+opt_param_math 	<- 'RAND';
+// One param 
+one_param_math 	<- 'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'RADIANS' / 'SQRT' / 'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN';
+// Two param
+two_param_math 	<- 'MOD' / 'POWER' / 'ATAN2';
+// At least one param
+onep_param_math <- 'ROUND' / 'TRUNCATE';
+string_function 	<- string_func_name '(' search_column ')';
+string_func_name 	<- 'LOWER';
 function_name		<- 'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'COS' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN' / 'SQRT' / 'TAN';
+set_function_specification <- 'COUNT' '(' '*' ')' / general_set_function;
+set_function_type <- 'AVG' / 'MAX' / 'MIN' / 'SUM' / 'COUNT';
+general_set_function <- set_function_type '(' (set_quantifier _)? select_column ')';
 comment			<- '--' r'[^\n\r]*';
 numeric_expression	<- term (_ ('+' / '-') _ numeric_expression)*;
 term			<- factor (_ ('*' / '/') _ term)?;
@@ -81,7 +109,7 @@ decimal			<- unsigned_integer '.' digit+;
 unsigned_integer	<- digit+;
 digit			<- r'[0-9]';
 letter			<- r'[a-zA-Z]';
-reserved_keywords	<- 'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '=' / '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' / 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY' / 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' / 'TRUNCATE'/ function_name;
+reserved_keywords	<- 'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '=' / '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' / 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY' / 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' / 'TRUNCATE'/ function_name / general_set_function / string_func_name;
 ANY_CHAR		<- letter / digit / ' ' / '\t' / ',' / ';' / '.';
 _			<- comment / (Space / EOL)*;
 __			<- (comment / Space / EOL)+;
