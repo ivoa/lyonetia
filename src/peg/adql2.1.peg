@@ -32,7 +32,7 @@ delimited_identifier	<- r'"' (r'\\"' / r'[^"]')* r'"' / r"'" (r"\\'" / r"[^\']")
 regular_identifier	<- (!reserved_keywords letter (letter / digit / "_")*);
 function 			<- function_name '(' (search_column (_ ',' _ search_column)*)? ')';
 function_name		<- 'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'COS' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN' / 'SQRT' / 'TAN';
-comment			<- '--' r'.*\n';
+comment			<- '--' r'[^\n]*';
 numeric_expression	<- term (_ ('+' / '-') _ numeric_expression)*;
 term			<- factor (_ ('*' / '/') _ term)?;
 factor			<- ('+' / '-')? numeric_primary;
