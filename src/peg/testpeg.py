@@ -60,7 +60,7 @@ if __name__=="__main__":
     with open("adql2.1.peg", "r") as adql_peg_file:
         adql_peg = adql_peg_file.read()
         print "CREATING GRAMMAR..."
-        parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=True, reduce_tree=True)
+        parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True)
         print "GRAMMAR CREATED\n"
         #for f in ["geometry.xml", "regressionlike.xml", "setexpressions.xml", "simpleunit.xml", "subqueries.xml"]:
         for f in ["simpleunit.xml"]:

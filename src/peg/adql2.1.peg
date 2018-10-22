@@ -1,18 +1,48 @@
-query			<- _ select __ from (__ join)* (__ where)? (__ group_by)? (__ having)? (__ order_by)? (__ offset)?;
-select			<- 'SELECT' (__ ('ALL' / 'DISTINCT'))? (__ select_limit)? __ select_list;
-select_limit		<- 'TOP' __ unsigned_integer;
+// The top-level non-terminal; this is what complete ADQL
+// statements must match.
+query			<- 
+	query_expression
+	_ EOF;
+query_expression <- 
+	query_specification;
+	// / joined_table
+query_specification <- _ 'SELECT'
+	(__ set_quantifier)?
+	(__ set_limit)?
+	__ select_list
+	__ table_expression;
+table_expression <-
+	__ from_clause
+	(__ join)* 
+	(__ where_clause)? 
+	(__ group_by)? 
+	(__ having)? 
+	(__ order_by)? 
+	(__ offset)?;
+
+
+set_quantifier <-  'ALL' / 'DISTINCT';
+set_limit		<- 'TOP' __ unsigned_integer;
+
 select_list		<- '*' /  select_item (_ ',' _ select_item)*;
 select_item		<- select_column (__ ('AS' __)? identifier)?;
 select_column		<- identifier / numeric_expression / binary_operation / function;
-from			<- 'FROM' __ (from_list / subquery);
+from_clause		<- 'FROM' __ (from_list / subquery);
 from_list		<- table_item (_ ',' _ table_item)*;
 subquery		<- '(' _ query _ ')' (__ 'AS')? __ identifier;
 join			<- (join_method __)? 'JOIN' __ (identifier join_condition / '(' query ')');
 join_method		<- 'NATURAL'? ('INNER' / (('LEFT' /  'RIGHT' / 'FULL') _ 'OUTER'?));
 join_condition		<- 'ON' __ search_list / 'USING' __ '(' identifier (_ ',' identifier)* ')';
-where			<- 'WHERE' __ search_list;
-search_list		<- search_condition (__ ('AND' / 'OR') (__ 'NOT' __)? search_condition)*;
-search_condition		<- unary_operation / binary_operation / ternary_operation / list_operation / exists_operation / function;
+
+where_clause	<- 'WHERE' __ search_list;
+search_list		<- search_condition 
+	(__ ('AND' / 'OR') __ ( 'NOT' __)? search_condition)*;
+search_condition		<- unary_operation 
+	/ binary_operation 
+	/ ternary_operation 
+	/ list_operation 
+	/ exists_operation 
+	/ function;
 search_column		<- identifier / numeric_expression / function;
 unary_operation 	<- 'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 binary_operation	<- '('? search_column _ ("=" / "!=" / "<=" / ">=" / ">" / "<" / "I"?"LIKE" / "||") _ search_column ')'?;
@@ -32,7 +62,7 @@ delimited_identifier	<- r'"' (r'\\"' / r'[^"]')* r'"' / r"'" (r"\\'" / r"[^\']")
 regular_identifier	<- (!reserved_keywords letter (letter / digit / "_")*);
 function 			<- function_name '(' (search_column (_ ',' _ search_column)*)? ')';
 function_name		<- 'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'COS' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN' / 'SQRT' / 'TAN';
-comment			<- '--' r'[^\n]*';
+comment			<- '--' r'[^\n\r]*';
 numeric_expression	<- term (_ ('+' / '-') _ numeric_expression)*;
 term			<- factor (_ ('*' / '/') _ term)?;
 factor			<- ('+' / '-')? numeric_primary;
@@ -45,7 +75,7 @@ digit			<- r'[0-9]';
 letter			<- r'[a-zA-Z]';
 reserved_keywords	<- 'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '=' / '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' / 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY' / 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' / 'TRUNCATE'/ function_name;
 ANY_CHAR		<- letter / digit / ' ' / '\t' / ',' / ';' / '.';
-_			<- comment / Space* / EOL*;
-__			<- comment / Space+ / EOL*;
+_			<- comment / (Space / EOL)*;
+__			<- comment / (Space / EOL)+;
 Space			<- ' '+ / '\t';
 EOL			<- '\r\n' / '\n' / '\r';
