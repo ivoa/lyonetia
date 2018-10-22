@@ -90,7 +90,9 @@
 </adql>
   </query>
   <query uuid="ab9be5d0-4458-11e6-96e2-28b2bdcff70b">
-    <description>Various join forms</description>
+    <description>Anomalous join (this is allowed by the grammar but senseless; we should fix this
+    in a grammar update (which is harmless because such queries have always been rejected
+    by the database engines.</description>
     <adql valid="true" version="adql-2.1">select x from t1 JOIN t2
 </adql>
   </query>

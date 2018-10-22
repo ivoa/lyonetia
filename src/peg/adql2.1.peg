@@ -30,8 +30,16 @@ select_column		<- identifier / numeric_expression / binary_operation / function;
 from_clause		<- 'FROM' __ (from_list / subquery);
 from_list		<- table_item (_ ',' _ table_item)*;
 subquery		<- '(' _ query _ ')' (__ 'AS')? __ identifier;
-join			<- (join_method __)? 'JOIN' __ (identifier join_condition / '(' query ')');
-join_method		<- 'NATURAL'? ('INNER' / (('LEFT' /  'RIGHT' / 'FULL') _ 'OUTER'?));
+
+join			<- 
+	join_method? 'JOIN' 
+	__ (identifier join_condition? / '(' query ')');
+join_type <-  'INNER' 
+	/ ('LEFT' /  'RIGHT' / 'FULL') __ 'OUTER';
+join_method		<-
+	('NATURAL' __)? 
+	(join_type __)?;
+	
 join_condition		<- 'ON' __ search_list / 'USING' __ '(' identifier (_ ',' identifier)* ')';
 
 where_clause	<- 'WHERE' __ search_list;
