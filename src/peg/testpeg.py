@@ -63,6 +63,6 @@ if __name__=="__main__":
         parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
         print "GRAMMAR CREATED\n"
         #for f in ["geometry.xml", "regressionlike.xml", "setexpressions.xml", "simpleunit.xml", "subqueries.xml"]:
-        for f in ["simpleunit.xml"]:
+        for f in ["simpleunit.xml", "subqueries.xml"]:
             test_file(f)
 
