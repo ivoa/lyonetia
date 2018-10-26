@@ -40,15 +40,13 @@ from_clause	<-
 from_list <- 
 	table_item (_ ',' _ table_item)*;
 correlation_specification <-
-	(__ (__'AS')? identifier)?;
+	(__ ('AS' __)? identifier)?;
 table_item	<-
-	subquery
-	/ '('? join correlation_specification (__ join_condition)? ')'?
-	/ identifier correlation_specification;
+	(identifier correlation_specification / subquery) (__ join_clause correlation_specification (__ join_condition)?)*;
 subquery <-
-	'(' _ query_expression _ ')' __ ('AS' __)? identifier;
-join <- 
-	table_item  (__ join_method)? 'JOIN' __  ( '(' query_expression ')' / '('? table_item ')'?) join*;
+	'(' _ query_expression _ ')' (__ 'AS')? __ identifier;
+join_clause <- 
+	join_method? 'JOIN' __ table_item;
 join_type <-  
 	'INNER' / (('LEFT' /  'RIGHT' / 'FULL') __)? 'OUTER';
 join_method	<-
@@ -62,8 +60,8 @@ where_clause <-
 search_list	<-
 	search_condition (__ ('AND' / 'OR') __ ( 'NOT' __)? search_condition)*;
 search_condition <-
-	operation 
-	/ exists_operation 
+	operation
+	/ exists_operation
 	/ math_function
 	/ general_set_function
 	/ point_function;
@@ -75,7 +73,7 @@ search_column <-
 	/ string_literal
 	/ point_function;
 operation <-
-	search_column (__ unary_operation / '('? _ binary_operation ')'? / __ ternary_operation / __ list_operation);
+	search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation);
 unary_operation <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 binary_operation <-
@@ -85,7 +83,7 @@ ternary_operation <-
 list_operation <-
 	('NOT' __)? 'IN' __ ( regular_identifier  / '(' search_column (_ ',' _ search_column)* ')' / '(' query_expression ')');
 exists_operation <-
-	('NOT' __)? 'EXISTS' __ '(' _ query_expression _ ')' _;
+	('NOT' __)? 'EXISTS' __ '(' query_expression ')';
 order_by <-
 	'ORDER BY' __ order_by_list;
 order_by_list <-
