@@ -668,7 +668,13 @@
   </query>
   <query uuid="6102e244-4cfa-11e6-bf5d-ebbe7e1e6fb5">
     <description>metadata inference samples</description>
-    <adql valid="true" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc")
+    <adql valid="false" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc")
+
+</adql>
+  </query>
+  <query uuid="6102e244-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc
 
 </adql>
   </query>

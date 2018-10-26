@@ -42,7 +42,7 @@ from_list <-
 correlation_specification <-
 	(__ ('AS' __)? identifier)?;
 table_item	<-
-	(identifier correlation_specification / subquery) (__ join_clause correlation_specification (__ join_condition)?)*;
+	  (subquery / identifier correlation_specification) (__ join_clause correlation_specification (__ join_condition)?)*;
 subquery <-
 	'(' _ query_expression _ ')' (__ 'AS')? __ identifier;
 join_clause <- 
@@ -98,7 +98,7 @@ group_by <-
 group_by_list <-
 	identifier (_ ',' _ identifier)*;
 having_clause <-
-	'HAVING' __ search_list;
+	'HAVING' __ '('? search_list ')'?;
 offset <-
 	'OFFSET' __ unsigned_integer;
 identifier <-

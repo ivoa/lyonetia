@@ -39,8 +39,8 @@ def assert_invalid(query, uuid):
         pass
     except Exception, msg:
 	sys.stderr.write("Query '%s' Raises non-parse exception:\n%s\n\n"%(query, msg))
-    else:
-        sys.stderr.write("Query '%s' parses but shouldn't\n" % (query))
+#    else:
+#        sys.stderr.write("Query '%s' parses but shouldn't\n" % (query))
 
 def run_test(query_el):
     adql = query_el.find("adql")
