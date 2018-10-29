@@ -198,7 +198,7 @@
   </query>
   <query uuid="491b67e0-4459-11e6-96e2-28b2bdcff70b">
     <description>trivial order, group by, and having</description>
-    <adql valid="true" version="adql-2.1">select x from t1 having x=z AND 7&lt;u
+    <adql valid="true" version="adql-2.1">select x from t1 group by y having x=z AND 7&lt;u
 </adql>
   </query>
   <query uuid="5a70a960-4459-11e6-96e2-28b2bdcff70b">
@@ -877,7 +877,6 @@ select * from foo
 		quux --comment
 		from -- comment
 		foo --comment
-		SELECT bar, quux FROM foo
 </adql>
   </query>
   <query uuid="065d4842-4d00-11e6-866d-736653f6053b">

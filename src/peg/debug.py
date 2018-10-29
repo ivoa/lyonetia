@@ -10,7 +10,7 @@ def main():
 
 	with open("adql2.1.peg") as f:
 		parser = ParserPEG(f.read(), nonterminal, 
-			skipws=False, ignore_case=False, memoization=True, debug=True)
+			skipws=False, ignore_case=True, memoization=True, debug=True)
 	
 	parser.parse(expression)
 

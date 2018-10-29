@@ -110,7 +110,7 @@ delimited_identifier <-
 regular_identifier <-
 	(!(reserved_keywords(!letter)) letter (letter / digit / "_")*);
 string_literal <-
-	"'" ("''" / r"[^']")* "'";
+	"'" ("''" / r"[^']")* "'"
 geometry_function <-
 	geometry_value_function
 	/ non_predicate_geometry_function 
@@ -191,7 +191,7 @@ point <-
 comment	<-
 	'--' r'[^\n\r]*';
 comments <-
-	(comment '\n\r')+;
+	(comment EndOfLine)+;
 numeric_expression <-
 	term (_ ('+' / '-') _ numeric_expression)*;
 term <-
@@ -222,7 +222,7 @@ reserved_keywords <-
 ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / ';' / '.';
 _ <-
-	comment / (Space / EOL)*;
+	(comment / Space / EOL)*;
 __ <-
 	(comment / Space / EOL)+;
 Space <-

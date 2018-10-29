@@ -45,8 +45,7 @@
   <query uuid="2ed3d060-4d01-11e6-9a71-e546d984d6dc">
     <description>misc numerics</description>
     <adql valid="true" version="adql-2.1">select log10(x), log(x), rand(), rand(5), 
-			TRUNCATE(x), TRUNCATE(x,3) from foo", 
-
+			TRUNCATE(x), TRUNCATE(x,3) from foo
 </adql>
   </query>
   <query uuid="43838e06-4d01-11e6-9a71-e546d984d6dc">
