@@ -108,7 +108,7 @@ identifier <-
 delimited_identifier <-
 	'"' ('""' / r'[^"]')+ '"';
 regular_identifier <-
-	(!reserved_keywords letter (letter / digit / "_")*);
+	(!(reserved_keywords(!letter)) letter (letter / digit / "_")*);
 string_literal <-
 	"'" ("''" / r"[^']")* "'";
 geometry_function <-
