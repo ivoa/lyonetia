@@ -70,7 +70,11 @@
 </adql>
   </query>
 <query uuid="3d21f920-4d02-11e6-87b5-4131381c4631"><description>multi join</description><adql valid="true" version="adql-2.1">select * from spatial natural join spatial2 join misc on (dist=speed)
-</adql></query><query uuid="61b37638-4d02-11e6-87b5-4131381c4631"><description>star and subquery</description><adql valid="true" version="adql-2.1">select * from spatial join 
+</adql></query><query uuid="61b37638-4d02-11e6-87b5-4131381c4631"><description>star and subquery</description><adql valid="false" version="adql-2.1">select * from spatial join 
 	(select ra1+dec, dist-2 as foo, dec from spatial2 offset 0) as q"
+	ON ( width = dec )
+</adql></query>
+<query uuid="61b37638-4d02-11e6-87b5-4131381c4631"><description>star and subquery</description><adql valid="true" version="adql-2.1">select * from spatial join 
+	(select ra1+dec, dist-2 as foo, dec from spatial2 offset 0) as q
 	ON ( width = dec )
 </adql></query></queries>

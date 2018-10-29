@@ -5,7 +5,7 @@ query <-
 	_ EOF;
 query_expression <- 
 	query_specification;
-	// / joined_table
+//	(__ set_operator __ '('? query_expression ')'? )*;
 query_specification <- 
 	_ 'SELECT'
 	(__ set_quantifier)?
@@ -18,6 +18,8 @@ table_expression <-
 	(__ group_by)? 
 	(__ order_by)? 
 	(__ offset)?;
+set_operator <-
+	('UNION' (__ 'ALL')?) / 'EXCEPT' / 'INTERSECT';
 set_quantifier <- 
 	'DISTINCT' / 'ALL';
 set_limit <-
@@ -34,13 +36,13 @@ select_column <-
 	/ math_function
 	/ string_function
 	/ string_literal
-	/ point_function;
+	/ geometry_function;
 from_clause	<-
 	'FROM' __ from_list;
 from_list <- 
 	table_item (_ ',' _ table_item)*;
 correlation_specification <-
-	(__ ('AS' __)? identifier)?;
+	((_ 'AS')? __ identifier)?;
 table_item	<-
 	  (subquery / identifier correlation_specification) (__ join_clause correlation_specification (__ join_condition)?)*;
 subquery <-
@@ -53,7 +55,7 @@ join_method	<-
 	('NATURAL' __)? 
 	(join_type __)?;
 join_condition	<- 
-	'ON' __ '('? search_list ')'?
+	'ON' __ '('? _ search_list _ ')'?
 	/ 'USING' __ '(' identifier (_ ',' _ identifier)* ')';
 where_clause <-
 	'WHERE' __ search_list;
@@ -63,15 +65,15 @@ search_condition <-
 	operation
 	/ exists_operation
 	/ math_function
-	/ general_set_function
-	/ point_function;
+	/ geometry_function
+	/ general_set_function;
 search_column <- 
 	numeric_expression
 	/ math_function
 	/ identifier
 	/ general_set_function
 	/ string_literal
-	/ point_function;
+	/ geometry_function;
 operation <-
 	search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation);
 unary_operation <-
@@ -108,11 +110,51 @@ delimited_identifier <-
 regular_identifier <-
 	(!reserved_keywords letter (letter / digit / "_")*);
 string_literal <-
-	"'" ("''" / r"[^']")+ "'";
-function <-
-	function_name '(' (search_column (_ ',' _ search_column)*)? ')';
+	"'" ("''" / r"[^']")* "'";
+geometry_function <-
+	geometry_value_function
+	/ non_predicate_geometry_function 
+	/ predicate_geometry_function
+	/ region
+	/ coordsys;
+geometry_value_function <-
+	box
+	/ centroid
+	/ circle
+	/ point
+	/ polygon;
+	// / user_defined_function;
+coordinates <-
+	numeric_expression _ ',' _ numeric_expression;
+box <-
+	'BOX' '(' (_ string_literal ',')? _ coordinates _ ',' _ function_param _ ','_ function_param ')';
+centroid <-
+	'CENTROID' '(' function_param ')';
+circle <-
+	'CIRCLE' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ numeric_expression _ ')';
+polygon <-
+	'POLYGON' '(' ( _ string_literal _ ',')? _ coordinates _ (',' _ coordinates)* ')';
+non_predicate_geometry_function <-
+	'AREA' '(' _  function_param _ ')'
+	/ 'COORD1' '(' _ function_param _ ')'
+	/ 'COORD2' '(' _ function_param _ ')'
+	/ 'DISTANCE' '(' _ function_param _ ',' _ function_param _ ')'
+	/ 'DISTANCE' '(' _ function_param _ ',' function_param _ ',' _ function_param _ ',' _ function_param _ ')';
+predicate_geometry_function <-
+	contains
+	/ intersects;
+contains <- 
+	'CONTAINS' '(' _ function_param _ ',' _ function_param _ ')';
+intersects <-
+	'INTERSECTS' '(' _ function_param _ ',' _ function_param _ ')';
+region <-
+	'REGION' '(' _  string_literal _ ')';
+coordsys <-
+	'COORDSYS' '(' _ identifier _ ')';
 function_param <-
-	numeric_expression / math_function;
+	geometry_function 
+	/ numeric_expression 
+	/ math_function;
 math_function <-
 	(onetwo_param_math '(' _ function_param (_ ',' _ signed_integer)? _ ')')
 	/ (two_param_math '(' _  function_param _ ',' _ function_param _')')
@@ -124,7 +166,7 @@ no_param_math <-
 	'PI';
 // One param 
 one_param_math <-
-	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'RADIANS' / 'SQRT' / 'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN';
+	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG10' / 'LOG' / 'RADIANS' / 'SQRT' / 'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN';
 // Two param
 two_param_math <-
 	'MOD' / 'POWER' / 'ATAN2';
@@ -144,8 +186,8 @@ set_function_type <-
 	'AVG' / 'MAX' / 'MIN' / 'SUM'; 
 general_set_function <-
 	set_function_type '(' (set_quantifier __)? numeric_expression ')';
-point_function <-
-	'POINT' '(' _ string_literal _ ',' _ identifier _ ',' _ identifier ')';
+point <-
+	'POINT' '(' ( _ (string_literal / 'NULL') _ ',')? _ coordinates _ ')';
 comment	<-
 	'--' r'[^\n\r]*';
 comments <-
