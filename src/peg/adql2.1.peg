@@ -4,8 +4,8 @@ query <-
 	query_expression
 	_ EOF;
 query_expression <- 
-	query_specification;
-//	(__ set_operator __ '('? query_expression ')'? )*;
+	query_specification
+	(__ set_operator __ '('? _ query_expression _ ')'? )*;
 query_specification <- 
 	_ 'SELECT'
 	(__ set_quantifier)?
@@ -19,7 +19,7 @@ table_expression <-
 	(__ order_by)? 
 	(__ offset)?;
 set_operator <-
-	('UNION' (__ 'ALL')?) / 'EXCEPT' / 'INTERSECT';
+	'EXCEPT' / 'INTERSECT' / ('UNION' (__ 'ALL')?);
 set_quantifier <- 
 	'DISTINCT' / 'ALL';
 set_limit <-
@@ -236,7 +236,7 @@ digit <-
 letter <-
 	r'[a-zA-Z]';
 reserved_keywords <-
-	'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '=' / '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' / 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY' / 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' / 'TRUNCATE' /  'COUNT' / function_name / set_function_type / string_func_name ;
+	'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '=' / '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' / 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY' / 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' / 'TRUNCATE' /  'COUNT' / function_name / set_function_type / string_func_name / 'EXCEPT' / 'INTERSECT' / 'UNION'; 
 ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / ';' / '.';
 _ <-
