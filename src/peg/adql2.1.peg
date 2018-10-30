@@ -30,6 +30,7 @@ select_item	<-
 	select_column correlation_specification;
 select_column <- 
 	operation
+	/ concatenation_operation
 	/ numeric_expression
 	/ set_function_specification
 	/ identifier
@@ -37,24 +38,37 @@ select_column <-
 	/ string_function
 	/ string_literal
 	/ geometry_function;
-from_clause	<-
+from_clause <-
 	'FROM' __ from_list;
 from_list <- 
-	table_item (_ ',' _ table_item)*;
+	table_reference (_ ',' _ table_reference)*;
 correlation_specification <-
 	((_ 'AS')? __ identifier)?;
-table_item	<-
-	  (subquery / identifier correlation_specification) (__ join_clause correlation_specification (__ join_condition)?)*;
+table_reference <-
+	joined_table
+	/ subquery correlation_specification
+	/ identifier correlation_specification?;
+joined_table <-
+	qualified_join / 
+	sub_join;
+sub_join <-
+	'(' joined_table ')';
+join_opener <-
+	sub_join
+	/ identifier correlation_specification?
+	/ subquery correlation_specification;
+qualified_join <-
+	join_opener __ join_clause;
 subquery <-
 	'(' _ query_expression _ ')' (__ 'AS')? __ identifier;
 join_clause <- 
-	join_method? 'JOIN' __ table_item;
+	join_method? 'JOIN' __ table_reference (__ join_specification)? (__ (sub_join / join_clause))*;
 join_type <-  
-	'INNER' / (('LEFT' /  'RIGHT' / 'FULL') __)? 'OUTER';
+	'INNER' 
+	/ (('LEFT' /  'RIGHT' / 'FULL') __)? 'OUTER';
 join_method	<-
-	('NATURAL' __)? 
-	(join_type __)?;
-join_condition	<- 
+	('NATURAL' __)? (join_type __)?;
+join_specification	<- 
 	'ON' __ '('? _ search_list _ ')'?
 	/ 'USING' __ '(' identifier (_ ',' _ identifier)* ')';
 where_clause <-
@@ -67,8 +81,9 @@ search_condition <-
 	/ math_function
 	/ geometry_function
 	/ general_set_function;
-search_column <- 
-	numeric_expression
+search_column <-
+	concatenation_operation
+	/ numeric_expression
 	/ math_function
 	/ identifier
 	/ general_set_function
@@ -79,7 +94,7 @@ operation <-
 unary_operation <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 binary_operation <-
-	('NOT' __)? ("||" _ string_literal / ("=" / "!=" / "<=" / ">=" / ">" / "<" / "ILIKE" / "LIKE") _ search_column) (_ binary_operation)*;
+	('NOT' __)? ("=" / "!=" / "<=" / ">=" / ">" / "<" / "ILIKE" / "LIKE") _ search_column (_ binary_operation)*;
 ternary_operation <- 
 	('NOT' __)? 'BETWEEN' __ search_column __ 'AND' __ search_column;
 list_operation <-
@@ -110,7 +125,9 @@ delimited_identifier <-
 regular_identifier <-
 	(!(reserved_keywords(!letter)) letter (letter / digit / "_")*);
 string_literal <-
-	"'" ("''" / r"[^']")* "'"
+	"'" ("''" / r"[^']")* "'";
+concatenation_operation <-
+	(string_literal / identifier) _ '||' _ (string_literal / identifier);
 geometry_function <-
 	geometry_value_function
 	/ non_predicate_geometry_function 
@@ -200,6 +217,7 @@ factor <-
 	('+' / '-')? numeric_primary;
 numeric_primary	<-
 	numeric_value
+	/ math_function
 	/ identifier;
 numeric_value <-
 	scientific_number 
