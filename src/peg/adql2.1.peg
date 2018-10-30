@@ -31,7 +31,7 @@ select_item	<-
 select_column <- 
 	operation
 	/ concatenation_operation
-	/ numeric_expression
+	/ numeric_value_expression
 	/ set_function_specification
 	/ identifier
 	/ math_function
@@ -83,7 +83,7 @@ search_condition <-
 	/ general_set_function;
 search_column <-
 	concatenation_operation
-	/ numeric_expression
+	/ numeric_value_expression
 	/ math_function
 	/ identifier
 	/ general_set_function
@@ -142,13 +142,13 @@ geometry_value_function <-
 	/ polygon;
 	// / user_defined_function;
 coordinates <-
-	numeric_expression _ ',' _ numeric_expression;
+	numeric_value_expression _ ',' _ numeric_value_expression;
 box <-
 	'BOX' '(' (_ string_literal ',')? _ coordinates _ ',' _ function_param _ ','_ function_param ')';
 centroid <-
 	'CENTROID' '(' function_param ')';
 circle <-
-	'CIRCLE' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ numeric_expression _ ')';
+	'CIRCLE' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ numeric_value_expression _ ')';
 polygon <-
 	'POLYGON' '(' ( _ string_literal _ ',')? _ coordinates _ (',' _ coordinates)* ')';
 non_predicate_geometry_function <-
@@ -170,7 +170,7 @@ coordsys <-
 	'COORDSYS' '(' _ identifier _ ')';
 function_param <-
 	geometry_function 
-	/ numeric_expression 
+	/ numeric_value_expression 
 	/ math_function;
 math_function <-
 	(onetwo_param_math '(' _ function_param (_ ',' _ signed_integer)? _ ')')
@@ -202,15 +202,15 @@ set_function_specification <-
 set_function_type <-
 	'AVG' / 'MAX' / 'MIN' / 'SUM'; 
 general_set_function <-
-	set_function_type '(' (set_quantifier __)? numeric_expression ')';
+	set_function_type '(' (set_quantifier __)? numeric_value_expression ')';
 point <-
 	'POINT' '(' ( _ (string_literal / 'NULL') _ ',')? _ coordinates _ ')';
 comment	<-
 	'--' r'[^\n\r]*';
 comments <-
 	(comment EndOfLine)+;
-numeric_expression <-
-	term (_ ('+' / '-') _ numeric_expression)*;
+numeric_value_expression <-
+	term (_ ('+' / '-') _ numeric_value_expression)*;
 term <-
 	factor (_ ('*' / '/') _ term)*;
 factor <-

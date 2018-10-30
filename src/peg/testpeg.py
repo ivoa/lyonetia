@@ -62,11 +62,10 @@ if __name__=="__main__":
         print "CREATING GRAMMAR..."
         parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
         print "GRAMMAR CREATED\n"
-        #for f in ["geometry.xml", "regressionlike.xml", "setexpressions.xml", "simpleunit.xml", "subqueries.xml"]:
         for f in [
                 "../adql/gavo/geometry.xml",
                 "../adql/gavo/regressionlike.xml", 
-                #"../adql/gavo/setexpressions.xml",
+                "../adql/gavo/setexpressions.xml",
                 "../adql/gavo/simpleunit.xml", 
                 "../adql/gavo/subqueries.xml"
                 ]:
