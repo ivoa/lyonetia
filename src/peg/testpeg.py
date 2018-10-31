@@ -40,7 +40,7 @@ def assert_invalid(query, uuid):
     except Exception, msg:
 	sys.stderr.write("Query '%s' Raises non-parse exception:\n%s\n\n"%(query, msg))
 #    else:
-#        sys.stderr.write("Query '%s' parses but shouldn't\n" % (query))
+#       sys.stderr.write("Query '%s' parses but shouldn't\n" % (query))
 
 def run_test(query_el):
     adql = query_el.find("adql")
@@ -59,10 +59,9 @@ def test_file(file_name):
 if __name__=="__main__":
     with open("adql2.1.peg", "r") as adql_peg_file:
         adql_peg = adql_peg_file.read()
-        print "CREATING GRAMMAR..."
         parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
-        print "GRAMMAR CREATED\n"
         for f in [
+                "whitespace.xml",
                 "../adql/gavo/geometry.xml",
                 "../adql/gavo/regressionlike.xml", 
                 "../adql/gavo/setexpressions.xml",

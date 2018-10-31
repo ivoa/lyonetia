@@ -52,7 +52,7 @@ joined_table <-
 	qualified_join / 
 	sub_join;
 sub_join <-
-	'(' joined_table ')';
+	'(' _ joined_table _ ')';
 join_opener <-
 	sub_join
 	/ identifier correlation_specification?
@@ -70,7 +70,7 @@ join_method	<-
 	('NATURAL' __)? (join_type __)?;
 join_specification	<- 
 	'ON' __ '('? _ search_list _ ')'?
-	/ 'USING' __ '(' identifier (_ ',' _ identifier)* ')';
+	/ 'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
 where_clause <-
 	'WHERE' __ search_list;
 search_list	<-
@@ -119,7 +119,7 @@ having_clause <-
 offset <-
 	'OFFSET' __ unsigned_integer;
 identifier <-
-	((regular_identifier / delimited_identifier) ".")? ((regular_identifier / delimited_identifier) ".")? (regular_identifier / delimited_identifier / '*');
+	((regular_identifier / delimited_identifier) _ "." _)? ((regular_identifier / delimited_identifier) _ "." _)? (regular_identifier / delimited_identifier / '*');
 delimited_identifier <-
 	'"' ('""' / r'[^"]')+ '"';
 regular_identifier <-
@@ -144,13 +144,13 @@ geometry_value_function <-
 coordinates <-
 	numeric_value_expression _ ',' _ numeric_value_expression;
 box <-
-	'BOX' '(' (_ string_literal ',')? _ coordinates _ ',' _ function_param _ ','_ function_param ')';
+	'BOX' '(' (_ string_literal ',')? _ coordinates _ ',' _ function_param _ ','_ function_param _ ')';
 centroid <-
-	'CENTROID' '(' function_param ')';
+	'CENTROID' '(' _ function_param _ ')';
 circle <-
 	'CIRCLE' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ numeric_value_expression _ ')';
 polygon <-
-	'POLYGON' '(' ( _ string_literal _ ',')? _ coordinates _ (',' _ coordinates)* ')';
+	'POLYGON' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ coordinates _ (_ ',' _ coordinates)* _ ')';
 non_predicate_geometry_function <-
 	'AREA' '(' _  function_param _ ')'
 	/ 'COORD1' '(' _ function_param _ ')'
@@ -192,7 +192,7 @@ onetwo_param_math <-
 rand_function <-
 	'RAND' '(' unsigned_integer? ')';
 string_function <-
-	string_func_name '(' search_column ')';
+	string_func_name '(' _ search_column _ ')';
 string_func_name <-
 	'LOWER';
 function_name <-
