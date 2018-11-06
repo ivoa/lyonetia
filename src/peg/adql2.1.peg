@@ -5,7 +5,9 @@ query <-
 	_ EOF;
 query_expression <- 
 	query_specification
-	(__ set_operator __ '('? _ query_expression _ ')'? )*;
+	(__ set_operator __ set_query_expression)*;
+set_query_expression <-
+	query_expression / '(' _ query_expression _ ')';
 query_specification <- 
 	_ 'SELECT'
 	(__ set_quantifier)?
