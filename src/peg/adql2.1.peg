@@ -51,8 +51,8 @@ table_reference <-
 	/ subquery correlation_specification
 	/ identifier correlation_specification?;
 joined_table <-
-	qualified_join / 
-	sub_join;
+	qualified_join 
+	/ sub_join;
 sub_join <-
 	'(' _ joined_table _ ')';
 join_opener <-
@@ -96,7 +96,7 @@ operation <-
 unary_operation <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 binary_operation <-
-	('NOT' __)? ("=" / "!=" / "<=" / ">=" / ">" / "<" / "ILIKE" / "LIKE") _ search_column (_ binary_operation)*;
+	('NOT' __)? _ ("=" / "!=" / "<=" / ">=" / ">" / "<" / "ILIKE" / "LIKE") _ search_column (_ binary_operation)*;
 ternary_operation <- 
 	('NOT' __)? 'BETWEEN' __ search_column __ 'AND' __ search_column;
 list_operation <-
@@ -192,7 +192,7 @@ two_param_math <-
 onetwo_param_math <- 
 	'ROUND' / 'TRUNCATE';
 rand_function <-
-	'RAND' '(' unsigned_integer? ')';
+	'RAND' '(' (_ unsigned_integer _)? ')';
 string_function <-
 	string_func_name '(' _ search_column _ ')';
 string_func_name <-
