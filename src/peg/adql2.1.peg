@@ -92,7 +92,8 @@ search_column <-
 	/ string_literal
 	/ geometry_function;
 operation <-
-	search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation);
+	search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation)
+	/ '(' search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation) ')';
 unary_operation <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 binary_operation <-
@@ -212,7 +213,7 @@ comment	<-
 comments <-
 	(comment EndOfLine)+;
 numeric_value_expression <-
-	term (_ ('+' / '-') _ numeric_value_expression)*;
+ 	term (_ ('+' / '-') _ numeric_value_expression)*;
 term <-
 	factor (_ ('*' / '/') _ term)*;
 factor <-
