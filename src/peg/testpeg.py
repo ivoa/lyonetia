@@ -25,36 +25,37 @@ global parser
 
 def assert_valid(query, uuid):
     try:
-	parser.parse(query)
+        parser.parse(query)
     except Exception, msg:
-        sys.stderr.write("Query '%s' doesn't parse but should:\n%s\n\n"%(query, msg))
-    else:
-        print "Successfully analysed as a valid query"
+        sys.stderr.write(
+            "Query '{}' doesn't parse but should:\n{}\n\n".format(
+                query, msg))
 
 def assert_invalid(query, uuid):
     try:
- 	parser.parse(query)
+       	parser.parse(query)
+       	sys.stderr.write("'{}' parses but shouldn't.\n\n".format(
+        		query))
     except NoMatch:
-        print "Can't parse invalid query\n"
         pass
     except Exception, msg:
-	sys.stderr.write("Query '%s' Raises non-parse exception:\n%s\n\n"%(query, msg))
-#    else:
-#       sys.stderr.write("Query '%s' parses but shouldn't\n" % (query))
+        sys.stderr.write(
+        	"Query '{}' Raises non-parse exception:\n{}\n\n".format(query, msg))
+
 
 def run_test(query_el):
     adql = query_el.find("adql")
-    print adql.text
     if adql.get("valid")=="true":
         assert_valid(adql.text.upper(), query_el.get("uuid"))
     else:
         assert_invalid(adql.text.upper(), query_el.get("uuid"))
 
+
 def test_file(file_name):
     with open(file_name) as f:
         for ev, el in etree.iterparse(f):
-	    if el.tag=="query":
-	        run_test(el)
+            if el.tag=="query":
+                run_test(el)
 
 if __name__=="__main__":
     with open("adql2.1.peg", "r") as adql_peg_file:
@@ -70,3 +71,4 @@ if __name__=="__main__":
                 ]:
             test_file(f)
 
+# vi:et:sta:sw=4
