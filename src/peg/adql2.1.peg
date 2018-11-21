@@ -24,7 +24,7 @@ table_expression <-
 set_operator <-
 	'EXCEPT' / 'INTERSECT' / ('UNION' (__ 'ALL')?);
 set_quantifier <- 
-	'DISTINCT' / 'ALL';
+	('DISTINCT' !r'[A-Z]') / ('ALL' !r'[A-Z]');
 set_limit <-
 	'TOP' __ unsigned_integer;
 select_list	<-

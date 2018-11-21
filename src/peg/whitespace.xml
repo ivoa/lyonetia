@@ -232,4 +232,12 @@
     <adql valid="true" version="adql-2.1">select * from ( select * from urks.a, b, ( select * from c, monk.d ) as q ) as r join ( select * from x, y ) as p
 </adql>
   </query>
+
+  <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c13">">
+  	<description>non-blank characters can delimit reserved words</description>
+  	<adql valid="true">
+  		select all(a+b)X from anything join(something,else3
+  			)ON(a BETWEEN(b+and7)AND 4)
+  	</adql>
+  </query>
 </queries>
