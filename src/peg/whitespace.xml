@@ -233,11 +233,19 @@
 </adql>
   </query>
 
-  <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c13">">
+  <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c13">
   	<description>non-blank characters can delimit reserved words</description>
   	<adql valid="true">
   		select all(a+b)X from anything join(something,else3
   			)ON(a BETWEEN(b+and7)AND 4)
   	</adql>
   </query>
+
+  <query uuid="a66c56e6-f18d-11e8-96df-28d244962ad0">
+  	<description>No mandatory whitespace in AS-less corr spec.</description>
+  	<adql valid="true">
+  		select top 4* from (select * from amanda.nucand)x
+  	</adql>
+  </query>
+
 </queries>

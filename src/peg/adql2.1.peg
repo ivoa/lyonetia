@@ -28,9 +28,9 @@ set_quantifier <-
 set_limit <-
 	'TOP' __ unsigned_integer;
 select_list	<-
-	'*' /  select_item (_ ',' _ select_item)*;
+	select_item (_ ',' _ select_item)* / '*';
 select_item	<- 
-	select_column correlation_specification;
+	select_column correlation_specification?;
 select_column <- 
 	operation
 	/ concatenation_operation
@@ -46,7 +46,7 @@ from_clause <-
 from_list <- 
 	table_reference (_ ',' _ table_reference)*;
 correlation_specification <-
-	((_ 'AS')? __ identifier)?;
+	(_ 'AS' __)? identifier;
 table_reference <-
 	joined_table
 	/ subquery correlation_specification
@@ -63,7 +63,7 @@ join_opener <-
 qualified_join <-
 	join_opener __ join_clause;
 subquery <-
-	'(' _ query_expression _ ')' (__ 'AS')? __ identifier;
+	'(' _ query_expression _ ')';
 join_clause <- 
 	join_method? 'JOIN' __ table_reference (__ join_specification)? (__ (sub_join / join_clause))*;
 join_type <-  
