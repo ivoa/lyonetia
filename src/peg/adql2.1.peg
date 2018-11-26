@@ -32,9 +32,9 @@ select_list	<-
 select_item	<- 
 	select_column correlation_specification?;
 select_column <- 
-	operation
+	numeric_value_expression
+	/ operation
 	/ concatenation_operation
-	/ numeric_value_expression
 	/ set_function_specification
 	/ identifier
 	/ math_function
@@ -218,17 +218,21 @@ comment	<-
 comments <-
 	(comment EndOfLine)+;
 numeric_value_expression <-
- 	term (_ ('+' / '-') _ numeric_value_expression)*
-	/ '(' term (_ ('+' / '-') _ numeric_value_expression)* ')';
+ 	term (_ ('+' / '-') _ numeric_value_expression)*;
 term <-
-	factor (_ ('*' / '/') _ term)*
-	/ '(' factor (_ ('*' / '/') _ term)* ')';
+	factor (_ ('*' / '/') _ term)*;
 factor <-
 	('+' / '-')? numeric_primary;
+numeric_value_function <-  // TODO!  this isn't right! (UDF?  trig?)
+	math_function;
 numeric_primary	<-
-	numeric_value
-	/ math_function
-	/ identifier;
+	value_expression_primary
+	/ numeric_value_function;
+value_expression_primary <-
+	'(' numeric_value_expression ')'
+	/ unsigned_integer
+	/ identifier
+	/ set_function_specification;
 numeric_value <-
 	scientific_number 
 	/ decimal 
