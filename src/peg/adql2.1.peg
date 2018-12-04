@@ -18,9 +18,9 @@ query_specification <-
 table_expression <-
 	from_clause 
 	(__ where_clause)? 
-	(__ group_by)? 
-	(__ order_by)? 
-	(__ offset)?;
+	(__ group_by_clause)? 
+	(__ order_by_clause)? 
+	(__ offset_clause)?;
 set_operator <-
 	'EXCEPT' / 'INTERSECT' / ('UNION' (__ 'ALL')?);
 set_quantifier <- 
@@ -68,19 +68,23 @@ join_clause <-
 	join_method? 'JOIN' __ table_reference (__ join_specification)? (__ (sub_join / join_clause))*;
 join_type <-  
 	'INNER' 
-	/ (('LEFT' /  'RIGHT' / 'FULL') __)? 'OUTER';
+	/ (outer_join_type __)? 'OUTER';
+outer_join_type <-
+	'LEFT' / 'RIGHT' / 'FULL';
 join_method	<-
 	('NATURAL' __)? (join_type __)?;
 join_specification	<- 
 	'ON' __ '('? _ search_list _ ')'?
-	/ 'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
+	/ named_columns_join;
+named_columns_join <-
+	'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
 where_clause <-
 	'WHERE' __ search_list;
 search_list	<-
 	search_condition (__ ('AND' / 'OR') __ ( 'NOT' __)? search_condition)*;
 search_condition <-
 	operation
-	/ exists_operation
+	/ exists_predicate
 	/ math_function
 	/ geometry_function
 	/ general_set_function;
@@ -93,39 +97,41 @@ search_column <-
 	/ string_literal
 	/ geometry_function;
 operation <-
-	search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation)
-	/ '(' search_column (__ unary_operation / _ binary_operation / __ ternary_operation / __ list_operation) ')';
-unary_operation <-
+	search_column (__ null_predicate / _ binary_operation / __ between_predicate / __ in_predicate)
+	/ '(' search_column (__ null_predicate / _ binary_operation / __ between_predicate / __ in_predicate) ')';
+null_predicate <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 binary_operation <-
-	('NOT' __)? _ ("=" / "!=" / "<=" / ">=" / ">" / "<" / "ILIKE" / "LIKE") _ search_column (_ binary_operation)*;
-ternary_operation <- 
+	('NOT' __)? _ (comp_op / "ILIKE" / "LIKE") _ search_column (_ binary_operation)*;
+comp_op <-
+	"=" / "!=" / "<=" / ">=" / ">" / "<";
+between_predicate <- 
 	('NOT' __)? 'BETWEEN' __ search_column __ 'AND' __ search_column;
-list_operation <-
+in_predicate <-
 	('NOT' __)? 'IN' __ ( regular_identifier  / '(' search_column (_ ',' _ search_column)* ')' / '(' query_expression ')');
-exists_operation <-
+exists_predicate <-
 	('NOT' __)? 'EXISTS' __ '(' query_expression ')';
-order_by <-
+order_by_clause <-
 	'ORDER BY' __ order_by_list;
 order_by_list <-
 	order_by_item (_ ',' _ order_by_item)*;
 order_by_item <- 
-	(identifier / unsigned_integer) (__ order_by_sort)?;
-order_by_sort <- 
+	(identifier / unsigned_integer) (__ order_by_direction)?;
+order_by_direction <- 
 	'ASC' 
 	/ 'DESC';
-group_by <-
+group_by_clause <-
 	'GROUP BY' __ group_by_list (__ having_clause)?;
 group_by_list <-
 	identifier (_ ',' _ identifier)*;
 having_clause <-
 	'HAVING' __ '('? search_list ')'?;
-offset <-
+offset_clause <-
 	'OFFSET' __ unsigned_integer;
 identifier <-
-	((regular_identifier / delimited_identifier) _ "." _)? ((regular_identifier / delimited_identifier)
-	_ "." _)? (regular_identifier / delimited_identifier / '*');
-delimited_identifier <-
+	((regular_identifier / character_string_literal) _ "." _)? ((regular_identifier / character_string_literal)
+	_ "." _)? (regular_identifier / character_string_literal / '*');
+character_string_literal <-
 	'"' ('""' / r'[^"]')+ '"';
 regular_identifier <-
 	(!(reserved_keywords(!letter)) letter (letter / digit / "_")*);
@@ -157,10 +163,15 @@ circle <-
 polygon <-
 	'POLYGON' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ coordinates _ (_ ',' _ coordinates)* _ ')';
 non_predicate_geometry_function <-
-	'AREA' '(' _  function_param _ ')'
-	/ 'COORD1' '(' _ function_param _ ')'
-	/ 'COORD2' '(' _ function_param _ ')'
-	/ 'DISTANCE' '(' _ function_param _ ',' _ function_param _ ')'
+	area / coord1 / coord2 / distance_function;
+area <-
+	'AREA' '(' _  function_param _ ')';
+coord1 <-
+	'COORD1' '(' _ function_param _ ')';
+coord2 <-
+	'COORD2' '(' _ function_param _ ')';
+distance_function <-
+	'DISTANCE' '(' _ function_param _ ',' _ function_param _ ')'
 	/ 'DISTANCE' '(' _ function_param _ ',' function_param _ ',' _ function_param _ ',' _ function_param _ ')';
 predicate_geometry_function <-
 	contains
@@ -256,34 +267,42 @@ reserved_keywords <-
 	/ 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' 
 	/ 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' 
 	/ 'TRUNCATE' /  'COUNT' / function_name / set_function_type / string_func_name / 'EXCEPT' 
-	/ 'INTERSECT' / 'UNION' / ADQL_reserved_word; 
+	/ 'INTERSECT' / 'UNION' / ADQL_reserved_word / SQL_reserved_word;
 ADQL_reserved_word <-
-	'ABSOLUTE' / 'ACTION' / 'ADD' / 'ALL' / 'ALLOCATE' / 'ALTER' / 'ANY' / 'ARE' / 'ASSERTION' / 'AT'
-	/ 'AUTHORISATION' / 'BEGIN' / 'BIT' / 'BIT_LENGTH' / 'BOTH' / 'BY' / 'CASCADE' / 'CASCADED' / 'CASE'
-	/ 'CAST' / 'CATALOG' / 'CHAR' / 'CHARACTER' / 'CHAR_LENGTH' / 'CHARACTER_LENGTH' / 'CHECK' / 'CLOSE'
-	/ 'COALESCE' / 'COLLATE' / 'COLLATION' / 'COLUMN' / 'COMMIT' / 'CONNECT' / 'CONNECTION'
-	/ 'CONSTRAINT' / 'CONSTRAINTS' / 'CONTINUE' / 'CONVERT' / 'CORRESPONDING' / 'CREATE'
-	/ 'CROSS' / 'CURRENT' / 'CURRENT_DATE' / 'CURRENT_TIME' / 'CURRENT_TIMESTAMP' / 'CURRENT_USER'
-	/ 'CURSOR' / 'DATE' / 'DAY' / 'DEALLOCATE' / 'DECIMAL' / 'DECLARE' / 'DEFAULT' / 'DEFERRABLE'
-	/ 'DEFERRED' / 'DELETE' / 'DESCRIBE' / 'DESCRIPTOR' / 'DIAGNOSTICS' / 'DISCONNECT' / 'DISTINCT'
-	/ 'DOMAIN' / 'DOUBLE' / 'DROP' / 'ELSE' / 'END' / 'EXCEPT' / 'EXCEPTION' / 'EXEC' / 'EXECUTE'
-	/ 'EXISTS' / 'EXTERNAL' / 'EXTRACT' / 'FALSE' / 'FETCH' / 'FIRST' / 'FLOAT' / 'FOR' / 'FOREIGN'
-	/ 'FOUND' / 'FROM' / 'FULL' / 'GET' / 'GLOBAL' / 'GO' / 'GOTO' / 'GRANT' / 'GROUP' / 'HAVING'
-	/ 'HOUR' / 'IDENTITY' / 'IMMEDIATE' / 'IN' / 'INDICATOR' / 'INITIALLY' / 'INNER' / 'INPUT'
-	/ 'INSENSITIVE' / 'INSERT' / 'INT' / 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO' / 'IS'
-	/ 'ISOLATION' / 'JOIN' / 'KEY' / 'LANGUAGE' / 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL' / 'LIKE'
-	/ 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH' / 'MAX' / 'MIN' / 'MINUTE' / 'MODULE' / 'MONTH' / 'NAMES'
-	/ 'NATIONAL' / 'NATURAL' / 'NCHAR' / 'NEXT' / 'NO' / 'NOT' / 'NULL' / 'NULLIF' / 'NUMERIC'
-	/ 'OCTET_LENGTH' / 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR' / 'ORDER' / 'OUTER' / 'OUTPUT'
-	/ 'OVERLAPS' / 'PAD' / 'PARTIAL' / 'POSITION' / 'PRECISION' / 'PREPARE' / 'PRESERVE' / 'PRIMARY'
-	/ 'PRIOR' / 'PRIVILEGES' / 'PROCEDURE' / 'PUBLIC' / 'READ' / 'REAL' / 'REFERENCES' / 'RELATIVE'
-	/ 'RESTRICT' / 'REVOKE' / 'RIGHT' / 'ROLLBACK' / 'ROWS' / 'SCHEMA' / 'SCROLL' / 'SECOND'
-	/ 'SECTION' / 'SESSION_USER' / 'SET' / 'SIZE' / 'SMALLINT' / 'SOME' / 'SPACE' / 'SQL' / 'SQLCODE'
-	/ 'SQLERROR' / 'SQLSTATE' / 'SUBSTRING' / 'SUM' / 'SYSTEM_USER' / 'TABLE' / 'TEMPORARY' / 'THEN'
-	/ 'TIME' / 'TIMESTAMP' / 'TIMEZONE_HOUR' / 'TIMEZONE_MINUTE' / 'TO' / 'TRAILING' / 'TRANSACTION'
-	/ 'TRANSLATE' / 'TRANSLATION' / 'TRIM' / 'TRUE' / 'UNIQUE' / 'UNKNOWN' / 'UPDATE' / 'UPPER'
-	/ 'USAGE' / 'USER' / 'USING' / 'VALUE' / 'VALUES' / 'VARCHAR' / 'VARYING' / 'VIEW' / 'WHEN'
-	/ 'WHENEVER' / 'WITH' / 'WORK' / 'WRITE' / 'ZONE';
+	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR'
+	/ 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'COS'
+	/ 'DEGREES' / 'DISTANCE' / 'EXP' / 'FLOOR' / 'ILIKE' / 'INTERSECTS' / 'IN_UNIT' / 'LOG10' / 'LOG'
+	/ 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN'
+	/ 'SQRT' / 'TOP' / 'TAN' / 'TRUNCATE';
+SQL_reserved_word <-
+	'ABSOLUTE' / 'ACTION' / 'ADD' / 'ALL' / 'ALLOCATE' / 'ALTER' / 'AND' / 'ANY' / 'ARE' / 'AS'
+	/ 'ASC' / 'ASSERTION' / 'AT' / 'AUTHORISATION' / 'AVG' / 'BEGIN' / 'BIT' / 'BIT_LENGTH' / 'BOTH'
+	/ 'BY' / 'CASCADE' / 'CASCADED' / 'CASE' / 'CAST' / 'CATALOG' / 'CHAR' / 'CHARACTER'
+	/ 'CHAR_LENGTH' / 'CHARACTER_LENGTH' / 'CHECK' / 'CLOSE' / 'COALESCE' / 'COLLATE' / 'COLLATION'
+	/ 'COLUMN' / 'COMMIT' / 'CONNECT' / 'CONNECTION' / 'CONSTRAINT' / 'CONSTRAINTS' / 'CONTINUE'
+	/ 'CONVERT' / 'CORRESPONDING' / 'COUNT' / 'CREATE' / 'CROSS' / 'CURRENT' / 'CURRENT_DATE'
+	/ 'CURRENT_TIME' / 'CURRENT_TIMESTAMP' / 'CURRENT_USER' / 'CURSOR' / 'DATE' / 'DAY'
+	/ 'DEALLOCATE' / 'DECIMAL' / 'DECLARE' / 'DEFAULT' / 'DEFERRABLE' / 'DEFERRED' / 'DELETE'
+	/ 'DESC' / 'DESCRIBE' / 'DESCRIPTOR' / 'DIAGNOSTICS' / 'DISCONNECT' / 'DISTINCT' / 'DOMAIN'
+	/ 'DOUBLE' / 'DROP' / 'ELSE' / 'END' / 'END-EXEC' / 'ESCAPE' / 'EXCEPT' / 'EXCEPTION' / 'EXEC'
+	/ 'EXECUTE' / 'EXISTS' / 'EXTERNAL' / 'EXTRACT' / 'FALSE' / 'FETCH' / 'FIRST' / 'FLOAT' / 'FOR'
+	/ 'FOREIGN' / 'FOUND' / 'FROM' / 'FULL' / 'GET' / 'GLOBAL' / 'GO' / 'GOTO' / 'GRANT' / 'GROUP'
+	/ 'HAVING' / 'HOUR' / 'IDENTITY' / 'IMMEDIATE' / 'IN' / 'INDICATOR' / 'INITIALLY' / 'INNER'
+	/ 'INPUT' / 'INSENSITIVE' / 'INSERT' / 'INT' / 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO'
+	/ 'IS' / 'ISOLATION' / 'JOIN' / 'KEY' / 'LANGUAGE' / 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL'
+	/ 'LIKE' / 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH' / 'MAX' / 'MIN' / 'MINUTE' / 'MODULE'
+	/ 'MONTH' / 'NAMES' / 'NATIONAL' / 'NATURAL' / 'NCHAR' / 'NEXT' / 'NO' / 'NOT' / 'NULL'
+	/ 'NULLIF'/ 'NUMERIC' / 'OCTET_LENGTH' / 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR'
+	/ 'ORDER' / 'OUTER' / 'OUTPUT' / 'OVERLAPS' / 'PAD' / 'PARTIAL' / 'POSITION' / 'PRECISION'
+	/ 'PREPARE' / 'PRESERVE' / 'PRIMARY' / 'PRIOR' / 'PRIVILEGES' / 'PROCEDURE' / 'PUBLIC' / 'READ'
+	/ 'REAL' / 'REFERENCES' / 'RELATIVE' / 'RESTRICT' / 'REVOKE' / 'RIGHT' / 'ROLLBACK' / 'ROWS'
+	/ 'SCHEMA' / 'SCROLL' / 'SECOND' / 'SELECT' / 'SECTION' / 'SESSION_USER' / 'SET' / 'SIZE'
+	/ 'SMALLINT' / 'SOME' / 'SPACE' / 'SQL' / 'SQLCODE' / 'SQLERROR' / 'SQLSTATE' / 'SUBSTRING'
+	/ 'SUM' / 'SYSTEM_USER' / 'TABLE' / 'TEMPORARY' / 'THEN' / 'TIME' / 'TIMESTAMP' / 'TIMEZONE_HOUR'
+	/ 'TIMEZONE_MINUTE' / 'TO' / 'TRAILING' / 'TRANSACTION'/ 'TRANSLATE' / 'TRANSLATION' / 'TRIM'
+	/ 'TRUE' / 'UNION' / 'UNIQUE' / 'UNKNOWN' / 'UPDATE' / 'UPPER' / 'USAGE' / 'USER' / 'USING'
+	/ 'VALUE' / 'VALUES' / 'VARCHAR' / 'VARYING' / 'VIEW' / 'WHEN' / 'WHENEVER' / 'WHERE' / 'WITH'
+	/ 'WORK' / 'WRITE' / 'YEAR' / 'ZONE';
 ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / ';' / '.';
 _ <-
