@@ -39,7 +39,7 @@ select_column <-
 	/ identifier
 	/ math_function
 	/ string_function
-	/ string_literal
+	/ character_string_literal
 	/ geometry_function;
 from_clause <-
 	'FROM' __ from_list;
@@ -94,7 +94,7 @@ search_column <-
 	/ math_function
 	/ identifier
 	/ general_set_function
-	/ string_literal
+	/ character_string_literal
 	/ geometry_function;
 operation <-
 	search_column (__ null_predicate / _ binary_operation / __ between_predicate / __ in_predicate)
@@ -129,16 +129,16 @@ having_clause <-
 offset_clause <-
 	'OFFSET' __ unsigned_integer;
 identifier <-
-	((regular_identifier / character_string_literal) _ "." _)? ((regular_identifier / character_string_literal)
-	_ "." _)? (regular_identifier / character_string_literal / '*');
-character_string_literal <-
+	((regular_identifier / delimited_identifier) _ "." _)? ((regular_identifier / delimited_identifier)
+	_ "." _)? (regular_identifier / delimited_identifier / '*');
+delimited_identifier <-
 	'"' ('""' / r'[^"]')+ '"';
 regular_identifier <-
 	(!(reserved_keywords(!letter)) letter (letter / digit / "_")*);
-string_literal <-
+character_string_literal <-
 	"'" ("''" / r"[^']")* "'";
 concatenation_operation <-
-	(string_literal / identifier) _ '||' _ (string_literal / identifier);
+	(character_string_literal / identifier) _ '||' _ (character_string_literal / identifier);
 geometry_function <-
 	geometry_value_function
 	/ non_predicate_geometry_function 
@@ -155,13 +155,13 @@ geometry_value_function <-
 coordinates <-
 	numeric_value_expression _ ',' _ numeric_value_expression;
 box <-
-	'BOX' '(' (_ string_literal ',')? _ coordinates _ ',' _ function_param _ ','_ function_param _ ')';
+	'BOX' '(' (_ character_string_literal ',')? _ coordinates _ ',' _ function_param _ ','_ function_param _ ')';
 centroid <-
 	'CENTROID' '(' _ function_param _ ')';
 circle <-
-	'CIRCLE' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ numeric_value_expression _ ')';
+	'CIRCLE' '(' ( _ character_string_literal _ ',')? _ coordinates _ ',' _ numeric_value_expression _ ')';
 polygon <-
-	'POLYGON' '(' ( _ string_literal _ ',')? _ coordinates _ ',' _ coordinates _ (_ ',' _ coordinates)* _ ')';
+	'POLYGON' '(' ( _ character_string_literal _ ',')? _ coordinates _ ',' _ coordinates _ (_ ',' _ coordinates)* _ ')';
 non_predicate_geometry_function <-
 	area / coord1 / coord2 / distance_function;
 area <-
@@ -181,29 +181,36 @@ contains <-
 intersects <-
 	'INTERSECTS' '(' _ function_param _ ',' _ function_param _ ')';
 region <-
-	'REGION' '(' _  string_literal _ ')';
+	'REGION' '(' _  character_string_literal _ ')';
 coordsys <-
 	'COORDSYS' '(' _ identifier _ ')';
 function_param <-
 	geometry_function 
 	/ numeric_value_expression 
-	/ math_function;
+	/ math_function
+	/ trig_function;
 math_function <-
 	(onetwo_param_math '(' _ function_param (_ ',' _ signed_integer)? _ ')')
 	/ (two_param_math '(' _  function_param _ ',' _ function_param _')')
 	/ (one_param_math '(' _ function_param _ ')')
 	/ rand_function
 	/ (no_param_math '()');
+trig_function <-
+	(two_param_trig '(' _  function_param _ ',' _ function_param _')')
+	/ (one_param_trig '(' _ function_param _ ')')
 // No params
 no_param_math <-
 	'PI';
 // One param 
+one_param_trig <- 
+	'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN'
 one_param_math <-
-	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG10' / 'LOG' / 'RADIANS' / 'SQRT' / 'ACOS'
-	/ 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN';
+	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG10' / 'LOG' / 'RADIANS' / 'SQRT';
 // Two param
 two_param_math <-
-	'MOD' / 'POWER' / 'ATAN2';
+	'MOD' / 'POWER';
+two_param_trig <-
+	'ATAN2';
 onetwo_param_math <- 
 	'ROUND' / 'TRUNCATE';
 rand_function <-
@@ -223,7 +230,7 @@ set_function_type <-
 general_set_function <-
 	set_function_type '(' (set_quantifier __)? numeric_value_expression ')';
 point <-
-	'POINT' '(' ( _ (string_literal / 'NULL') _ ',')? _ coordinates _ ')';
+	'POINT' '(' ( _ (character_string_literal / 'NULL') _ ',')? _ coordinates _ ')';
 comment	<-
 	'--' r'[^\n\r]*';
 comments <-
@@ -235,7 +242,12 @@ term <-
 factor <-
 	('+' / '-')? numeric_primary;
 numeric_value_function <-  // TODO!  this isn't right! (UDF?  trig?)
-	math_function;
+	math_function
+	/ trig_function
+	/ numeric_geometry_function
+	/ user_defined_function;
+user_defined_function <-
+	character_string_literal '(' (_ function_param (_ ',' _ function_param)* _)?  ')';
 numeric_primary	<-
 	value_expression_primary
 	/ numeric_value_function;
