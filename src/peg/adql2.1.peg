@@ -1,15 +1,15 @@
 // The top-level non-terminal; this is what complete ADQL
 // statements must match.
 query <- 
-	(with_clause __)? query_expression _ EOF;
-with_clause <-
+	(query_specification __)? query_expression _ EOF;
+query_specification <-
 	'WITH' __ identifier __ 'AS' __ '(' _ query_expression _ ')' (_ ',' _ '(' _ query_expression _ ')')*;
 query_expression <- 
-	query_specification
+	select_query
 	(__ set_operator __ set_query_expression)*;
 set_query_expression <-
 	query_expression / '(' _ query_expression _ ')';
-query_specification <- 
+select_query <- 
 	_ 'SELECT'
 	(__ set_quantifier)?
 	(__ set_limit)?
@@ -22,21 +22,21 @@ table_expression <-
 	(__ order_by_clause)? 
 	(__ offset_clause)?;
 set_operator <-
-	'EXCEPT' / 'INTERSECT' / ('UNION' (__ 'ALL')?);
+	('EXCEPT' / 'INTERSECT' / 'UNION') (__ 'ALL')?;
 set_quantifier <- 
 	('DISTINCT' !r'[A-Z]') / ('ALL' !r'[A-Z]');
 set_limit <-
-	'TOP' __ unsigned_integer;
+	'TOP' __ unsigned_decimal;
 select_list	<-
 	select_item (_ ',' _ select_item)* / '*';
 select_item	<- 
 	select_column correlation_specification?;
 select_column <- 
 	numeric_value_expression
-	/ operation
-	/ concatenation_operation
+	/ predicate
+	/ concatenation
 	/ set_function_specification
-	/ identifier
+	/ column_name
 	/ math_function
 	/ string_function
 	/ character_string_literal
@@ -62,6 +62,8 @@ join_opener <-
 	/ subquery correlation_specification;
 qualified_join <-
 	join_opener __ join_clause;
+column_name <-
+	identifier;
 subquery <-
 	'(' _ query_expression _ ')';
 join_clause <- 
@@ -74,8 +76,10 @@ outer_join_type <-
 join_method	<-
 	('NATURAL' __)? (join_type __)?;
 join_specification	<- 
-	'ON' __ '('? _ search_list _ ')'?
+	join_condition
 	/ named_columns_join;
+join_condition <-
+	'ON' __ '('? _ search_list _ ')'?;
 named_columns_join <-
 	'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
 where_clause <-
@@ -83,75 +87,93 @@ where_clause <-
 search_list	<-
 	search_condition (__ ('AND' / 'OR') __ ( 'NOT' __)? search_condition)*;
 search_condition <-
-	operation
+	predicate
 	/ exists_predicate
 	/ math_function
 	/ geometry_function
 	/ general_set_function;
 search_column <-
-	concatenation_operation
+	concatenation
 	/ numeric_value_expression
 	/ math_function
 	/ identifier
 	/ general_set_function
 	/ character_string_literal
 	/ geometry_function;
-operation <-
-	search_column (__ null_predicate / _ binary_operation / __ between_predicate / __ in_predicate)
-	/ '(' search_column (__ null_predicate / _ binary_operation / __ between_predicate / __ in_predicate) ')';
+predicate <-
+	search_column (__ null_predicate / _ comparison_predicate / __ between_predicate / __ in_predicate)
+	/ '(' search_column (__ null_predicate / _ comparison_predicate / __ between_predicate / __ in_predicate) ')';
 null_predicate <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
-binary_operation <-
-	('NOT' __)? _ (comp_op / "ILIKE" / "LIKE") _ search_column (_ binary_operation)*;
+comparison_predicate <-
+	('NOT' __)? _ (comp_op / 'ILIKE' / 'LIKE') _ search_column (_ comparison_predicate)*;
 comp_op <-
-	"=" / "!=" / "<=" / ">=" / ">" / "<";
+	'=' / '!=' / '<=' / '>=' / '>' / '<';
 between_predicate <- 
 	('NOT' __)? 'BETWEEN' __ search_column __ 'AND' __ search_column;
 in_predicate <-
-	('NOT' __)? 'IN' __ ( regular_identifier  / '(' search_column (_ ',' _ search_column)* ')' / '(' query_expression ')');
+	('NOT' __)? 'IN' __ in_predicate_value;
+in_predicate_value <-
+	regular_identifier  / '(' search_column (_ ',' _ search_column)* ')' / '(' query_expression ')';
 exists_predicate <-
 	('NOT' __)? 'EXISTS' __ '(' query_expression ')';
 order_by_clause <-
 	'ORDER BY' __ order_by_list;
 order_by_list <-
-	order_by_item (_ ',' _ order_by_item)*;
-order_by_item <- 
-	(identifier / unsigned_integer) (__ order_by_direction)?;
+	order_by_term (_ ',' _ order_by_term)*;
+order_by_term <- 
+	order_by_expression (__ order_by_direction)?;
+order_by_expression <- 
+	identifier / unsigned_decimal;
 order_by_direction <- 
 	'ASC' 
 	/ 'DESC';
 group_by_clause <-
-	'GROUP BY' __ group_by_list (__ having_clause)?;
-group_by_list <-
+	'GROUP BY' __ group_by_term_list (__ having_clause)?;
+group_by_term_list <-
 	identifier (_ ',' _ identifier)*;
 having_clause <-
 	'HAVING' __ '('? search_list ')'?;
 offset_clause <-
-	'OFFSET' __ unsigned_integer;
+	'OFFSET' __ unsigned_decimal;
 identifier <-
-	((regular_identifier / delimited_identifier) _ "." _)? ((regular_identifier / delimited_identifier)
-	_ "." _)? (regular_identifier / delimited_identifier / '*');
+	((regular_identifier / delimited_identifier) _ '.' _)? ((regular_identifier / delimited_identifier)
+	_ '.' _)? (regular_identifier / delimited_identifier / '*');
 delimited_identifier <-
 	'"' ('""' / r'[^"]')+ '"';
 regular_identifier <-
-	(!(reserved_keywords(!letter)) letter (letter / digit / "_")*);
+	(!(keyword(!letter)) letter (letter / digit / '_')*);
 character_string_literal <-
 	"'" ("''" / r"[^']")* "'";
-concatenation_operation <-
+concatenation <-
 	(character_string_literal / identifier) _ '||' _ (character_string_literal / identifier);
+character_factor <-
+	character_string_literal
+	/ identifier
+	/ string_value_expression;
 geometry_function <-
 	geometry_value_function
 	/ non_predicate_geometry_function 
 	/ predicate_geometry_function
 	/ region
-	/ coordsys;
+	/ extract_coordsys;
+bitwise_op <-
+	'&' / '|' / '^';
+bitwise_expression <-
+	'~' numeric_value_expression 
+	/ numeric_value_expression _ bitwise_op _ numeric_value_expression;
+value_expression <-
+	numeric_value_expression
+	/ string_value_expression
+	/ boolean_value_expression
+	/ geometry_value_expression;
 geometry_value_function <-
 	box
 	/ centroid
 	/ circle
 	/ point
 	/ polygon;
-	// / user_defined_function;
+	/ user_defined_function;
 coordinates <-
 	numeric_value_expression _ ',' _ numeric_value_expression;
 box <-
@@ -182,8 +204,10 @@ intersects <-
 	'INTERSECTS' '(' _ function_param _ ',' _ function_param _ ')';
 region <-
 	'REGION' '(' _  character_string_literal _ ')';
-coordsys <-
+extract_coordsys <-
 	'COORDSYS' '(' _ identifier _ ')';
+string_geometry_function <-
+	extract_coordys / user_defined_function;
 function_param <-
 	geometry_function 
 	/ numeric_value_expression 
@@ -197,13 +221,13 @@ math_function <-
 	/ (no_param_math '()');
 trig_function <-
 	(two_param_trig '(' _  function_param _ ',' _ function_param _')')
-	/ (one_param_trig '(' _ function_param _ ')')
+	/ (one_param_trig '(' _ function_param _ ')');
 // No params
 no_param_math <-
 	'PI';
 // One param 
 one_param_trig <- 
-	'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN'
+	'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN';
 one_param_math <-
 	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG10' / 'LOG' / 'RADIANS' / 'SQRT';
 // Two param
@@ -214,15 +238,11 @@ two_param_trig <-
 onetwo_param_math <- 
 	'ROUND' / 'TRUNCATE';
 rand_function <-
-	'RAND' '(' (_ unsigned_integer _)? ')';
+	'RAND' '(' (_ unsigned_decimal _)? ')';
 string_function <-
 	string_func_name '(' _ search_column _ ')';
 string_func_name <-
 	'LOWER';
-function_name <-
-	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE'
-	/ 'COS' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG' / 'LOG10' / 'MOD' / 'PI' / 'POINT' / 'POLYGON'
-	/ 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN' / 'SQRT' / 'TAN';
 set_function_specification <-
 	'COUNT' '(' ('*' / (set_quantifier __)? identifier) ')' / general_set_function;
 set_function_type <-
@@ -241,11 +261,14 @@ term <-
 	factor (_ ('*' / '/') _ term)*;
 factor <-
 	('+' / '-')? numeric_primary;
-numeric_value_function <-  // TODO!  this isn't right! (UDF?  trig?)
+numeric_value_function <- 
 	math_function
 	/ trig_function
 	/ numeric_geometry_function
 	/ user_defined_function;
+numeric_geometry_function <-
+	predicate_geometry_function 
+	/ non_predicate_geometry_function;
 user_defined_function <-
 	character_string_literal '(' (_ function_param (_ ',' _ function_param)* _)?  ')';
 numeric_primary	<-
@@ -253,35 +276,33 @@ numeric_primary	<-
 	/ numeric_value_function;
 value_expression_primary <-
 	'(' numeric_value_expression ')'
-	/ unsigned_integer
+	/ unsigned_decimal
 	/ identifier
 	/ set_function_specification;
 numeric_value <-
 	scientific_number 
-	/ decimal 
-	/ unsigned_integer;
+	/ exact_numeric_literal 
+	/ unsigned_decimal;
 scientific_number <- 
-	(decimal / unsigned_integer) 'E' ('+' / '-')? unsigned_integer;
-decimal	<-
-	unsigned_integer '.' digit+;
+	(exact_numeric_literal / unsigned_decimal) 'E' ('+' / '-')? unsigned_decimal;
+exact_numeric_literal	<-
+	unsigned_decimal '.' digit+;
 signed_integer <-
-	('+' / '-')? unsigned_integer;
-unsigned_integer <-
+	('+' / '-')? unsigned_decimal;
+unsigned_decimal <-
 	digit+;
+unsigned_hexadecimal <-
+	'0x' hex_digit+;
 digit <-
 	r'[0-9]';
+hex_digit <-
+	r'[0-9A-F]';
 letter <-
 	r'[a-zA-Z]';
-reserved_keywords <-
-	'SELECT' / 'FROM' / 'WHERE' / 'ORDER BY' / 'DISTINCT' / 'ALL' / 'TOP' / 'AS' / 'ASC' / 'DESC' / '='
-	/ '!=' / '<=' / '>=' / '>' / '<' / 'LIKE' / 'ILIKE' / 'OR' / 'AND' / 'JOIN' / 'ON' / 'INNER' 
-	/ 'OUTER' / 'LEFT' / 'RIGHT' / 'OUTER' / 'NATURAL' / 'ON' / 'USING' / 'OFFSET' / 'GROUP BY'
-	/ 'HAVING' / '||' / 'EXISTS' / 'UNKNOWN' / 'NULL' / 'NOT' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' 
-	/ 'BIT_XOR' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'DISTANCE' / 'INTERSECTS' / 'IN_UNIT' 
-	/ 'TRUNCATE' /  'COUNT' / function_name / set_function_type / string_func_name / 'EXCEPT' 
-	/ 'INTERSECT' / 'UNION' / ADQL_reserved_word / SQL_reserved_word;
+keyword <-
+	ADQL_reserved_word / SQL_reserved_word;
 ADQL_reserved_word <-
-	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN' / 'ATAN2' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR'
+	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN2' / 'ATAN' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR'
 	/ 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'COS'
 	/ 'DEGREES' / 'DISTANCE' / 'EXP' / 'FLOOR' / 'ILIKE' / 'INTERSECTS' / 'IN_UNIT' / 'LOG10' / 'LOG'
 	/ 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN'
