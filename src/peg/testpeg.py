@@ -33,14 +33,13 @@ def assert_valid(query, uuid):
 
 def assert_invalid(query, uuid):
     try:
-       	parser.parse(query)
-       	sys.stderr.write("'{}' parses but shouldn't.\n\n".format(
-        		query))
+        parser.parse(query)
+        sys.stderr.write("'{}' parses but shouldn't.\n\n".format(query))
     except NoMatch:
         pass
     except Exception, msg:
         sys.stderr.write(
-        	"Query '{}' Raises non-parse exception:\n{}\n\n".format(query, msg))
+            "Query '{}' Raises non-parse exception:\n{}\n\n".format(query, msg))
 
 
 def run_test(query_el):
@@ -64,9 +63,9 @@ if __name__=="__main__":
         for f in [
                 "whitespace.xml",
                 "../adql/gavo/geometry.xml",
-                "../adql/gavo/regressionlike.xml", 
+                "../adql/gavo/regressionlike.xml",
                 "../adql/gavo/setexpressions.xml",
-                "../adql/gavo/simpleunit.xml", 
+                "../adql/gavo/simpleunit.xml",
                 "../adql/gavo/subqueries.xml"
                 ]:
             test_file(f)

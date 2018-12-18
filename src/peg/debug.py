@@ -5,13 +5,13 @@ def main():
     if len(sys.argv)!=3:
         sys.exit("Usage: {} <nonterminal> <expression>".format(
             sys.argv[0]))
-    
+
     nonterminal, expression = sys.argv[1:]
 
     with open("adql2.1.peg") as f:
-        parser = ParserPEG(f.read(), nonterminal, 
+        parser = ParserPEG(f.read(), nonterminal,
             skipws=False, ignore_case=True, memoization=True, debug=True)
-    
+
     parser.parse(expression)
 
 
