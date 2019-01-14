@@ -30,7 +30,8 @@ select_list	<-
 select_item	<-
 	select_column correlation_specification?;
 select_column <-
-	numeric_value_expression
+	concatenation
+	/ numeric_value_expression
 	/ predicate
 	/ concatenation
 	/ set_function_specification
@@ -146,9 +147,8 @@ character_string_literal <-
 concatenation <-
 	(character_string_literal / regular_identifier) _ '||' _ (character_string_literal / regular_identifier);
 character_factor <-
-	character_string_literal
-	/ identifier
-	/ string_value_expression;
+	identifier
+	/ character_string_literal;
 geometry_function <-
 	geometry_value_function
 	/ non_predicate_geometry_function
@@ -168,7 +168,8 @@ value_expression <-
 string_value_expression <-
 	character_value_expression;
 character_value_expression <-
-	concatenation
+	regular_identifier 
+	/ concatenation
 	/ character_factor;
 geometry_value_function <-
 	box
@@ -176,6 +177,7 @@ geometry_value_function <-
 	/ circle
 	/ point
 	/ polygon
+	/ region 
 	/ user_defined_function;
 coordinates <-
 	numeric_value_expression _ ',' _ numeric_value_expression;
@@ -255,7 +257,7 @@ set_function_type <-
 general_set_function <-
 	set_function_type '(' (set_quantifier __)? numeric_value_expression ')';
 point <-
-	'POINT' '(' _  string_value_expression _ ',' _ coordinates _ ')';
+	'POINT' '(' _  (string_value_expression / 'NULL') _ ',' _ coordinates _ ')';
 comment	<-
 	'--' r'[^\n\r]*';
 comments <-
