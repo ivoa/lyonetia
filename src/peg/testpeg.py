@@ -23,18 +23,18 @@ from xml.etree import ElementTree as etree
 
 global parser
 
-def assert_valid(query, uuid):
+def assert_valid(query, uuid, f, desc):
     try:
         parser.parse(query)
     except Exception, msg:
         sys.stderr.write(
-            "Query '{}' doesn't parse but should:\n{}\n\n".format(
-                query, msg))
+                "Query '{}' doesn't parse but should:\n{}\nLocated at file {}, description: '{}'\n\n".format(
+                query, msg, f, desc))
 
-def assert_invalid(query, uuid):
+def assert_invalid(query, uuid, f, desc):
     try:
         parser.parse(query)
-        sys.stderr.write("'{}' parses but shouldn't.\n\n".format(query))
+        sys.stderr.write("Query '{}' parses but shouldn't.\nLocated at file {}, description: '{}'\n\n".format(query, f, desc))
     except NoMatch:
         pass
     except Exception, msg:
@@ -42,19 +42,20 @@ def assert_invalid(query, uuid):
             "Query '{}' Raises non-parse exception:\n{}\n\n".format(query, msg))
 
 
-def run_test(query_el):
+def run_test(query_el, f):
     adql = query_el.find("adql")
+    d = query_el.find("description").text
     if adql.get("valid")=="true":
-        assert_valid(adql.text.upper(), query_el.get("uuid"))
+        assert_valid(adql.text.upper(), query_el.get("uuid"), f, d)
     else:
-        assert_invalid(adql.text.upper(), query_el.get("uuid"))
+        assert_invalid(adql.text.upper(), query_el.get("uuid"), f, d)
 
 
 def test_file(file_name):
     with open(file_name) as f:
         for ev, el in etree.iterparse(f):
             if el.tag=="query":
-                run_test(el)
+                run_test(el, file_name)
 
 if __name__=="__main__":
     with open("adql2.1.peg", "r") as adql_peg_file:
