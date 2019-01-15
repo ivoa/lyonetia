@@ -45,7 +45,7 @@ from_clause <-
 from_list <-
 	table_reference (_ ',' _ table_reference)*;
 correlation_specification <-
-	(_ 'AS' __)? identifier;
+	_ ('AS' __)? identifier;
 table_reference <-
 	joined_table
 	/ subquery correlation_specification?
