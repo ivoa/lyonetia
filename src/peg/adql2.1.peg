@@ -81,7 +81,7 @@ join_specification	<-
 	/ named_columns_join;
 on <- 'ON' _a;
 join_condition <-
-	on _ '('? _ search_list _ ')'?;
+	on _ ( '(' search_list ')' / search_list );
 named_columns_join <-
 	'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
 where_clause <-
