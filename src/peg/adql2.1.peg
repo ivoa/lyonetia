@@ -1,7 +1,7 @@
 query <-
 	(query_specification __)? query_expression _ EOF;
 query_specification <-
-	'WITH' __ identifier __ 'AS' __ '(' _ query_expression _ ')' (_ ',' _ '(' _ query_expression _ ')')*;
+	'WITH' __ identifier __ 'AS' _ '(' _ query_expression _ ')' (_ ',' _ '(' _ query_expression _ ')')*;
 query_expression <-
 	select_query
 	(__ set_operator __ set_query_expression)*;
@@ -10,7 +10,7 @@ set_query_expression <-
 select_query <-
 	_ 'SELECT'
 	(__ set_quantifier)?
-	(set_limit)?
+	(_ set_limit)?
 	_ select_list
 	__ table_expression;
 table_expression <-
@@ -22,11 +22,11 @@ table_expression <-
 set_operator <-
 	('EXCEPT' / 'INTERSECT' / 'UNION') (__ 'ALL')?;
 set_quantifier <-
-	('DISTINCT' / 'ALL' ) _a;
+	('DISTINCT' / 'ALL') _a;
 set_limit <-
 	'TOP' __ unsigned_integer;
 select_list	<-
-	select_item (_ ',' _ select_item)* / '*';
+	'*' / select_item (_ ',' _ select_item)*;
 select_item	<-
 	select_column correlation_specification?;
 select_column <-
@@ -45,10 +45,10 @@ from_clause <-
 from_list <-
 	table_reference (_ ',' _ table_reference)*;
 correlation_specification <-
-	_ ('AS' __)? identifier;
+	(_ 'AS' __)? identifier;
 table_reference <-
-	joined_table
-	/ subquery correlation_specification?
+	joined_table 
+	/ subquery _ correlation_specification
 	/ identifier correlation_specification?;
 joined_table <-
 	qualified_join
@@ -56,18 +56,18 @@ joined_table <-
 sub_join <-
 	'(' _ joined_table _ ')';
 join_opener <-
-	sub_join
-	/ identifier correlation_specification?
-	/ subquery correlation_specification;
+	identifier correlation_specification?
+	/ subquery _ correlation_specification
+	/ sub_join;
 qualified_join <-
-	join_opener __ join_clause;
+	join_opener _ join_clause;
 column_name <-
 	identifier;
 subquery <-
 	'(' _ query_expression _ ')';
 join <- 'JOIN' _a;
 join_clause <-
-	join_method? _ join _ table_reference (__ join_specification)? (__ (sub_join / join_clause))*;
+	join_method? _ join _ table_reference (_ join_specification)? (_ (sub_join / join_clause))*;
 join_type <-
 	('INNER'
 	/ (outer_join_type _)? 'OUTER') _a;
@@ -81,7 +81,7 @@ join_specification	<-
 	/ named_columns_join;
 on <- 'ON' _a;
 join_condition <-
-	on _ ( '(' search_list ')' / search_list );
+	on _ ( '(' _ search_list _ ')' / search_list );
 named_columns_join <-
 	'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
 where_clause <-
@@ -148,7 +148,7 @@ delimited_identifier <-
 regular_identifier <-
 	(!(keyword) letter (letter / digit / '_')*);
 character_string_literal <-
-	"'" ("''" / r"[^']")* "'";
+	("'" ("''" / r"[^']")* "'" (Space+ comment _)*)+;
 concatenation <-
 	(character_string_literal / regular_identifier) _ '||' _ (character_string_literal / regular_identifier);
 character_factor <-
@@ -349,7 +349,7 @@ SQL_reserved_word <-
 	/ 'IS' / 'ISOLATION' / 'JOIN' / 'KEY' / 'LANGUAGE' / 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL'
 	/ 'LIKE' / 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH' / 'MAX' / 'MIN' / 'MINUTE' / 'MODULE'
 	/ 'MONTH' / 'NAMES' / 'NATIONAL' / 'NATURAL' / 'NCHAR' / 'NEXT' / 'NO' / 'NOT' / 'NULL'
-	/ 'NULLIF'/ 'NUMERIC' / 'OCTET_LENGTH' / 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR'
+	/ 'NULLIF'/ 'NUMERIC' / 'OCTET_LENGTH' / 'OFFSET' / 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR'
 	/ 'ORDER' / 'OUTER' / 'OUTPUT' / 'OVERLAPS' / 'PAD' / 'PARTIAL' / 'POSITION' / 'PRECISION'
 	/ 'PREPARE' / 'PRESERVE' / 'PRIMARY' / 'PRIOR' / 'PRIVILEGES' / 'PROCEDURE' / 'PUBLIC' / 'READ'
 	/ 'REAL' / 'REFERENCES' / 'RELATIVE' / 'RESTRICT' / 'REVOKE' / 'RIGHT' / 'ROLLBACK' / 'ROWS'
