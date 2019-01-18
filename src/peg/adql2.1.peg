@@ -273,11 +273,6 @@ extract_coord_sys <-
 string_geometry_function <-
 	extract_coordys 
 	/ user_defined_function;
-function_param <-
-	geometry_function
-	/ numeric_value_expression
-	/ math_function
-	/ trig_function;
 math_function <-
 	(onetwo_param_math '('
 	_ numeric_value_expression (_ ',' _ signed_integer)? 
@@ -351,7 +346,7 @@ numeric_geometry_function <-
 	/ non_predicate_geometry_function;
 user_defined_function <-
 	character_string_literal '(' 
-	(_ function_param (_ ',' _ function_param)* _)?  
+	(_ value_expression (_ ',' _ value_expression)* _)?  
 	')';
 numeric_primary	<-
 	value_expression_primary
