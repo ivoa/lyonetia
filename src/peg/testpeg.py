@@ -62,7 +62,7 @@ if __name__=="__main__":
         adql_peg = adql_peg_file.read()
         parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
         for f in [
-                "whitespace.xml",
+                "../adql/gavo/whitespace.xml",
                 "../adql/gavo/geometry.xml",
                 "../adql/gavo/regressionlike.xml",
                 "../adql/gavo/setexpressions.xml",
