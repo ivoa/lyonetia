@@ -31,14 +31,11 @@ select_item	<-
 	select_column correlation_specification?;
 select_column <-
 	concatenation
-	/ numeric_value_expression
-	/ predicate
-	/ concatenation
+	/ value_expression
+	/ boolean_factor
 	/ set_function_specification
 	/ column_name
-	/ math_function
 	/ string_function
-	/ character_string_literal
 	/ geometry_function;
 from_clause <-
 	'FROM' __ from_list;
@@ -56,9 +53,9 @@ joined_table <-
 sub_join <-
 	'(' _ joined_table _ ')';
 join_opener <-
-	identifier correlation_specification?
-	/ subquery _ correlation_specification
-	/ sub_join;
+	sub_join 
+	/ identifier correlation_specification?
+	/ subquery _ correlation_specification;
 qualified_join <-
 	join_opener _ join_clause;
 column_name <-
@@ -89,36 +86,31 @@ where_clause <-
 search_list	<-
 	search_condition (__ ('AND' / 'OR') __ ( 'NOT' __)? search_condition)*;
 search_condition <-
-	predicate
-	/ exists_predicate
-	/ math_function
-	/ geometry_function
-	/ general_set_function;
+	boolean_factor
+	/ exists_predicate;
 search_column <-
-	concatenation
-	/ numeric_value_expression
-	/ math_function
-	/ identifier
-	/ general_set_function
-	/ character_string_literal
-	/ geometry_function;
+	value_expression;
 predicate <-
-	search_column (__ null_predicate / _ comparison_predicate / __ between_predicate / __ in_predicate)
-	/ '(' search_column (__ null_predicate / _ comparison_predicate / __ between_predicate / __ in_predicate) ')';
+	(_ like_predicate / _ null_predicate / _ comparison_predicate / _ between_predicate / _ in_predicate);
+boolean_factor <-
+	(concatenation / value_expression) _ predicate
+	/ '(' _ (concatenation / value_expression) _ predicate _ ')';
 null_predicate <-
 	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 comparison_predicate <-
-	('NOT' __)? _ (comp_op / 'ILIKE' / 'LIKE') _ search_column (_ comparison_predicate)*;
+	('NOT' __)? _ comp_op _ (concatenation / value_expression) (_ predicate)*;
+like_predicate <-
+	('NOT' __)? _ ('ILIKE' / 'LIKE') _ character_value_expression (_ predicate)*;
 comp_op <-
 	'=' / '!=' / '<=' / '>=' / '>' / '<';
 between <- 'BETWEEN' _a;
 and <- 'AND' _a;
 between_predicate <-
-	('NOT' __)? between _ search_column _ and _ search_column;
+	('NOT' __)? between _ value_expression _ and _ value_expression;
 in_predicate <-
 	('NOT' __)? 'IN' __ in_predicate_value;
 in_predicate_value <-
-	regular_identifier  / '(' search_column (_ ',' _ search_column)* ')' / '(' query_expression ')';
+	regular_identifier  / '(' value_expression (_ ',' _  value_expression)* ')' / '(' query_expression ')';
 exists_predicate <-
 	('NOT' __)? 'EXISTS' __ subquery;
 order_by_clause <-
@@ -165,16 +157,11 @@ bitwise_op <-
 bitwise_expression <-
 	'~' numeric_value_expression
 	/ numeric_value_expression _ bitwise_op _ numeric_value_expression;
-value_expression <-
-	numeric_value_expression
-	/ string_value_expression
-	/ boolean_value_expression
-	/ geometry_value_expression;
 string_value_expression <-
 	character_value_expression;
 character_value_expression <-
-	regular_identifier 
-	/ concatenation
+	concatenation
+	/ identifier
 	/ character_factor;
 geometry_value_function <-
 	box
@@ -286,10 +273,11 @@ user_defined_function <-
 numeric_primary	<-
 	value_expression_primary
 	/ numeric_value_function;
+// The order on this one breaks two examples
 value_expression <-
 	numeric_value_expression
-	/ string_value_expression
-	/ geometry_value_expression;
+	/ geometry_value_expression
+	/ string_value_expression;
 geometry_value_expression <-
 	value_expression_primary
 	/ geometry_value_function;

@@ -9,7 +9,7 @@
 #     project structure (preferably src/gavo)                      #
 #     Requirements:                                                #
 #         Arpeggio for PEG support.                                #
-#         <http://www.igordejanovic.net/Arpeggio/stable>           #
+#         <http://textx.github.io/Arpeggio/stable>                 #
 ####################################################################
 # Authors:                                                         #
 #     Jon Juaristi Campillo (ARI, ZAH, Universität Heidelberg)     #
@@ -25,7 +25,7 @@ global parser
 
 def assert_valid(query, uuid, f, desc):
     try:
-        parser.parse(query)
+        result = parser.parse(query)
     except Exception, msg:
         sys.stderr.write(
                 "Query '{}' doesn't parse but should:\n{}\nLocated at file {}, description: '{}'\n\n".format(
@@ -33,7 +33,7 @@ def assert_valid(query, uuid, f, desc):
 
 def assert_invalid(query, uuid, f, desc):
     try:
-        parser.parse(query)
+        result = parser.parse(query)
         sys.stderr.write("Query '{}' parses but shouldn't.\nLocated at file {}, description: '{}'\n\n".format(query, f, desc))
     except NoMatch:
         pass
