@@ -176,7 +176,7 @@ geometry_value_function <-
 coordinates <-
 	numeric_value_expression _ ',' _ numeric_value_expression;
 box <-
-	'BOX' '(' (_ character_string_literal ',')? _ coordinates _ ',' _ numeric_value_expression _ ','_ numeric_value_expression _ ')';
+	'BOX' '(' (_ character_string_literal ',')?  _ coordinates _ ',' _ numeric_value_expression _ ',' _ numeric_value_expression _ ')';
 centroid <-
 	'CENTROID' '(' _ geometry_value_expression _ ')';
 circle <-
@@ -280,6 +280,9 @@ value_expression <-
 	numeric_value_expression
 	/ geometry_value_expression
 	/ string_value_expression;
+
+// TODO: value_expression_primary (as in the BNF) is unnecessarily wide
+// here ("CENTROID(3)")
 geometry_value_expression <-
 	value_expression_primary
 	/ geometry_value_function;
@@ -294,6 +297,10 @@ exact_numeric_literal	<-
 	(unsigned_integer '.')* unsigned_integer;
 signed_integer <-
 	('+' / '-')? unsigned_integer;
+
+// TODO: We should take out character_string_literal here, MD thinks --
+// what sort of use case did people have in mind here?
+// "POINT('ICRS',X,'SY')"
 unsigned_literal <-
 	unsigned_numeric_literal
 	/ character_string_literal;

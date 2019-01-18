@@ -60,8 +60,8 @@
 </adql>
   </query>
   <query uuid="5e700476-4458-11e6-96e2-28b2bdcff70b">
-    <description>Simple syntax errors</description>
-    <adql valid="false" version="adql-2.1">SELECT 89x FROM z
+    <description>Correlation specification without AS or whitespace.</description>
+    <adql valid="true" version="adql-2.1">SELECT 89x FROM z
 </adql>
   </query>
   <query uuid="6fe70754-4458-11e6-96e2-28b2bdcff70b">
