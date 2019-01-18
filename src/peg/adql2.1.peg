@@ -62,6 +62,7 @@ column_name <-
 	identifier;
 subquery <-
 	'(' _ query_expression _ ')';
+
 join <- 'JOIN' _a;
 join_clause <-
 	join_method? _ join _ table_reference (_ join_specification)? (_ (sub_join / join_clause))*;
@@ -79,6 +80,7 @@ join_specification	<-
 on <- 'ON' _a;
 join_condition <-
 	on _ ( '(' _ search_list _ ')' / search_list );
+
 named_columns_join <-
 	'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
 where_clause <-
