@@ -1,12 +1,17 @@
 query <-
-	(query_specification __)? query_expression _ EOF;
+	(query_specification __)? 
+	query_expression _ EOF;
 query_specification <-
-	'WITH' __ identifier __ 'AS' _ '(' _ query_expression _ ')' (_ ',' _ '(' _ query_expression _ ')')*;
+	'WITH' __ identifier __ 'AS' 
+	_ '(' _ query_expression _ ')' 
+	(_ ',' _ '(' _ query_expression _ ')')*;
 query_expression <-
 	select_query
-	(__ set_operator __ set_query_expression)*;
+	(__ set_operator
+	__ set_query_expression)*;
 set_query_expression <-
-	query_expression / '(' _ query_expression _ ')';
+	query_expression 
+	/ '(' _ query_expression _ ')';
 select_query <-
 	_ 'SELECT'
 	(__ set_quantifier)?
@@ -20,13 +25,15 @@ table_expression <-
 	(__ order_by_clause)?
 	(__ offset_clause)?;
 set_operator <-
-	('EXCEPT' / 'INTERSECT' / 'UNION') (__ 'ALL')?;
+	('EXCEPT' / 'INTERSECT' / 'UNION') 
+	(__ 'ALL')?;
 set_quantifier <-
 	('DISTINCT' / 'ALL') _a;
 set_limit <-
 	'TOP' __ unsigned_integer;
 select_list	<-
-	'*' / select_item (_ ',' _ select_item)*;
+	'*' 
+	/ select_item (_ ',' _ select_item)*;
 select_item	<-
 	select_column correlation_specification?;
 select_column <-
@@ -40,7 +47,8 @@ select_column <-
 from_clause <-
 	'FROM' __ from_list;
 from_list <-
-	table_reference (_ ',' _ table_reference)*;
+	table_reference 
+	(_ ',' _ table_reference)*;
 correlation_specification <-
 	(_ 'AS' __)? identifier;
 table_reference <-
@@ -62,10 +70,12 @@ column_name <-
 	identifier;
 subquery <-
 	'(' _ query_expression _ ')';
-
-join <- 'JOIN' _a;
+join <- 
+	'JOIN' _a;
 join_clause <-
-	join_method? _ join _ table_reference (_ join_specification)? (_ (sub_join / join_clause))*;
+	join_method? _ join _ 
+	table_reference (_ join_specification)? 
+	(_ (sub_join / join_clause))*;
 join_type <-
 	('INNER'
 	/ (outer_join_type _)? 'OUTER') _a;
@@ -82,61 +92,82 @@ join_condition <-
 	on _ ( '(' _ search_list _ ')' / search_list );
 
 named_columns_join <-
-	'USING' __ '(' _  identifier (_ ',' _ identifier)* _ ')';
+	'USING' __ '('
+	_ identifier (_ ',' _ identifier)*
+	_ ')';
 where_clause <-
 	'WHERE' __ search_list;
 search_list	<-
-	search_condition (__ ('AND' / 'OR') __ ( 'NOT' __)? search_condition)*;
+	search_condition (__ ('AND' / 'OR') 
+	__ ( 'NOT' __)? search_condition)*;
 search_condition <-
 	boolean_factor
 	/ exists_predicate;
 search_column <-
 	value_expression;
 predicate <-
-	(_ like_predicate / _ null_predicate / _ comparison_predicate / _ between_predicate / _ in_predicate);
+	(_ like_predicate / _ null_predicate 
+	/ _ comparison_predicate / _ between_predicate
+	/ _ in_predicate);
 boolean_factor <-
-	(concatenation / value_expression) _ predicate
-	/ '(' _ (concatenation / value_expression) _ predicate _ ')';
+	(concatenation / value_expression)
+	_ predicate
+	/ '(' _ (concatenation / value_expression)
+	_ predicate _ ')';
 null_predicate <-
-	'IS' (__ 'NOT')? __ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
+	'IS' (__ 'NOT')? 
+	__ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 comparison_predicate <-
-	('NOT' __)? _ comp_op _ (concatenation / value_expression) (_ predicate)*;
+	('NOT' __)? _ comp_op
+	_ (concatenation / value_expression) (_ predicate)*;
 like_predicate <-
-	('NOT' __)? _ ('ILIKE' / 'LIKE') _ character_value_expression (_ predicate)*;
+	('NOT' __)? _ ('ILIKE' / 'LIKE')
+	_ character_value_expression (_ predicate)*;
 comp_op <-
 	'=' / '!=' / '<=' / '>=' / '>' / '<';
-between <- 'BETWEEN' _a;
-and <- 'AND' _a;
+between <-
+	'BETWEEN' _a;
+and <-
+	'AND' _a;
 between_predicate <-
-	('NOT' __)? between _ value_expression _ and _ value_expression;
+	('NOT' __)? between
+	_ value_expression _ and _ value_expression;
 in_predicate <-
-	('NOT' __)? 'IN' __ in_predicate_value;
+	('NOT' __)? 'IN'
+	__ in_predicate_value;
 in_predicate_value <-
-	regular_identifier  / '(' value_expression (_ ',' _  value_expression)* ')' / '(' query_expression ')';
+	regular_identifier
+	/ '(' value_expression (_ ',' _  value_expression)* ')'
+	/ '(' query_expression ')';
 exists_predicate <-
 	('NOT' __)? 'EXISTS' __ subquery;
 order_by_clause <-
 	'ORDER BY' __ order_by_list;
 order_by_list <-
-	order_by_term (_ ',' _ order_by_term)*;
+	order_by_term
+	(_ ',' _ order_by_term)*;
 order_by_term <-
 	order_by_expression (__ order_by_direction)?;
 order_by_expression <-
-	identifier / unsigned_integer;
+	identifier
+	/ unsigned_integer;
 order_by_direction <-
 	'ASC'
 	/ 'DESC';
 group_by_clause <-
-	'GROUP BY' __ group_by_term_list (__ having_clause)?;
+	'GROUP BY' __ group_by_term_list
+	(__ having_clause)?;
 group_by_term_list <-
 	identifier (_ ',' _ identifier)*;
 having_clause <-
-	'HAVING' __ '('? search_list ')'?;
+	'HAVING' __
+	'('? search_list ')'?;
 offset_clause <-
 	'OFFSET' __ unsigned_integer;
 identifier <-
-	((regular_identifier / delimited_identifier) _ '.' _)? ((regular_identifier / delimited_identifier)
-	_ '.' _)? (regular_identifier / delimited_identifier / '*');
+	((regular_identifier / delimited_identifier) _ '.' _)?
+	((regular_identifier / delimited_identifier) _ '.' _)?
+	(regular_identifier / delimited_identifier / '*');
 delimited_identifier <-
 	'"' ('""' / r'[^"]')+ '"';
 regular_identifier <-
@@ -144,7 +175,9 @@ regular_identifier <-
 character_string_literal <-
 	("'" ("''" / r"[^']")* "'" (Space+ comment _)*)+;
 concatenation <-
-	(character_string_literal / regular_identifier) _ '||' _ (character_string_literal / regular_identifier);
+	(character_string_literal / regular_identifier) 
+	_ '||' 
+	_ (character_string_literal / regular_identifier);
 character_factor <-
 	identifier
 	/ character_string_literal;
@@ -158,7 +191,9 @@ bitwise_op <-
 	'&' / '|' / '^';
 bitwise_expression <-
 	'~' numeric_value_expression
-	/ numeric_value_expression _ bitwise_op _ numeric_value_expression;
+	/ numeric_value_expression
+	_ bitwise_op
+	_ numeric_value_expression;
 string_value_expression <-
 	character_value_expression;
 character_value_expression <-
@@ -174,63 +209,102 @@ geometry_value_function <-
 	/ region 
 	/ user_defined_function;
 coordinates <-
-	numeric_value_expression _ ',' _ numeric_value_expression;
+	numeric_value_expression _ ','
+	_ numeric_value_expression;
 box <-
-	'BOX' '(' (_ character_string_literal ',')?  _ coordinates _ ',' _ numeric_value_expression _ ',' _ numeric_value_expression _ ')';
+	'BOX' '(' (
+	_ character_string_literal ',')? 
+	_ coordinates _ ',' 
+	_ numeric_value_expression _ ',' 
+	_ numeric_value_expression _ ')';
 centroid <-
-	'CENTROID' '(' _ geometry_value_expression _ ')';
+	'CENTROID' '(' 
+	_ geometry_value_expression _ ')';
 circle <-
-	'CIRCLE' '(' _ string_value_expression _ ',' _ coordinates _ ',' _ numeric_value_expression _ ')';
+	'CIRCLE' '(' 
+	_ string_value_expression _ ','
+	_ coordinates _ ','
+	_ numeric_value_expression _ ')';
 polygon <-
-	'POLYGON' '(' _ string_value_expression _ ',' _ coordinates _ ',' _ coordinates _ (_ ',' _ coordinates)* _ ')';
+	'POLYGON' '(' 
+	_ string_value_expression _ ','
+	_ coordinates _ ','
+	_ coordinates _ 
+	(_ ',' _ coordinates)* _ ')';
 non_predicate_geometry_function <-
-	area / coord1 / coord2 / distance;
+	area
+	/ coord1
+	/ coord2
+	/ distance;
 area <-
-	'AREA' '(' _ geometry_value_expression _ ')';
+	'AREA' '(' 
+	_ geometry_value_expression 
+	_ ')';
 coord1 <-
-	'COORD1' '(' _ coord_value _ ')';
+	'COORD1' '('
+	_ coord_value 
+	_ ')';
 coord2 <-
-	'COORD2' '(' _ coord_value _ ')';
+	'COORD2' '('
+	_ coord_value
+	_ ')';
 coord_value <-
 	point /
 	column_name;
 distance <-
-	'DISTANCE' '(' _ coord_value _ ',' _ coord_value _ ')';
+	'DISTANCE' '(' _
+	coord_value _ ','
+	_ coord_value _ ')';
 predicate_geometry_function <-
 	contains
 	/ intersects;
 contains <-
-	'CONTAINS' '(' _ geometry_value_expression _ ',' _ geometry_value_expression _ ')';
+	'CONTAINS' '(' 
+	_ geometry_value_expression _ ',' 
+	_ geometry_value_expression _ ')';
 intersects <-
-	'INTERSECTS' '(' _ geometry_value_expression _ ',' _ geometry_value_expression _ ')';
+	'INTERSECTS' '(' 
+	_ geometry_value_expression _ ','
+	_ geometry_value_expression _ ')';
 region <-
 	'REGION' '(' _  string_value_expression _ ')';
 extract_coord_sys <-
 	'COORDSYS' '(' _ geometry_value_expression _ ')';
 string_geometry_function <-
-	extract_coordys / user_defined_function;
+	extract_coordys 
+	/ user_defined_function;
 function_param <-
 	geometry_function
 	/ numeric_value_expression
 	/ math_function
 	/ trig_function;
 math_function <-
-	(onetwo_param_math '(' _ numeric_value_expression (_ ',' _ signed_integer)? _ ')')
-	/ (two_param_math '(' _  numeric_value_expression _ ',' _ numeric_value_expression _')')
+	(onetwo_param_math '('
+	_ numeric_value_expression (_ ',' _ signed_integer)? 
+	_ ')')
+	/ (two_param_math '(' 
+	_  numeric_value_expression _ ',' 
+	_ numeric_value_expression _')')
 	/ (one_param_math '(' _ numeric_value_expression _ ')')
 	/ rand_function
 	/ (no_param_math '()');
 trig_function <-
-	(two_param_trig '(' _  numeric_value_expression _ ',' _ numeric_value_expression _')')
-	/ (one_param_trig '(' _ numeric_value_expression _ ')');
+	(two_param_trig '(' 
+	_  numeric_value_expression _ ',' 
+	_ numeric_value_expression _')')
+	/ (one_param_trig '(' 
+	_ numeric_value_expression _ ')');
 // No params
 no_param_math <-
 	'PI';
 // One param
 one_param_trig <-
-	'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 'COT' / 'SIN' / 'TAN';
+	'ACOS' / 'ASIN' / 'ATAN' / 'COS' / 
+	'COT' / 'SIN' / 'TAN';
 one_param_math <-
-	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 'FLOOR' / 'LOG10' / 'LOG' / 'RADIANS' / 'SQRT';
+	'ABS' / 'CEILING' / 'DEGREES' / 'EXP' / 
+	'FLOOR' / 'LOG10' / 'LOG' / 'RADIANS' / 
+	'SQRT';
 // Two param
 two_param_math <-
 	'MOD' / 'POWER';
@@ -245,13 +319,18 @@ string_function <-
 string_func_name <-
 	'LOWER';
 set_function_specification <-
-	'COUNT' '(' ('*' / (set_quantifier __)? identifier) ')' / general_set_function;
+	'COUNT' '(' ('*' / 
+	(set_quantifier __)? identifier) ')' 
+	/ general_set_function;
 set_function_type <-
 	'AVG' / 'MAX' / 'MIN' / 'SUM';
 general_set_function <-
-	set_function_type '(' set_quantifier? numeric_value_expression ')';
+	set_function_type '(' 
+	set_quantifier? numeric_value_expression ')';
 point <-
-	'POINT' '(' _  (string_value_expression / 'NULL') _ ',' _ coordinates _ ')';
+	'POINT' '('
+	_ (string_value_expression / 'NULL') 
+	_ ',' _ coordinates _ ')';
 comment	<-
 	'--' r'[^\n\r]*';
 comments <-
@@ -271,7 +350,9 @@ numeric_geometry_function <-
 	predicate_geometry_function
 	/ non_predicate_geometry_function;
 user_defined_function <-
-	character_string_literal '(' (_ function_param (_ ',' _ function_param)* _)?  ')';
+	character_string_literal '(' 
+	(_ function_param (_ ',' _ function_param)* _)?  
+	')';
 numeric_primary	<-
 	value_expression_primary
 	/ numeric_value_function;
@@ -280,7 +361,6 @@ value_expression <-
 	numeric_value_expression
 	/ geometry_value_expression
 	/ string_value_expression;
-
 // TODO: value_expression_primary (as in the BNF) is unnecessarily wide
 // here ("CENTROID(3)")
 geometry_value_expression <-
@@ -292,12 +372,12 @@ value_expression_primary <-
 	/ column_name
 	/ set_function_specification;
 scientific_number <-
-	exact_numeric_literal 'E' ('+' / '-')? unsigned_integer;
+	exact_numeric_literal 'E' 
+	('+' / '-')? unsigned_integer;
 exact_numeric_literal	<-
 	(unsigned_integer '.')* unsigned_integer;
 signed_integer <-
 	('+' / '-')? unsigned_integer;
-
 // TODO: We should take out character_string_literal here, MD thinks --
 // what sort of use case did people have in mind here?
 // "POINT('ICRS',X,'SY')"
@@ -323,40 +403,70 @@ letter <-
 keyword <-
 	(ADQL_reserved_word / SQL_reserved_word) _a;
 ADQL_reserved_word <-
-	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN2' / 'ATAN' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR' / 'BIT_XOR'
-	/ 'BOX' / 'CEILING' / 'CENTROID' / 'CIRCLE' / 'CONTAINS' / 'COORD1' / 'COORD2' / 'COORDSYS' / 'COS'
-	/ 'DEGREES' / 'DISTANCE' / 'EXP' / 'FLOOR' / 'ILIKE' / 'INTERSECTS' / 'IN_UNIT' / 'LOG10' / 'LOG'
-	/ 'MOD' / 'PI' / 'POINT' / 'POLYGON' / 'POWER' / 'RADIANS' / 'REGION' / 'RAND' / 'ROUND' / 'SIN'
-	/ 'SQRT' / 'TOP' / 'TAN' / 'TRUNCATE';
+	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN2'
+	/ 'ATAN' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR'
+	/ 'BIT_XOR' / 'BOX' / 'CEILING' / 'CENTROID' 
+	/ 'CIRCLE' / 'CONTAINS' / 'COORD1' / 'COORD2'
+	/ 'COORDSYS' / 'COS' / 'DEGREES' / 'DISTANCE' 
+	/ 'EXP' / 'FLOOR' / 'ILIKE' / 'INTERSECTS'
+	/ 'IN_UNIT' / 'LOG10' / 'LOG' / 'MOD' 
+	/ 'PI' / 'POINT' / 'POLYGON' / 'POWER'
+	/ 'RADIANS' / 'REGION' / 'RAND' / 'ROUND'
+	/ 'SIN' / 'SQRT' / 'TOP' / 'TAN' / 'TRUNCATE';
 SQL_reserved_word <-
-	'ABSOLUTE' / 'ACTION' / 'ADD' / 'ALL' / 'ALLOCATE' / 'ALTER' / 'AND' / 'ANY' / 'ARE' / 'AS'
-	/ 'ASC' / 'ASSERTION' / 'AT' / 'AUTHORISATION' / 'AVG' / 'BEGIN' / 'BIT' / 'BIT_LENGTH' / 'BOTH'
-	/ 'BY' / 'CASCADE' / 'CASCADED' / 'CASE' / 'CAST' / 'CATALOG' / 'CHAR' / 'CHARACTER'
-	/ 'CHAR_LENGTH' / 'CHARACTER_LENGTH' / 'CHECK' / 'CLOSE' / 'COALESCE' / 'COLLATE' / 'COLLATION'
-	/ 'COLUMN' / 'COMMIT' / 'CONNECT' / 'CONNECTION' / 'CONSTRAINT' / 'CONSTRAINTS' / 'CONTINUE'
-	/ 'CONVERT' / 'CORRESPONDING' / 'COUNT' / 'CREATE' / 'CROSS' / 'CURRENT' / 'CURRENT_DATE'
-	/ 'CURRENT_TIME' / 'CURRENT_TIMESTAMP' / 'CURRENT_USER' / 'CURSOR' / 'DATE' / 'DAY'
-	/ 'DEALLOCATE' / 'DECIMAL' / 'DECLARE' / 'DEFAULT' / 'DEFERRABLE' / 'DEFERRED' / 'DELETE'
-	/ 'DESC' / 'DESCRIBE' / 'DESCRIPTOR' / 'DIAGNOSTICS' / 'DISCONNECT' / 'DISTINCT' / 'DOMAIN'
-	/ 'DOUBLE' / 'DROP' / 'ELSE' / 'END' / 'END-EXEC' / 'ESCAPE' / 'EXCEPT' / 'EXCEPTION' / 'EXEC'
-	/ 'EXECUTE' / 'EXISTS' / 'EXTERNAL' / 'EXTRACT' / 'FALSE' / 'FETCH' / 'FIRST' / 'FLOAT' / 'FOR'
-	/ 'FOREIGN' / 'FOUND' / 'FROM' / 'FULL' / 'GET' / 'GLOBAL' / 'GO' / 'GOTO' / 'GRANT' / 'GROUP'
-	/ 'HAVING' / 'HOUR' / 'IDENTITY' / 'IMMEDIATE' / 'IN' / 'INDICATOR' / 'INITIALLY' / 'INNER'
-	/ 'INPUT' / 'INSENSITIVE' / 'INSERT' / 'INT' / 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO'
-	/ 'IS' / 'ISOLATION' / 'JOIN' / 'KEY' / 'LANGUAGE' / 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL'
-	/ 'LIKE' / 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH' / 'MAX' / 'MIN' / 'MINUTE' / 'MODULE'
-	/ 'MONTH' / 'NAMES' / 'NATIONAL' / 'NATURAL' / 'NCHAR' / 'NEXT' / 'NO' / 'NOT' / 'NULL'
-	/ 'NULLIF'/ 'NUMERIC' / 'OCTET_LENGTH' / 'OFFSET' / 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR'
-	/ 'ORDER' / 'OUTER' / 'OUTPUT' / 'OVERLAPS' / 'PAD' / 'PARTIAL' / 'POSITION' / 'PRECISION'
-	/ 'PREPARE' / 'PRESERVE' / 'PRIMARY' / 'PRIOR' / 'PRIVILEGES' / 'PROCEDURE' / 'PUBLIC' / 'READ'
-	/ 'REAL' / 'REFERENCES' / 'RELATIVE' / 'RESTRICT' / 'REVOKE' / 'RIGHT' / 'ROLLBACK' / 'ROWS'
-	/ 'SCHEMA' / 'SCROLL' / 'SECOND' / 'SELECT' / 'SECTION' / 'SESSION_USER' / 'SET' / 'SIZE'
-	/ 'SMALLINT' / 'SOME' / 'SPACE' / 'SQL' / 'SQLCODE' / 'SQLERROR' / 'SQLSTATE' / 'SUBSTRING'
-	/ 'SUM' / 'SYSTEM_USER' / 'TABLE' / 'TEMPORARY' / 'THEN' / 'TIME' / 'TIMESTAMP' / 'TIMEZONE_HOUR'
-	/ 'TIMEZONE_MINUTE' / 'TO' / 'TRAILING' / 'TRANSACTION'/ 'TRANSLATE' / 'TRANSLATION' / 'TRIM'
-	/ 'TRUE' / 'UNION' / 'UNIQUE' / 'UNKNOWN' / 'UPDATE' / 'UPPER' / 'USAGE' / 'USER' / 'USING'
-	/ 'VALUE' / 'VALUES' / 'VARCHAR' / 'VARYING' / 'VIEW' / 'WHEN' / 'WHENEVER' / 'WHERE' / 'WITH'
-	/ 'WORK' / 'WRITE' / 'YEAR' / 'ZONE';
+	'ABSOLUTE' / 'ACTION' / 'ADD' / 'ALL' / 'ALLOCATE'
+	/ 'ALTER' / 'AND' / 'ANY' / 'ARE' / 'AS'
+	/ 'ASC' / 'ASSERTION' / 'AT' / 'AUTHORISATION'
+	/ 'AVG' / 'BEGIN' / 'BIT' / 'BIT_LENGTH' / 'BOTH'
+	/ 'BY' / 'CASCADE' / 'CASCADED' / 'CASE' / 'CAST'
+	/ 'CATALOG' / 'CHAR' / 'CHARACTER' / 'CHAR_LENGTH'
+	/ 'CHARACTER_LENGTH' / 'CHECK' / 'CLOSE' / 'COALESCE'
+	/ 'COLLATE' / 'COLLATION' / 'COLUMN' / 'COMMIT'
+	/ 'CONNECT' / 'CONNECTION' / 'CONSTRAINT' 
+	/ 'CONSTRAINTS' / 'CONTINUE' / 'CONVERT'
+	/ 'CORRESPONDING' / 'COUNT' / 'CREATE' / 'CROSS'
+	/ 'CURRENT' / 'CURRENT_DATE' / 'CURRENT_TIME'
+	/ 'CURRENT_TIMESTAMP' / 'CURRENT_USER' / 'CURSOR'
+	/ 'DATE' / 'DAY' / 'DEALLOCATE' / 'DECIMAL'
+	/ 'DECLARE' / 'DEFAULT' / 'DEFERRABLE' / 'DEFERRED'
+	/ 'DELETE'/ 'DESC' / 'DESCRIBE' / 'DESCRIPTOR'
+	/ 'DIAGNOSTICS' / 'DISCONNECT' / 'DISTINCT' / 'DOMAIN'
+	/ 'DOUBLE' / 'DROP' / 'ELSE' / 'END' / 'END-EXEC'
+	/ 'ESCAPE' / 'EXCEPT' / 'EXCEPTION' / 'EXEC'
+	/ 'EXECUTE' / 'EXISTS' / 'EXTERNAL' / 'EXTRACT'
+	/ 'FALSE' / 'FETCH' / 'FIRST' / 'FLOAT' / 'FOR'
+	/ 'FOREIGN' / 'FOUND' / 'FROM' / 'FULL' / 'GET'
+	/ 'GLOBAL' / 'GO' / 'GOTO' / 'GRANT' / 'GROUP'
+	/ 'HAVING' / 'HOUR' / 'IDENTITY' / 'IMMEDIATE'
+	/ 'IN' / 'INDICATOR' / 'INITIALLY' / 'INNER'
+	/ 'INPUT' / 'INSENSITIVE' / 'INSERT' / 'INT'
+	/ 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO'
+	/ 'IS' / 'ISOLATION' / 'JOIN' / 'KEY' / 'LANGUAGE'
+	/ 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL'
+	/ 'LIKE' / 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH'
+	/ 'MAX' / 'MIN' / 'MINUTE' / 'MODULE'
+	/ 'MONTH' / 'NAMES' / 'NATIONAL' / 'NATURAL'
+	/ 'NCHAR' / 'NEXT' / 'NO' / 'NOT' / 'NULL'
+	/ 'NULLIF'/ 'NUMERIC' / 'OCTET_LENGTH' / 'OFFSET'
+	/ 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR'
+	/ 'ORDER' / 'OUTER' / 'OUTPUT' / 'OVERLAPS' / 'PAD'
+	/ 'PARTIAL' / 'POSITION' / 'PRECISION' / 'PREPARE'
+	/ 'PRESERVE' / 'PRIMARY' / 'PRIOR' / 'PRIVILEGES'
+	/ 'PROCEDURE' / 'PUBLIC' / 'READ'
+	/ 'REAL' / 'REFERENCES' / 'RELATIVE' / 'RESTRICT'
+	/ 'REVOKE' / 'RIGHT' / 'ROLLBACK' / 'ROWS'
+	/ 'SCHEMA' / 'SCROLL' / 'SECOND' / 'SELECT' / 'SECTION'
+	/ 'SESSION_USER' / 'SET' / 'SIZE' / 'SMALLINT' / 'SOME'
+	/ 'SPACE' / 'SQL' / 'SQLCODE' / 'SQLERROR' / 'SQLSTATE'
+	/ 'SUBSTRING' / 'SUM' / 'SYSTEM_USER' / 'TABLE' 
+	/ 'TEMPORARY' / 'THEN' / 'TIME' / 'TIMESTAMP'
+	/ 'TIMEZONE_HOUR' / 'TIMEZONE_MINUTE' / 'TO' / 'TRAILING'
+	/ 'TRANSACTION'/ 'TRANSLATE' / 'TRANSLATION' / 'TRIM'
+	/ 'TRUE' / 'UNION' / 'UNIQUE' / 'UNKNOWN' / 'UPDATE'
+	/ 'UPPER' / 'USAGE' / 'USER' / 'USING' / 'VALUE'
+	/ 'VALUES' / 'VARCHAR' / 'VARYING' / 'VIEW' / 'WHEN'
+	/ 'WHENEVER' / 'WHERE' / 'WITH' / 'WORK' / 'WRITE' 
+	/ 'YEAR' / 'ZONE';
 ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / ';' / '.';
 _ <-
