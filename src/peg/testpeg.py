@@ -60,7 +60,7 @@ def test_file(file_name):
 if __name__=="__main__":
     with open("adql2.1.peg", "r") as adql_peg_file:
         adql_peg = adql_peg_file.read()
-        parser = ParserPEG(adql_peg, 'query', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
+        parser = ParserPEG(adql_peg, 'query_specification', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
         for f in [
                 "../adql/gavo/whitespace.xml",
                 "../adql/gavo/geometry.xml",

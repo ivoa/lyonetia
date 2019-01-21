@@ -1,18 +1,21 @@
-// root symbol
-
-query <-
-	(query_specification __)? 
-	query_expression _ EOF;
-
-// Top level queries might start with the WITH clause
+// ============================ The Grammar's root symbol
 
 query_specification <-
-	'WITH' __ identifier __ 'AS' 
-	_ '(' _ query_expression _ ')' 
-	(_ ',' _ '(' _ query_expression _ ')')*;
+	with_clause? _
+	query_expression _ EOF;
 
-// Generalised query
+// ============================ Top level query parts
 
+with_clause <-
+	'WITH' _ with_query
+		_ (','_ with_query )*;
+
+with_query <- identifier __ as
+	_ '(' _ query_expression _ ')';
+
+
+// Rewriting query_expression to have set operator syntax lik
+// postgres.
 query_expression <-
 	select_query
 	(__ set_operator
@@ -535,6 +538,8 @@ letter <-
 
 // Reserved words
 
+as <- 'AS' _a;
+
 keyword <-
 	(ADQL_reserved_word / SQL_reserved_word) _a;
 
@@ -605,7 +610,7 @@ SQL_reserved_word <-
 	/ 'WHENEVER' / 'WHERE' / 'WITH' / 'WORK' / 'WRITE' 
 	/ 'YEAR' / 'ZONE';
 
-// Auxiliar rules to handle things like whitespace and comments
+// Auxiliary rules to handle things like whitespace and comments
 
 ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / ';' / '.';
