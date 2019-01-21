@@ -446,12 +446,6 @@ point <-
 	_ (string_value_expression / 'NULL') 
 	_ ',' _ coordinates _ ')';
 
-comment	<-
-	'--' r'[^\n\r]*';
-
-comments <-
-	(comment EndOfLine)+;
-
 numeric_value_expression <-
 	term (_ ('+' / '-') _ numeric_value_expression)*;
 
@@ -615,6 +609,9 @@ SQL_reserved_word <-
 
 ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / ';' / '.';
+
+comment	<-
+	'--' r'[^\n\r]*';
 
 _ <-
 	(comment / Space / EOL)*;
