@@ -13,8 +13,7 @@ with_clause <-
 with_query <- identifier __ as
 	_ '(' _ query_expression _ ')';
 
-
-// Rewriting query_expression to have set operator syntax lik
+// Rewriting query_expression to have set operator syntax like
 // postgres.
 query_expression <-
 	select_query
@@ -36,7 +35,7 @@ select_query <-
 	(__ set_quantifier)?
 	(_ set_limit)?
 	_ select_list
-	__ table_expression;
+	_ table_expression;
 
 set_quantifier <-
 	('DISTINCT' / 'ALL') _a;
@@ -44,30 +43,26 @@ set_quantifier <-
 set_limit <-
 	'TOP' __ unsigned_integer;
 
+
+// ================================= Select lists and their items
 select_list	<-
 	'*' 
-	/ select_item (_ ',' _ select_item)*;
+	/ select_sublist (_ ',' _ select_sublist)*;
 
-select_item	<-
-	select_column correlation_specification?;
+select_sublist <-
+	derived_column 
+	/ table_name _ '.' _ '*';
 
-select_column <-
-	concatenation
-	/ value_expression
-	/ boolean_factor
-	/ set_function_specification
-	/ column_name
-	/ string_function
-	/ geometry_function;
+derived_column <- value_expression _ as_clause?;
 
 // Table expressions (FROM clause: tables, join, etc.)
 
 table_expression <-
 	from_clause
-	(__ where_clause)?
-	(__ group_by_clause)?
-	(__ order_by_clause)?
-	(__ offset_clause)?;
+	(_ where_clause)?
+	(_ group_by_clause)?
+	(_ order_by_clause)?
+	(_ offset_clause)?;
 
 from_clause <-
 	'FROM' __ from_list;
@@ -76,13 +71,14 @@ from_list <-
 	table_reference 
 	(_ ',' _ table_reference)*;
 
-correlation_specification <-
-	(_ 'AS' __)? identifier;
+// joining correlation_specification and as_clause
+as_clause <-
+	as? _ identifier;
 
 table_reference <-
 	joined_table 
-	/ subquery _ correlation_specification
-	/ identifier correlation_specification?;
+	/ subquery _ as_clause?
+	/ table_name as_clause?;
 
 // JOIN clause and related elements
 
@@ -95,8 +91,8 @@ sub_join <-
 
 join_opener <-
 	sub_join 
-	/ identifier correlation_specification?
-	/ subquery _ correlation_specification;
+	/ table_name as_clause?
+	/ subquery _ as_clause;
 
 qualified_join <-
 	join_opener _ join_clause;
@@ -139,7 +135,7 @@ join_condition <-
 	on _ ( '(' _ search_list _ ')' / search_list );
 
 named_columns_join <-
-	'USING' __ '('
+	'USING' _ '('
 	_ identifier (_ ',' _ identifier)*
 	_ ')';
 
@@ -155,9 +151,6 @@ search_list	<-
 search_condition <-
 	boolean_factor
 	/ exists_predicate;
-
-search_column <-
-	value_expression;
 
 predicate <-
 	(_ like_predicate / _ null_predicate 
@@ -243,10 +236,14 @@ offset_clause <-
 // Identifiers (<schema>.<table>.<field>), numerical / geometrical 
 // / string expressions and functions
 
+table_name <-
+	identifier (_ '.' _ identifier)? (_ '.' _ identifier)?;
+
+column_reference <-
+	table_name? identifier;
+
 identifier <-
-	((regular_identifier / delimited_identifier) _ '.' _)?
-	((regular_identifier / delimited_identifier) _ '.' _)?
-	(regular_identifier / delimited_identifier / '*');
+	(regular_identifier / delimited_identifier);
 
 delimited_identifier <-
 	'"' ('""' / r'[^"]')+ '"';
@@ -257,14 +254,23 @@ regular_identifier <-
 character_string_literal <-
 	("'" ("''" / r"[^']")* "'" (Space+ comment _)*)+;
 
-concatenation <-
-	(character_string_literal / regular_identifier) 
-	_ '||' 
-	_ (character_string_literal / regular_identifier);
+fold_function <-	
+	('UPPER'/'LOWER') _ '(' character_value_expression ')';
 
-character_factor <-
-	identifier
-	/ character_string_literal;
+string_value_function <-
+	string_geometry_function
+	/ fold_function
+	/ user_defined_function;
+	
+character_primary <-
+	character_string_literal 
+	/ string_value_function
+	/ value_expression_primary;
+
+concatenation <-
+	character_primary
+	_ '||' 
+	_ character_value_expression;
 
 geometry_function <-
 	geometry_value_function
@@ -287,8 +293,8 @@ string_value_expression <-
 
 character_value_expression <-
 	concatenation
-	/ identifier
-	/ character_factor;
+	/ column_reference
+	/ character_primary;
 
 geometry_value_function <-
 	box
@@ -427,7 +433,7 @@ rand_function <-
 	'RAND' '(' (_ numeric_value_expression _)? ')';
 
 string_function <-
-	string_func_name '(' _ search_column _ ')';
+	string_func_name '(' _ value_expression _ ')';
 
 string_func_name <-
 	'LOWER';
@@ -477,11 +483,22 @@ numeric_primary	<-
 	value_expression_primary
 	/ numeric_value_function;
 
-// The order on this one breaks two examples
+// This is required as a helper for value_expression (and yes,
+// character-valued column references will be numeric_value_expressions
+// by this grammar; there is no way around this on the grammar level.
+character_value_expression_noid <-
+	concatenation
+	/ character_primary;
+
+// value_expression *really* needs a longest-alternative functionality
+// (or we'd have to re-write it with look-ahead on the operator).
+// As is, we just make sure string_value_expression_noid won't match
+// identifier, which should *just* work to keep the PEG engine
+// from prematurely committing to s_v_e
 value_expression <-
-	numeric_value_expression
-	/ geometry_value_expression
-	/ string_value_expression;
+	string_value_expression
+	/ numeric_value_expression
+	/ geometry_value_expression;
 
 // TODO: value_expression_primary (as in the BNF) is unnecessarily wide
 // here ("CENTROID(3)")
