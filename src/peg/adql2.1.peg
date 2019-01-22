@@ -174,12 +174,14 @@ comp_op <-
 	'=' / '!=' / '<=' / '>=' / '>' / '<';
 
 between_predicate <-
-	not? _ between
+	value_expression 
+	_ not? _ between
 	_ value_expression _ and _ value_expression;
 
 in_predicate <-
-	not? _ 'IN'
-	__ in_predicate_value;
+	value_expression 
+	_ not? _ in
+	in_predicate_value;
 
 in_predicate_value <-
 	identifier
@@ -187,7 +189,7 @@ in_predicate_value <-
 	/ '(' query_expression ')';
 
 exists_predicate <-
-	not? _ 'EXISTS' __ subquery;
+	value_expression not? _ 'EXISTS' __ subquery;
 
 order_by_clause <-
 	'ORDER BY' __ order_by_list;
@@ -557,6 +559,8 @@ letter <-
 as <- 'AS' _a;
 
 on <- 'ON' _a;
+
+in <- 'IN' _a;
 
 join <- 'JOIN' _a;
 
