@@ -136,7 +136,7 @@ on <-
 	'ON' _a;
 
 join_condition <-
-	on _ ( '(' _ search_list _ ')' / search_list );
+	on _ search_condition;
 
 named_columns_join <-
 	'USING' _ '('
@@ -146,34 +146,35 @@ named_columns_join <-
 // WHERE clause and related elements
 
 where_clause <-
-	'WHERE' __ search_list;
+	'WHERE' __ search_condition;
 
-search_list	<-
-	search_condition (__ ('AND' / 'OR') 
-	__ ( 'NOT' __)? search_condition)*;
+search_condition <- 
+	boolean_term ('OR' boolean_term)*;
 
-search_condition <-
-	boolean_factor
-	/ exists_predicate;
+boolean_term <-
+	boolean_factor ('AND' boolean_factor)*;
 
 predicate <-
-	(_ like_predicate / _ null_predicate 
-	/ _ comparison_predicate / _ between_predicate
-	/ _ in_predicate);
+	comparison_predicate 
+	/ between_predicate
+	/ in_predicate
+	/ like_predicate 
+	/ null_predicate 
+	/ exists_predicate;
 
 boolean_factor <-
-	(concatenation / value_expression)
-	_ predicate
-	/ '(' _ (concatenation / value_expression)
-	_ predicate _ ')';
+	('NOT')? boolean_primary;
+
+boolean_primary <-
+	'(' search_condition ')'
+	/ predicate;
 
 null_predicate <-
 	'IS' (__ 'NOT')? 
 	__ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 
 comparison_predicate <-
-	('NOT' __)? _ comp_op
-	_ (concatenation / value_expression) (_ predicate)*;
+	value_expression comp_op value_expression;
 
 like_predicate <-
 	('NOT' __)? _ ('ILIKE' / 'LIKE')
@@ -232,7 +233,7 @@ group_by_term_list <-
 
 having_clause <-
 	'HAVING' __
-	'('? search_list ')'?;
+	'('? search_condition ')'?;
 
 offset_clause <-
 	'OFFSET' __ unsigned_integer;
@@ -493,8 +494,7 @@ numeric_primary	<-
 // character-valued column references will be numeric_value_expressions
 // by this grammar; there is no way around this on the grammar level.
 character_value_expression_noid <-
-	concatenation
-	/ character_primary;
+	concatenation;
 
 // value_expression *really* needs a longest-alternative functionality
 // (or we'd have to re-write it with look-ahead on the operator).
@@ -502,7 +502,7 @@ character_value_expression_noid <-
 // identifier, which should *just* work to keep the PEG engine
 // from prematurely committing to s_v_e
 value_expression <-
-	string_value_expression
+	character_value_expression_noid
 	/ numeric_value_expression
 	/ geometry_value_expression;
 
