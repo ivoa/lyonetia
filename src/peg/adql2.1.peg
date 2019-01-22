@@ -189,7 +189,7 @@ in_predicate_value <-
 	/ '(' query_expression ')';
 
 exists_predicate <-
-	value_expression not? _ 'EXISTS' __ subquery;
+	not? _ 'EXISTS' __ subquery;
 
 order_by_clause <-
 	'ORDER BY' __ order_by_list;
