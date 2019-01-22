@@ -249,7 +249,7 @@ character_string_literal <-
 	("'" ("''" / r"[^']")* "'" (Space+ comment _)*)+;
 
 fold_function <-	
-	('UPPER'/'LOWER') _ '(' character_value_expression ')';
+	('UPPER'/'LOWER') _ '(' _ character_value_expression _ ')';
 
 string_value_function <-
 	string_geometry_function
