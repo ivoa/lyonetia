@@ -81,8 +81,8 @@ as_clause <-
 
 table_reference <-
 	joined_table 
-	/ subquery _ as_clause
-	/ table_name as_clause?;
+	/ table_name _ as_clause?
+	/ subquery _ as_clause;
 
 // JOIN clause and related elements
 
@@ -95,7 +95,7 @@ sub_join <-
 
 join_opener <-
 	sub_join 
-	/ table_name as_clause?
+	/ table_name _ as_clause?
 	/ subquery _ as_clause;
 
 qualified_join <-
@@ -151,15 +151,15 @@ predicate <-
 	/ exists_predicate;
 
 boolean_factor <-
-	('NOT')? boolean_primary;
+	not? _ boolean_primary;
 
 boolean_primary <-
 	'(' search_condition ')'
 	/ predicate;
 
 null_predicate <-
-	'IS' (__ 'NOT')? 
-	__ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
+	'IS' _ not? _
+	('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 
 comparison_predicate <-
 	value_expression comp_op value_expression;
@@ -173,11 +173,11 @@ comp_op <-
 	'=' / '!=' / '<=' / '>=' / '>' / '<';
 
 between_predicate <-
-	('NOT' __)? between
+	not? _ between
 	_ value_expression _ and _ value_expression;
 
 in_predicate <-
-	('NOT' __)? 'IN'
+	not? _ 'IN'
 	__ in_predicate_value;
 
 in_predicate_value <-
@@ -186,7 +186,7 @@ in_predicate_value <-
 	/ '(' query_expression ')';
 
 exists_predicate <-
-	('NOT' __)? 'EXISTS' __ subquery;
+	not? _ 'EXISTS' __ subquery;
 
 order_by_clause <-
 	'ORDER BY' __ order_by_list;
@@ -582,9 +582,9 @@ ADQL_reserved_word <-
 
 SQL_reserved_word <-
 	'ABSOLUTE' / 'ACTION' / 'ADD' / 'ALL' / 'ALLOCATE'
-	/ 'ALTER' / 'AND' / 'ANY' / 'ARE' / 'AS'
+	/ 'ALTER' / and / 'ANY' / 'ARE' / as
 	/ 'ASC' / 'ASSERTION' / 'AT' / 'AUTHORISATION'
-	/ 'AVG' / 'BEGIN' / 'BIT' / 'BIT_LENGTH' / 'BOTH'
+	/ 'AVG' / 'BEGIN' / between / 'BIT' / 'BIT_LENGTH' / 'BOTH'
 	/ 'BY' / 'CASCADE' / 'CASCADED' / 'CASE' / 'CAST'
 	/ 'CATALOG' / 'CHAR' / 'CHARACTER' / 'CHAR_LENGTH'
 	/ 'CHARACTER_LENGTH' / 'CHECK' / 'CLOSE' / 'COALESCE'
@@ -608,14 +608,14 @@ SQL_reserved_word <-
 	/ 'IN' / 'INDICATOR' / 'INITIALLY' / 'INNER'
 	/ 'INPUT' / 'INSENSITIVE' / 'INSERT' / 'INT'
 	/ 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO'
-	/ 'IS' / 'ISOLATION' / 'JOIN' / 'KEY' / 'LANGUAGE'
+	/ 'IS' / 'ISOLATION' / join / 'KEY' / 'LANGUAGE'
 	/ 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL'
 	/ 'LIKE' / 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH'
 	/ 'MAX' / 'MIN' / 'MINUTE' / 'MODULE'
-	/ 'MONTH' / 'NAMES' / 'NATIONAL' / 'NATURAL'
-	/ 'NCHAR' / 'NEXT' / 'NO' / 'NOT' / 'NULL'
+	/ 'MONTH' / 'NAMES' / 'NATIONAL' / natural
+	/ 'NCHAR' / 'NEXT' / 'NO' / not / 'NULL'
 	/ 'NULLIF'/ 'NUMERIC' / 'OCTET_LENGTH' / 'OFFSET'
-	/ 'OF' / 'ON' / 'ONLY' / 'OPEN' / 'OPTION' / 'OR'
+	/ 'OF' / on / 'ONLY' / 'OPEN' / 'OPTION' / or
 	/ 'ORDER' / 'OUTER' / 'OUTPUT' / 'OVERLAPS' / 'PAD'
 	/ 'PARTIAL' / 'POSITION' / 'PRECISION' / 'PREPARE'
 	/ 'PRESERVE' / 'PRIMARY' / 'PRIOR' / 'PRIVILEGES'
@@ -632,7 +632,7 @@ SQL_reserved_word <-
 	/ 'TRUE' / 'UNION' / 'UNIQUE' / 'UNKNOWN' / 'UPDATE'
 	/ 'UPPER' / 'USAGE' / 'USER' / 'USING' / 'VALUE'
 	/ 'VALUES' / 'VARCHAR' / 'VARYING' / 'VIEW' / 'WHEN'
-	/ 'WHENEVER' / 'WHERE' / 'WITH' / 'WORK' / 'WRITE' 
+	/ 'WHENEVER' / where / 'WITH' / 'WORK' / 'WRITE' 
 	/ 'YEAR' / 'ZONE';
 
 // Auxiliary rules to handle things like whitespace and comments
