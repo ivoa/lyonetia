@@ -181,7 +181,7 @@ between_predicate <-
 in_predicate <-
 	value_expression 
 	_ not? _ in
-	in_predicate_value;
+	_ in_predicate_value;
 
 in_predicate_value <-
 	identifier
