@@ -1,6 +1,6 @@
 // =========================== Configurables for deployers
 
-udf_prefix = 'ivo_';  // additional prefixes to be added here
+udf_prefix <- 'ivo_';  // additional prefixes to be added here
 
 // ============================ The Grammar's root symbol
 
@@ -54,8 +54,8 @@ select_list	<-
 	/ select_sublist (_ ',' _ select_sublist)*;
 
 select_sublist <-
-	derived_column 
-	/ table_name _ '.' _ '*';
+	table_name _ '.' _ '*'
+	/ derived_column;
 
 derived_column <- value_expression _ as_clause?;
 
@@ -478,7 +478,7 @@ numeric_geometry_function <-
 	predicate_geometry_function
 	/ non_predicate_geometry_function;
 
-udf_name = udf_prefix regular_identifier;
+udf_name <- udf_prefix regular_identifier;
 
 user_defined_function <-
 	udf_name '(' 
