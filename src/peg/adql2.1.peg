@@ -81,7 +81,7 @@ as_clause <-
 
 table_reference <-
 	joined_table 
-	/ subquery _ as_clause?
+	/ subquery _ as_clause
 	/ table_name as_clause?;
 
 // JOIN clause and related elements
