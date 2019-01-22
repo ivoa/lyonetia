@@ -479,8 +479,14 @@ numeric_primary	<-
 // This is required as a helper for value_expression (and yes,
 // character-valued column references will be numeric_value_expressions
 // by this grammar; there is no way around this on the grammar level.
+// We probably should require the longest-match feature for ADQL-ready
+// PEG, or this is going to be no end of pain.
+// And no, we can't have user_defined_function here since that would
+// blow up ivo_foo(a,b,c)+x.
 character_value_expression_noid <-
-	concatenation;
+	concatenation
+	/ fold_function
+	/ string_geometry_function;
 
 // value_expression *really* needs a longest-alternative functionality
 // (or we'd have to re-write it with look-ahead on the operator).
