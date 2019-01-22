@@ -198,20 +198,20 @@ exists_predicate <-
 	not? _ 'EXISTS' __ subquery;
 
 order_by_clause <-
-	'ORDER BY' __ order_by_list;
+	'ORDER BY' __ sort_specification_list;
 
-order_by_list <-
-	order_by_term
-	(_ ',' _ order_by_term)*;
+sort_specification_list <-
+	sort_specification
+	(_ ',' _ sort_specification)*;
 
-order_by_term <-
-	order_by_expression (__ order_by_direction)?;
+sort_specification <-
+	sort_key (_ ordering_specification)?;
 
-order_by_expression <-
+sort_key <-
 	identifier
 	/ unsigned_integer;
 
-order_by_direction <-
+ordering_specification <-
 	'ASC'
 	/ 'DESC';
 
@@ -224,7 +224,7 @@ group_by_term_list <-
 	identifier (_ ',' _ identifier)*;
 
 having_clause <-
-	'HAVING' __  // XXX: ensure balanced parens!
+	'HAVING' __
 	'('? search_condition ')'?;
 
 offset_clause <-
