@@ -153,7 +153,7 @@
   </query>
   <query uuid="feef3034-4458-11e6-96e2-28b2bdcff70b">
     <description>Various invalid join forms</description>
-    <adql valid="false" version="adql-2.1">select x from t1 quatsch JOIN t1
+    <adql valid="false" version="adql-2.1">select x from t1 x quatsch JOIN t1
 </adql>
   </query>
   <query uuid="033bb9b4-4459-11e6-96e2-28b2bdcff70b">
