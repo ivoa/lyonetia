@@ -21,12 +21,12 @@ with_query <- identifier __ as
 // postgres.
 query_expression <-
 	select_query
-	(__ set_operator
-	__ set_query_expression)*;
+	(_ set_operator
+	_ set_query_expression)*;
 
 set_operator <-
-	('EXCEPT' / 'INTERSECT' / 'UNION') 
-	(__ 'ALL')?;
+	('EXCEPT' / 'INTERSECT' / 'UNION') _a
+	(__ 'ALL' _a)?;
 
 set_query_expression <-
 	query_expression 
