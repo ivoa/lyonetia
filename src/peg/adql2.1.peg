@@ -107,9 +107,6 @@ column_name <-
 subquery <-
 	'(' _ query_expression _ ')';
 
-join <- 
-	'JOIN' _a;
-
 join_clause <-
 	join_method? _ join _ 
 	table_reference (_ join_specification)? 
@@ -122,18 +119,12 @@ join_type <-
 outer_join_type <-
 	('LEFT' / 'RIGHT' / 'FULL') _a;
 
-natural <-
-	'NATURAL' _a;
-
 join_method	<-
 	natural? _ (join_type)?;
 
 join_specification	<-
 	join_condition
 	/ named_columns_join;
-
-on <- 
-	'ON' _a;
 
 join_condition <-
 	on _ search_condition;
@@ -146,13 +137,13 @@ named_columns_join <-
 // WHERE clause and related elements
 
 where_clause <-
-	'WHERE' __ search_condition;
+	where _ search_condition;
 
 search_condition <- 
-	boolean_term ('OR' boolean_term)*;
+	boolean_term _ (or _ boolean_term)*;
 
 boolean_term <-
-	boolean_factor ('AND' boolean_factor)*;
+	boolean_factor _ (and _ boolean_factor)*;
 
 predicate <-
 	comparison_predicate 
@@ -177,17 +168,12 @@ comparison_predicate <-
 	value_expression comp_op value_expression;
 
 like_predicate <-
-	('NOT' __)? _ ('ILIKE' / 'LIKE')
-	_ character_value_expression (_ predicate)*;
+	character_value_expression
+	_ not? _ ('ILIKE' / 'LIKE')
+	_ character_value_expression;
 
 comp_op <-
 	'=' / '!=' / '<=' / '>=' / '>' / '<';
-
-between <-
-	'BETWEEN' _a;
-
-and <-
-	'AND' _a;
 
 between_predicate <-
 	('NOT' __)? between
@@ -562,6 +548,22 @@ letter <-
 // Reserved words
 
 as <- 'AS' _a;
+
+on <- 'ON' _a;
+
+join <- 'JOIN' _a;
+
+natural <- 'NATURAL' _a;
+
+between <- 'BETWEEN' _a;
+
+and <- 'AND' _a;
+
+or <- 'OR' _a;
+
+not <- 'NOT' _a;
+
+where <- 'WHERE' _a;
 
 keyword <-
 	(ADQL_reserved_word / SQL_reserved_word) _a;

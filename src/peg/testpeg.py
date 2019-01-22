@@ -21,54 +21,76 @@ from arpeggio import NoMatch
 from arpeggio.peg import ParserPEG
 from xml.etree import ElementTree as etree
 
-global parser
 
-def assert_valid(query, uuid, f, desc):
-    try:
-        result = parser.parse(query)
-    except Exception, msg:
-        sys.stderr.write(
-                "Query '{}' doesn't parse but should:\n{}\nLocated at file {}, description: '{}'\n\n".format(
-                query, msg, f, desc))
-
-def assert_invalid(query, uuid, f, desc):
-    try:
-        result = parser.parse(query)
-        sys.stderr.write("Query '{}' parses but shouldn't.\nLocated at file {}, description: '{}'\n\n".format(query, f, desc))
-    except NoMatch:
-        pass
-    except Exception, msg:
-        sys.stderr.write(
-            "Query '{}' Raises non-parse exception:\n{}\n\n".format(query, msg))
+class Tester(object):
+    def __init__(self):
+        with open("adql2.1.peg", "r") as adql_peg_file:
+            adql_peg = adql_peg_file.read()
+        self.parser = ParserPEG(adql_peg, 
+            'query_specification', 
+            ignore_case=True, 
+            skipws=False, 
+            debug=False, 
+            reduce_tree=True, 
+            memoization=True)
+        self.successful, self.failed = 0, 0
 
 
-def run_test(query_el, f):
-    adql = query_el.find("adql")
-    d = query_el.find("description").text
-    if adql.get("valid")=="true":
-        assert_valid(adql.text.upper(), query_el.get("uuid"), f, d)
-    else:
-        assert_invalid(adql.text.upper(), query_el.get("uuid"), f, d)
+    def assert_valid(self, query, uuid, f, desc):
+        try:
+            result = self.parser.parse(query)
+            self.successful += 1
+
+        except Exception, msg:
+            sys.stderr.write(
+                    "Query '{}' doesn't parse but should:\n"
+                    "{}\nLocated at file {}, description: '{}'\n\n".format(
+                        query, msg, f, desc))
+            self.failed += 1
+
+    def assert_invalid(self, query, uuid, f, desc):
+        try:
+            result = self.parser.parse(query)
+            sys.stderr.write("Query '{}' parses but shouldn't.\n"
+                "Located at file {}, description: '{}'\n\n".format(
+                    query, f, desc))
+            self.failed += 1
+
+        except NoMatch:
+            self.successful +=1
+
+        except Exception, msg:
+            sys.stderr.write(
+                "Query '{}' Raises non-parse exception:\n{}\n\n".format(query, msg))
+            self.failed += 1
 
 
-def test_file(file_name):
+    def run_test(self, query_el, f):
+        adql = query_el.find("adql")
+        d = query_el.find("description").text
+        if adql.get("valid")=="true":
+            self.assert_valid(adql.text.upper(), query_el.get("uuid"), f, d)
+        else:
+            self.assert_invalid(adql.text.upper(), query_el.get("uuid"), f, d)
+
+
+def test_file(tester, file_name):
     with open(file_name) as f:
         for ev, el in etree.iterparse(f):
             if el.tag=="query":
-                run_test(el, file_name)
+                tester.run_test(el, file_name)
 
 if __name__=="__main__":
-    with open("adql2.1.peg", "r") as adql_peg_file:
-        adql_peg = adql_peg_file.read()
-        parser = ParserPEG(adql_peg, 'query_specification', ignore_case=True, skipws=False, debug=False, reduce_tree=True, memoization=True)
-        for f in [
-                "../adql/gavo/whitespace.xml",
-                "../adql/gavo/geometry.xml",
-                "../adql/gavo/regressionlike.xml",
-                "../adql/gavo/setexpressions.xml",
-                "../adql/gavo/simpleunit.xml",
-                "../adql/gavo/subqueries.xml"
-                ]:
-            test_file(f)
+    tester = Tester()
+    for f in [
+           "../adql/gavo/whitespace.xml",
+           "../adql/gavo/geometry.xml",
+           "../adql/gavo/regressionlike.xml",
+           "../adql/gavo/setexpressions.xml",
+           "../adql/gavo/simpleunit.xml",
+           "../adql/gavo/subqueries.xml"
+           ]:
+       test_file(tester, f)
+    print("{} ok, {} failed".format(tester.successful, tester.failed))
 
 # vi:et:sta:sw=4
