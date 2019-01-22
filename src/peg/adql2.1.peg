@@ -577,10 +577,12 @@ not <- 'NOT' _a;
 where <- 'WHERE' _a;
 
 keyword <-
-	(ADQL_reserved_word / SQL_reserved_word) _a;
+	ADQL_reserved_word / SQL_reserved_word;
 
+// Caution: If one reserved word is a prefix of another, the longer
+// word needs to come first by PEG longest-match wins rules.
 ADQL_reserved_word <-
-	'ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN2'
+	('ABS' / 'ACOS' / 'AREA' / 'ASIN' / 'ATAN2'
 	/ 'ATAN' / 'BIT_AND' / 'BIT_NOT' / 'BIT_OR'
 	/ 'BIT_XOR' / 'BOX' / 'CEILING' / 'CENTROID' 
 	/ 'CIRCLE' / 'CONTAINS' / 'COORD1' / 'COORD2'
@@ -589,36 +591,36 @@ ADQL_reserved_word <-
 	/ 'IN_UNIT' / 'LOG10' / 'LOG' / 'MOD' 
 	/ 'PI' / 'POINT' / 'POLYGON' / 'POWER'
 	/ 'RADIANS' / 'REGION' / 'RAND' / 'ROUND'
-	/ 'SIN' / 'SQRT' / 'TOP' / 'TAN' / 'TRUNCATE';
+	/ 'SIN' / 'SQRT' / 'TOP' / 'TAN' / 'TRUNCATE') _a;
 
 SQL_reserved_word <-
-	'ABSOLUTE' / 'ACTION' / 'ADD' / 'ALL' / 'ALLOCATE'
+	('ABSOLUTE' / 'ACTION' / 'ADD' / 'ALLOCATE '/ 'ALL'
 	/ 'ALTER' / and / 'ANY' / 'ARE' / as
 	/ 'ASC' / 'ASSERTION' / 'AT' / 'AUTHORISATION'
-	/ 'AVG' / 'BEGIN' / between / 'BIT' / 'BIT_LENGTH' / 'BOTH'
+	/ 'AVG' / 'BEGIN' / between / 'BIT_LENGTH' / 'BIT' / 'BOTH'
 	/ 'BY' / 'CASCADE' / 'CASCADED' / 'CASE' / 'CAST'
-	/ 'CATALOG' / 'CHAR' / 'CHARACTER' / 'CHAR_LENGTH'
+	/ 'CATALOG' / 'CHARACTER' / 'CHAR_LENGTH' / 'CHAR'
 	/ 'CHARACTER_LENGTH' / 'CHECK' / 'CLOSE' / 'COALESCE'
 	/ 'COLLATE' / 'COLLATION' / 'COLUMN' / 'COMMIT'
 	/ 'CONNECT' / 'CONNECTION' / 'CONSTRAINT' 
 	/ 'CONSTRAINTS' / 'CONTINUE' / 'CONVERT'
 	/ 'CORRESPONDING' / 'COUNT' / 'CREATE' / 'CROSS'
-	/ 'CURRENT' / 'CURRENT_DATE' / 'CURRENT_TIME'
-	/ 'CURRENT_TIMESTAMP' / 'CURRENT_USER' / 'CURSOR'
+	/ 'CURRENT_DATE' / 'CURRENT_TIME'
+	/ 'CURRENT_TIMESTAMP' / 'CURRENT_USER' / 'CURRENT' / 'CURSOR'
 	/ 'DATE' / 'DAY' / 'DEALLOCATE' / 'DECIMAL'
 	/ 'DECLARE' / 'DEFAULT' / 'DEFERRABLE' / 'DEFERRED'
-	/ 'DELETE'/ 'DESC' / 'DESCRIBE' / 'DESCRIPTOR'
+	/ 'DELETE' / 'DESCRIBE' / 'DESCRIPTOR' / 'DESC'
 	/ 'DIAGNOSTICS' / 'DISCONNECT' / 'DISTINCT' / 'DOMAIN'
-	/ 'DOUBLE' / 'DROP' / 'ELSE' / 'END' / 'END-EXEC'
-	/ 'ESCAPE' / 'EXCEPT' / 'EXCEPTION' / 'EXEC'
-	/ 'EXECUTE' / 'EXISTS' / 'EXTERNAL' / 'EXTRACT'
+	/ 'DOUBLE' / 'DROP' / 'ELSE' / 'END-EXEC' / 'END'
+	/ 'ESCAPE' / 'EXCEPT' / 'EXCEPTION'
+	/ 'EXECUTE' / 'EXEC' / 'EXISTS' / 'EXTERNAL' / 'EXTRACT'
 	/ 'FALSE' / 'FETCH' / 'FIRST' / 'FLOAT' / 'FOR'
 	/ 'FOREIGN' / 'FOUND' / 'FROM' / 'FULL' / 'GET'
-	/ 'GLOBAL' / 'GO' / 'GOTO' / 'GRANT' / 'GROUP'
+	/ 'GLOBAL' / 'GOTO' / 'GO' / 'GRANT' / 'GROUP'
 	/ 'HAVING' / 'HOUR' / 'IDENTITY' / 'IMMEDIATE'
-	/ 'IN' / 'INDICATOR' / 'INITIALLY' / 'INNER'
-	/ 'INPUT' / 'INSENSITIVE' / 'INSERT' / 'INT'
-	/ 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO'
+	/ 'INDICATOR' / 'INITIALLY' / 'INNER'
+	/ 'INPUT' / 'INSENSITIVE' / 'INSERT' 
+	/ 'INTEGER' / 'INTERSECT' / 'INTERVAL' / 'INTO' / 'INT' / 'IN' 
 	/ 'IS' / 'ISOLATION' / join / 'KEY' / 'LANGUAGE'
 	/ 'LAST' / 'LEADING' / 'LEFT' / 'LEVEL'
 	/ 'LIKE' / 'ILIKE' / 'LOCAL' / 'LOWER' / 'MATCH'
@@ -637,14 +639,14 @@ SQL_reserved_word <-
 	/ 'SESSION_USER' / 'SET' / 'SIZE' / 'SMALLINT' / 'SOME'
 	/ 'SPACE' / 'SQL' / 'SQLCODE' / 'SQLERROR' / 'SQLSTATE'
 	/ 'SUBSTRING' / 'SUM' / 'SYSTEM_USER' / 'TABLE' 
-	/ 'TEMPORARY' / 'THEN' / 'TIME' / 'TIMESTAMP'
-	/ 'TIMEZONE_HOUR' / 'TIMEZONE_MINUTE' / 'TO' / 'TRAILING'
+	/ 'TEMPORARY' / 'THEN' / 'TIMESTAMP' 
+	/ 'TIMEZONE_HOUR' / 'TIMEZONE_MINUTE' / 'TIME' / 'TO' / 'TRAILING'
 	/ 'TRANSACTION'/ 'TRANSLATE' / 'TRANSLATION' / 'TRIM'
 	/ 'TRUE' / 'UNION' / 'UNIQUE' / 'UNKNOWN' / 'UPDATE'
-	/ 'UPPER' / 'USAGE' / 'USER' / 'USING' / 'VALUE'
-	/ 'VALUES' / 'VARCHAR' / 'VARYING' / 'VIEW' / 'WHEN'
-	/ 'WHENEVER' / where / 'WITH' / 'WORK' / 'WRITE' 
-	/ 'YEAR' / 'ZONE';
+	/ 'UPPER' / 'USAGE' / 'USER' / 'USING' / 'VALUES'
+	/ 'VALUE' / 'VARCHAR' / 'VARYING' / 'VIEW' 
+	/ 'WHENEVER' / 'WHEN' / where / 'WITH' / 'WORK' / 'WRITE' 
+	/ 'YEAR' / 'ZONE') _a;
 
 // Auxiliary rules to handle things like whitespace and comments
 
