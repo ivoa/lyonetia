@@ -198,7 +198,7 @@ exists_predicate <-
 	not? _ 'EXISTS' __ subquery;
 
 order_by_clause <-
-	'ORDER BY' __ sort_specification_list;
+	'ORDER' __ 'BY' __ sort_specification_list;
 
 sort_specification_list <-
 	sort_specification
@@ -217,7 +217,7 @@ ordering_specification <-
 
 // HAVING clause depends on GROUP BY
 group_by_clause <-
-	'GROUP BY' __ group_by_term_list
+	'GROUP' __ 'BY' __ group_by_term_list
 	(__ having_clause)?;
 
 group_by_term_list <-
@@ -225,7 +225,8 @@ group_by_term_list <-
 
 having_clause <-
 	'HAVING' __
-	'('? search_condition ')'?;
+	('(' _  search_condition _ ')'
+	/ _ search_condition );
 
 offset_clause <-
 	'OFFSET' __ unsigned_integer;
