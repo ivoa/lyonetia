@@ -304,24 +304,24 @@ coordinates <-
 	_ numeric_value_expression;
 
 box <-
-	'BOX' '(' (
+	'BOX' _ '(' (
 	_ character_string_literal ',')? 
 	_ coordinates _ ',' 
 	_ numeric_value_expression _ ',' 
 	_ numeric_value_expression _ ')';
 
 centroid <-
-	'CENTROID' '(' 
+	'CENTROID' _ '(' 
 	_ geometry_value_expression _ ')';
 
 circle <-
-	'CIRCLE' '(' 
+	'CIRCLE' _ '(' 
 	_ string_value_expression _ ','
 	_ coordinates _ ','
 	_ numeric_value_expression _ ')';
 
 polygon <-
-	'POLYGON' '(' 
+	'POLYGON' _ '(' 
 	_ string_value_expression _ ','
 	_ coordinates _ ','
 	_ coordinates _ 
@@ -334,17 +334,17 @@ non_predicate_geometry_function <-
 	/ distance;
 
 area <-
-	'AREA' '(' 
+	'AREA' _ '(' 
 	_ geometry_value_expression 
 	_ ')';
 
 coord1 <-
-	'COORD1' '('
+	'COORD1' _ '('
 	_ coord_value 
 	_ ')';
 
 coord2 <-
-	'COORD2' '('
+	'COORD2' _ '('
 	_ coord_value
 	_ ')';
 
@@ -353,7 +353,7 @@ coord_value <-
 	column_reference;
 
 distance <-
-	'DISTANCE' '(' _
+	'DISTANCE' _ '(' _
 	coord_value _ ','
 	_ coord_value _ ')';
 
@@ -362,20 +362,20 @@ predicate_geometry_function <-
 	/ intersects;
 
 contains <-
-	'CONTAINS' '(' 
+	'CONTAINS' _ '(' 
 	_ geometry_value_expression _ ',' 
 	_ geometry_value_expression _ ')';
 
 intersects <-
-	'INTERSECTS' '(' 
+	'INTERSECTS' _ '(' 
 	_ geometry_value_expression _ ','
 	_ geometry_value_expression _ ')';
 
 region <-
-	'REGION' '(' _  string_value_expression _ ')';
+	'REGION' _ '(' _  string_value_expression _ ')';
 
 extract_coord_sys <-
-	'COORDSYS' '(' _ geometry_value_expression _ ')';
+	'COORDSYS' _ '(' _ geometry_value_expression _ ')';
 
 string_geometry_function <-
 	extract_coord_sys 
@@ -424,7 +424,7 @@ onetwo_param_math <-
 	'ROUND' / 'TRUNCATE';
 
 rand_function <-
-	'RAND' '(' (_ numeric_value_expression _)? ')';
+	'RAND' _ '(' (_ numeric_value_expression _)? ')';
 
 string_function <-
 	string_func_name '(' _ value_expression _ ')';
@@ -433,7 +433,7 @@ string_func_name <-
 	'LOWER';
 
 set_function_specification <-
-	'COUNT' '(' ('*' / 
+	'COUNT' _ '(' ('*' / 
 	(set_quantifier __)? identifier) ')' 
 	/ general_set_function;
 
@@ -445,7 +445,7 @@ general_set_function <-
 	set_quantifier? numeric_value_expression ')';
 
 point <-
-	'POINT' '('
+	'POINT' _ '('
 	_ (string_value_expression / 'NULL') 
 	_ ',' _ coordinates _ ')';
 
