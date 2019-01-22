@@ -101,9 +101,6 @@ join_opener <-
 qualified_join <-
 	join_opener _ join_clause;
 
-column_name <-
-	identifier;
-
 subquery <-
 	'(' _ query_expression _ ')';
 
@@ -184,7 +181,7 @@ in_predicate <-
 	__ in_predicate_value;
 
 in_predicate_value <-
-	regular_identifier
+	identifier
 	/ '(' value_expression (_ ',' _  value_expression)* ')'
 	/ '(' query_expression ')';
 
@@ -218,7 +215,7 @@ group_by_term_list <-
 	identifier (_ ',' _ identifier)*;
 
 having_clause <-
-	'HAVING' __
+	'HAVING' __  // XXX: ensure balanced parens!
 	'('? search_condition ')'?;
 
 offset_clause <-
@@ -230,8 +227,11 @@ offset_clause <-
 table_name <-
 	identifier (_ '.' _ identifier)? (_ '.' _ identifier)?;
 
+// we don't re-use table_name here since PEG uses greedy matching
+// and thus would parse x.a all as a table name.  Thus, for 
+// column_reference we simply allow 1..4 identifiers.
 column_reference <-
-	table_name? identifier;
+	(identifier _ '.' _)? (identifier _ '.' _)? (identifier _ '.' _)? identifier;
 
 identifier <-
 	(regular_identifier / delimited_identifier);
@@ -347,7 +347,7 @@ coord2 <-
 
 coord_value <-
 	point /
-	column_name;
+	column_reference;
 
 distance <-
 	'DISTANCE' '(' _
@@ -500,9 +500,9 @@ geometry_value_expression <-
 
 value_expression_primary <-
 	unsigned_literal
-	/ '(' value_expression ')'
-	/ column_name
-	/ set_function_specification;
+	/ column_reference
+	/ set_function_specification
+	/ '(' value_expression ')';
 
 scientific_number <-
 	exact_numeric_literal 'E' 
