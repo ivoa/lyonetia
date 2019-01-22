@@ -158,11 +158,12 @@ boolean_primary <-
 	/ predicate;
 
 null_predicate <-
-	'IS' _ not? _
-	('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
+	column_reference
+	_ 'IS' _ not?
+	_ ('TRUE' / 'FALSE' / 'UNKNOWN' / 'NULL');
 
 comparison_predicate <-
-	value_expression comp_op value_expression;
+	value_expression _ comp_op _ value_expression;
 
 like_predicate <-
 	character_value_expression

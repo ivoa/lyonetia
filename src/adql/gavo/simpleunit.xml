@@ -891,4 +891,9 @@ select * from foo
 bar
 </adql>
   </query>
+  <query uuid="1cb90482-4d00-11e6-866d-736653f6053c">
+    <description>String-valued UDFs parsed</description>
+    <adql valid="true" version="adql-2.1">select ivo_getstring() || 'abc' from t</adql>
+  </query>
+
 </queries>
