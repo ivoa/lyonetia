@@ -1,6 +1,7 @@
 // =========================== Configurables for deployers
 
-udf_prefix <- 'ivo_';  // additional prefixes to be added here
+udf_prefix <-
+	'ivo_';  // additional prefixes to be added here
 
 // ============================ The Grammar's root symbol
 
@@ -14,7 +15,8 @@ with_clause <-
 	'WITH' _ with_query
 		_ (','_ with_query )*;
 
-with_query <- identifier __ as
+with_query <-
+	identifier __ as
 	_ '(' _ query_expression _ ')';
 
 // Rewriting query_expression to have set operator syntax like
@@ -91,7 +93,11 @@ joined_table <-
 	/ sub_join;
 
 sub_join <-
-	'(' _ joined_table _ ')';
+	'(' _ joined_table _ ')';comment	<-
+	'--' r'[^\n\r]*';
+
+comments <-
+	(comment EndOfLine)+;
 
 join_opener <-
 	sub_join 
@@ -556,25 +562,35 @@ letter <-
 
 // Reserved words
 
-as <- 'AS' _a;
+as <- 
+	'AS' _a;
 
-on <- 'ON' _a;
+on <- 
+	'ON' _a;
 
-in <- 'IN' _a;
+in <- 
+	'IN' _a;
 
-join <- 'JOIN' _a;
+join <-
+	'JOIN' _a;
 
-natural <- 'NATURAL' _a;
+natural <-
+	'NATURAL' _a;
 
-between <- 'BETWEEN' _a;
+between <-
+	'BETWEEN' _a;
 
-and <- 'AND' _a;
+and <-
+	'AND' _a;
 
-or <- 'OR' _a;
+or <-
+	'OR' _a;
 
-not <- 'NOT' _a;
+not <-
+	'NOT' _a;
 
-where <- 'WHERE' _a;
+where <-
+	'WHERE' _a;
 
 keyword <-
 	ADQL_reserved_word / SQL_reserved_word;
