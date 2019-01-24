@@ -88,7 +88,8 @@ if __name__=="__main__":
            "../adql/gavo/regressionlike.xml",
            "../adql/gavo/setexpressions.xml",
            "../adql/gavo/simpleunit.xml",
-           "../adql/gavo/subqueries.xml"
+           "../adql/gavo/subqueries.xml",
+           "../adql/gavo/additionaltests.xml"
            ]:
        test_file(tester, f)
     print("{} ok, {} failed".format(tester.successful, tester.failed))

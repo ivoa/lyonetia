@@ -1,23 +1,67 @@
 <?xml version="1.0"?>
 <queries>
-  <contact>
-    <name>Jon Juaristi Campillo</name>
-    <url>mailto:juaristi@uni-heidelberg.de</url>
-  </contact>
-  <publisher>
-    <name>Heidelberg GAVO Data Center</name>
-    <url>http://dc.g-vo.org</url>
-  </publisher>
-  <description>Additional simple cases for things that and ADQL parser</description>
-  <query>
-    <description>Sequences for whitespace and comments are skipped</description>
-    <adql valid="true" version="adql-2.1">SELECT x 
+	<contact>
+		<name>Jon Juaristi Campillo</name>
+		<url>mailto:juaristi@uni-heidelberg.de</url>
+	</contact>
+	<publisher>
+		<name>Heidelberg GAVO Data Center</name>
+		<url>http://dc.g-vo.org</url>
+	</publisher>
+	<description>Additional simple cases for things for the ADQL parser, the last three ones, which are incorrect, are being parsed.</description>
+	<query>
+		<description>Sequences for whitespace and comments are skipped</description>
+		<adql valid="true" version="adql-2.1">SELECT x
 
-    	-- an inline commend
+			-- an inline comment
 
-    	-- and another one
+			-- and another one
 
-    	from Y
-</adql>
-  </query>
+			from Y
+		</adql>
+	</query>
+	<query>
+		<description>Queries where value_expression breaks</description>
+		<adql valid="false" version="adql-2.1">SELECT ivo_foo(6) || 9
+
+			-- an inline comment
+
+			-- and another one
+
+			from Y
+		</adql>
+		</query>
+	<query>
+		<description>Sequences for whitespace and comments are skipped</description>
+		<adql valid="false" version="adql-2.1">SELECT ivo_foo('11') || 11
+
+			-- an inline commend
+
+			-- and another one
+
+			from Y
+		</adql>
+	</query>
+	<query>
+		<description>Sequences for whitespace and comments are skipped</description>
+		<adql valid="false" version="adql-2.1">SELECT point('icrs', 3, 4) || 'aaaa'
+
+			-- an inline commend
+
+			-- and another one
+
+			from Y
+		</adql>
+	</query>
+	<query>
+		<description>Sequences for whitespace and comments are skipped</description>
+		<adql valid="false" version="adql-2.1">SELECT 'text'*1323
+
+			-- an inline comment
+
+			-- and another one
+
+			from Y
+		</adql>
+	</query>
 </queries>
