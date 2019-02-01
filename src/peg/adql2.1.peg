@@ -1,3 +1,4 @@
+// Note: in the actual PEG definition comments start with #
 // =========================== Configurables for deployers
 
 udf_prefix <-
@@ -58,7 +59,8 @@ select_sublist <-
 	table_name _ '.' _ '*'
 	/ derived_column;
 
-derived_column <- value_expression _ as_clause?;
+derived_column <-
+	value_expression _ as_clause?;
 
 // Table expressions (FROM clause: tables, join, etc.)
 
@@ -251,7 +253,8 @@ character_string_literal <-
 	("'" ("''" / r"[^']")* "'" (Space+ comment _)*)+;
 
 fold_function <-
-	('UPPER' / 'LOWER') _ '(' _ character_value_expression _ ')';
+	('UPPER' / 'LOWER') _
+	'(' _ character_value_expression _ ')';
 
 string_value_function <-
 	string_geometry_function
@@ -267,6 +270,9 @@ concatenation <-
 	character_primary
 	_ '||'
 	_ character_value_expression;
+
+// concatenation2 <-
+//	character_primary (_ '||' _ concatenation2)*;
 
 geometry_function <-
 	geometry_value_function
@@ -306,8 +312,8 @@ coordinates <-
 	_ numeric_value_expression;
 
 box <-
-	'BOX' _ '(' (
-	_ character_string_literal ',')?
+	'BOX' _ '('
+	( _ character_string_literal ',')?
 	_ coordinates _ ','
 	_ numeric_value_expression _ ','
 	_ numeric_value_expression _ ')';
@@ -355,8 +361,8 @@ coord_value <-
 	/ column_reference;
 
 distance <-
-	'DISTANCE' _ '(' _
-	coord_value _ ','
+	'DISTANCE' _ '('
+	_ coord_value _ ','
 	_ coord_value _ ')';
 
 predicate_geometry_function <-
@@ -470,7 +476,8 @@ numeric_geometry_function <-
 	predicate_geometry_function
 	/ non_predicate_geometry_function;
 
-udf_name <- udf_prefix regular_identifier;
+udf_name <-
+	udf_prefix regular_identifier;
 
 user_defined_function <-
 	udf_name '('
@@ -498,10 +505,26 @@ character_value_expression_noid <-
 // As is, we just make sure string_value_expression_noid won't match
 // identifier, which should *just* work to keep the PEG engine
 // from prematurely committing to s_v_e
+//value_expression <-
+//	character_value_expression_noid  
+//	/ numeric_value_expression
+//	/ geometry_value_expression;
+
+//value_expression <-
+//	numeric_expression
+//	/ string_expression
+//	/ geometry_value_expression
+//	/ column_reference;
+
 value_expression <-
-	character_value_expression_noid
-	/ numeric_value_expression
-	/ geometry_value_expression;
+	((user_defined_function
+	/ string_expression_operand
+	/ numeric_expression_operand
+	/ column_reference)
+	/ (string_expression_rest
+	/ numeric_expression_rest)
+	/ geometry_value_expression)
+	(_ value_expression)*;
 
 // TODO: value_expression_primary (as in the BNF) is unnecessarily wide
 // here ("CENTROID(3)")
@@ -514,6 +537,25 @@ value_expression_primary <-
 	/ column_reference
 	/ set_function_specification
 	/ '(' value_expression ')';
+
+string_expression <-
+	string_expression_operand (_ string_expression_rest)*;
+
+string_expression_operand <-
+	user_defined_function
+	/ character_value_expression;
+
+string_expression_rest <-
+	'||' _ string_expression_operand;
+
+numeric_expression <-
+	numeric_expression_operand (_ numeric_expression_rest)*;
+
+numeric_expression_operand <-
+	numeric_value_expression;
+
+numeric_expression_rest <-
+	('+' / '-' / '*' / '/') _ numeric_expression_operand;
 
 scientific_number <-
 	exact_numeric_literal 'E'
