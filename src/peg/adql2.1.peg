@@ -488,43 +488,22 @@ numeric_primary	<-
 	value_expression_primary
 	/ numeric_value_function;
 
-// This is required as a helper for value_expression (and yes,
-// character-valued column references will be numeric_value_expressions
-// by this grammar; there is no way around this on the grammar level.
-// We probably should require the longest-match feature for ADQL-ready
-// PEG, or this is going to be no end of pain.
-// And no, we can't have user_defined_function here since that would
-// blow up ivo_foo(a,b,c)+x.
-character_value_expression_noid <-
-	concatenation
-	/ fold_function
-	/ string_geometry_function;
-
-// value_expression *really* needs a longest-alternative functionality
-// (or we'd have to re-write it with look-ahead on the operator).
-// As is, we just make sure string_value_expression_noid won't match
-// identifier, which should *just* work to keep the PEG engine
-// from prematurely committing to s_v_e
-//value_expression <-
-//	character_value_expression_noid  
-//	/ numeric_value_expression
-//	/ geometry_value_expression;
-
-//value_expression <-
-//	numeric_expression
-//	/ string_expression
-//	/ geometry_value_expression
-//	/ column_reference;
-
-value_expression <-
-	((user_defined_function
+// We need to seriously re-write value_expression because PEG
+// doesn't have an actual longest-match operator.  Thus, we
+// cannot decide on the type of the first operand.
+// TODO: see how much this overproduces wrt the original grammar:
+// (e.g., is '5'+4+3 ok by the BNF?  PG accepts that, btw)
+value_expression_first_operand <- 
+	user_defined_function
+	/ column_reference
 	/ string_expression_operand
-	/ numeric_expression_operand
-	/ column_reference)
-	/ (string_expression_rest
-	/ numeric_expression_rest)
-	/ geometry_value_expression)
-	(_ value_expression)*;
+	/ numeric_expression_operand;
+
+value_expression <- ( 
+		value_expression_first_operand _ (
+			string_expression_rest
+			/ numeric_expression_rest)?
+	/ geometry_value_expression);
 
 // TODO: value_expression_primary (as in the BNF) is unnecessarily wide
 // here ("CENTROID(3)")
@@ -542,8 +521,7 @@ string_expression <-
 	string_expression_operand (_ string_expression_rest)*;
 
 string_expression_operand <-
-	user_defined_function
-	/ character_value_expression;
+	character_value_expression;
 
 string_expression_rest <-
 	'||' _ string_expression_operand;
@@ -557,7 +535,7 @@ numeric_expression_operand <-
 numeric_expression_rest <-
 	('+' / '-' / '*' / '/') _ numeric_expression_operand;
 
-scientific_number <-
+approximate_numeric_literal <-
 	exact_numeric_literal 'E'
 	('+' / '-')? unsigned_integer;
 
@@ -576,7 +554,7 @@ unsigned_literal <-
 	/ character_string_literal;
 
 unsigned_numeric_literal <-
-	scientific_number
+	approximate_numeric_literal
 	/ exact_numeric_literal;
 
 numeric_primary <-
