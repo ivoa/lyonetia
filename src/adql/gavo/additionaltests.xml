@@ -8,7 +8,7 @@
 		<name>Heidelberg GAVO Data Center</name>
 		<url>http://dc.g-vo.org</url>
 	</publisher>
-	<description>Additional simple cases for things for the ADQL parser, the last three ones, which are incorrect, are being parsed.</description>
+	<description>Additional simple cases for things for the ADQL parser. Some are syntactically correct but might be semantically incorrect.</description>
 	<query>
 		<description>Sequences for whitespace and comments are skipped</description>
 		<adql valid="true" version="adql-2.1">SELECT x
@@ -21,46 +21,32 @@
 		</adql>
 	</query>
 	<query>
-		<description>Queries where value_expression breaks</description>
-		<adql valid="false" version="adql-2.1">SELECT ivo_foo(6) || 9
-
-			-- an inline comment
-
-			-- and another one
-
+		<description>String operands allow UDFs and numerics</description>
+		<adql valid="true" version="adql-2.1">SELECT ivo_foo(6) || 9
 			from Y
 		</adql>
 		</query>
 	<query>
-		<description>Sequences for whitespace and comments are skipped</description>
-		<adql valid="false" version="adql-2.1">SELECT ivo_foo('11') || 11
-
-			-- an inline commend
-
-			-- and another one
-
+		<description>UDFs allow string arguments</description>
+		<adql valid="true" version="adql-2.1">SELECT ivo_foo('11') || 11
 			from Y
 		</adql>
 	</query>
 	<query>
-		<description>Sequences for whitespace and comments are skipped</description>
+		<description>Geometry values don't admit string operators.</description>
 		<adql valid="false" version="adql-2.1">SELECT point('icrs', 3, 4) || 'aaaa'
-
-			-- an inline commend
-
-			-- and another one
-
 			from Y
 		</adql>
 	</query>
 	<query>
-		<description>Sequences for whitespace and comments are skipped</description>
-		<adql valid="false" version="adql-2.1">SELECT 'text'*1323
-
-			-- an inline comment
-
-			-- and another one
-
+		<description>Geometry values don't admit string operators.</description>
+		<adql valid="false" version="adql-2.1">SELECT 'aaaa' || point('icrs', 3, 4)
+			from Y
+		</adql>
+	</query>
+	<query>
+		<description>Numeric operands and strings mix.</description>
+		<adql valid="true" version="adql-2.1">SELECT 'text'*1323
 			from Y
 		</adql>
 	</query>
