@@ -32,7 +32,7 @@
         <![CDATA[
         Example queries from the OSA query logs.
         ]]>
-    <description>                            
+	</description>                            
 
     <query uuid='16070256-2cb2-47a5-b24d-88856b0630ac'>
         <dataset>http://osa.roe.ac.uk/</dataset>
@@ -40,7 +40,7 @@
             <![CDATA[
             A really simple example.
             ]]>
-        <description>
+		</description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -55,7 +55,10 @@
     </query>
 
     <query uuid='d6004ff9-06a3-483f-9720-f1afabfbbe58'>
-        <dataset>http://osa.roe.ac.uk/</dataset>
+		<dataset>http://osa.roe.ac.uk/</dataset>
+		<description>
+			<![CDATA["Description"]]>
+		</description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
@@ -70,6 +73,9 @@
 
     <query uuid='84c860f0-1623-463b-ba4d-830185853e3f'>
         <dataset>http://osa.roe.ac.uk/</dataset>
+		<description>
+			<![CDATA["Description"]]>
+		</description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
                 SELECT
@@ -83,6 +89,9 @@
     </query>
     <query uuid='7ad59553-3036-4916-b61f-bb3529a1a3ea'>
         <dataset>http://osa.roe.ac.uk/</dataset>
+		<description>
+			<![CDATA["Description"]]>
+		</description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
                 SELECT
@@ -95,6 +104,9 @@
     </query>
     <query uuid='c3f1bc37-4659-4528-a444-e14aabad81bc'>
         <dataset>http://osa.roe.ac.uk/</dataset>
+		<description>
+			<![CDATA["Description"]]>
+		</description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
@@ -109,6 +121,9 @@
     </query>
     <query uuid='77eb3ded-be2a-49a2-a551-364341778c65'>
         <dataset>http://osa.roe.ac.uk/</dataset>
+		<description>
+			<![CDATA["Description"]]>
+		</description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
@@ -133,7 +148,7 @@
             <![CDATA[
             A more realistic example.
             ]]>
-        <description>
+		</description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT
