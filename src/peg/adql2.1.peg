@@ -140,10 +140,10 @@ where_clause <-
 	where _ search_condition;
 
 search_condition <-
-	boolean_term _ (or _ boolean_term)*;
+	boolean_term _ (_ or _ boolean_term)*;
 
 boolean_term <-
-	boolean_factor _ (and _ boolean_factor)*;
+	boolean_factor _  (_ and _ boolean_factor)*;
 
 predicate <-
 	comparison_predicate
@@ -157,7 +157,7 @@ boolean_factor <-
 	not? _ boolean_primary;
 
 boolean_primary <-
-	'(' search_condition ')'
+	'(' _ search_condition _ ')'
 	/ predicate;
 
 null_predicate <-
@@ -188,8 +188,8 @@ in_predicate <-
 
 in_predicate_value <-
 	identifier
-	/ '(' value_expression (_ ',' _  value_expression)* ')'
-	/ '(' query_expression ')';
+	/ '(' _ value_expression (_ ',' _  value_expression)* _ ')'
+	/ '(' _ query_expression _ ')';
 
 exists_predicate <-
 	not? _ 'EXISTS' __ subquery;
@@ -398,7 +398,7 @@ math_function <-
 	_ numeric_value_expression _')')
 	/ (one_param_math '(' _ numeric_value_expression _ ')')
 	/ rand_function
-	/ (no_param_math '()');
+	/ (no_param_math '(' _ ')');
 
 trig_function <-
 	(two_param_trig '('
@@ -515,7 +515,7 @@ value_expression_primary <-
 	unsigned_literal
 	/ column_reference
 	/ set_function_specification
-	/ '(' value_expression ')';
+	/ '(' _ value_expression _ ')';
 
 string_expression <-
 	string_expression_operand (_ string_expression_rest)*;
