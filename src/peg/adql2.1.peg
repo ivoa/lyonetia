@@ -537,7 +537,7 @@ numeric_expression_rest <-
 
 approximate_numeric_literal <-
 	exact_numeric_literal 'E'
-	('+' / '-')? unsigned_integer;
+	signed_integer;
 
 exact_numeric_literal	<-
 	(unsigned_integer '.')* unsigned_integer;

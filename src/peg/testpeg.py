@@ -68,10 +68,11 @@ class Tester(object):
     def run_test(self, query_el, f):
         adql = query_el.find("adql")
         d = query_el.find("description").text
+        text = adql.text.upper()
         if adql.get("valid")=="true":
-            self.assert_valid(adql.text.upper(), query_el.get("uuid"), f, d)
+            self.assert_valid(text, query_el.get("uuid"), f, d)
         else:
-            self.assert_invalid(adql.text.upper(), query_el.get("uuid"), f, d)
+            self.assert_invalid(text, query_el.get("uuid"), f, d)
 
 
 def test_file(tester, file_name):
@@ -89,7 +90,11 @@ if __name__=="__main__":
            "../adql/gavo/setexpressions.xml",
            "../adql/gavo/simpleunit.xml",
            "../adql/gavo/subqueries.xml",
-           "../adql/gavo/additionaltests.xml"
+           "../adql/gavo/additionaltests.xml",
+           "../adql/roe/common-queries.xml",
+           "../adql/roe/example.xml",
+           "../adql/roe/geometric.xml",
+           "../adql/roe/offset.xml"
            ]:
        test_file(tester, f)
     print("{} ok, {} failed".format(tester.successful, tester.failed))
