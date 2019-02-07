@@ -26,7 +26,7 @@ from arpeggio.peg import ParserPEG
 
 class Tester(object):
     def __init__(self):
-        with open("adql2.1.peg", "r") as adql_peg_file:
+        with open("adql2.1.py.peg", "r") as adql_peg_file:
             adql_peg = adql_peg_file.read()
         self.parser = ParserPEG(adql_peg, 
             'query_specification', 
@@ -73,10 +73,11 @@ class Tester(object):
             d = query_el.find("description").text
         except AttributeError:
             d = "<missing description>"
+        query = adql.text
         if adql.get("valid")=="true":
-            self.assert_valid(adql.text.upper(), query_el.get("uuid"), f, d)
+            self.assert_valid(query, query_el.get("uuid"), f, d)
         else:
-            self.assert_invalid(adql.text.upper(), query_el.get("uuid"), f, d)
+            self.assert_invalid(query, query_el.get("uuid"), f, d)
 
 
 def test_file(tester, file_name):

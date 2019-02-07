@@ -46,7 +46,7 @@
             FROM
                 source
             WHERE
-                ident NOT NULL
+                ident IS NOT NULL
             OFFSET 100
             ]]>
         </adql>

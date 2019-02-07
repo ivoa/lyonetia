@@ -8,7 +8,7 @@
 		<name>Heidelberg GAVO Data Center</name>
 		<url>http://dc.g-vo.org</url>
 	</publisher>
-	<description>Additional simple cases for things for the ADQL parser, the last three ones, which are incorrect, are being parsed.</description>
+	<description>Additional simple cases for things for the ADQL parser. Some are syntactically correct but might be semantically incorrect.</description>
 	<query>
 		<description>Sequences for whitespace and comments are skipped</description>
 		<adql valid="true" version="adql-2.1">SELECT x

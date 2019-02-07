@@ -8,7 +8,7 @@ def main():
 
     nonterminal, expression = sys.argv[1:]
 
-    with open("adql2.1.peg") as f:
+    with open("adql2.1.py.peg") as f:
         parser = ParserPEG(f.read(), nonterminal,
             skipws=False, ignore_case=True, memoization=True, debug=True)
 
