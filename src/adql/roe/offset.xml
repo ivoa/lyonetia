@@ -37,7 +37,7 @@
             <![CDATA[
             As simple example for OFFSET.
             ]]>
-        <description>
+        </description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -96,6 +96,3 @@
         
     </query>
 </queries>
-
-
-

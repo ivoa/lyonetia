@@ -32,7 +32,7 @@
         <![CDATA[
         Example queries from the OSA query logs.
         ]]>
-    <description>                            
+    </description>                            
 
     <query uuid='16070256-2cb2-47a5-b24d-88856b0630ac'>
         <dataset>http://osa.roe.ac.uk/</dataset>
@@ -40,7 +40,7 @@
             <![CDATA[
             A really simple example.
             ]]>
-        <description>
+        </description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -133,7 +133,7 @@
             <![CDATA[
             A more realistic example.
             ]]>
-        <description>
+        </description>
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
             SELECT

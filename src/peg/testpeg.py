@@ -16,10 +16,12 @@
 #     <mailto:juaristi@uni-heidelberg.de>                          #
 ####################################################################
 
+import os
 import sys
+from xml.etree import ElementTree as etree
+
 from arpeggio import NoMatch
 from arpeggio.peg import ParserPEG
-from xml.etree import ElementTree as etree
 
 
 class Tester(object):
@@ -45,7 +47,7 @@ class Tester(object):
             sys.stderr.write(
                     "Query '{}' doesn't parse but should:\n"
                     "{}\nLocated at file {}, description: '{}'\n\n".format(
-                        query, msg, f, desc))
+                        query.strip(), msg, f, desc.strip()))
             self.failed += 1
 
     def assert_invalid(self, query, uuid, f, desc):
@@ -67,7 +69,10 @@ class Tester(object):
 
     def run_test(self, query_el, f):
         adql = query_el.find("adql")
-        d = query_el.find("description").text
+        try:
+            d = query_el.find("description").text
+        except AttributeError:
+            d = "<missing description>"
         if adql.get("valid")=="true":
             self.assert_valid(adql.text.upper(), query_el.get("uuid"), f, d)
         else:
@@ -80,18 +85,22 @@ def test_file(tester, file_name):
             if el.tag=="query":
                 tester.run_test(el, file_name)
 
+
+def iter_example_files(root_dir):
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        for name in filenames:
+            if name.endswith(".xml"):
+                yield os.path.join(dirpath, name)
+
+
 if __name__=="__main__":
     tester = Tester()
-    for f in [
-           "../adql/gavo/whitespace.xml",
-           "../adql/gavo/geometry.xml",
-           "../adql/gavo/regressionlike.xml",
-           "../adql/gavo/setexpressions.xml",
-           "../adql/gavo/simpleunit.xml",
-           "../adql/gavo/subqueries.xml",
-           "../adql/gavo/additionaltests.xml"
-           ]:
-       test_file(tester, f)
+    for f_name in iter_example_files("../adql"):
+        try:
+           test_file(tester, f_name)
+        except Exception as msg:
+            print("[Skipping examples from {}: {}]".format(
+                f_name, msg))
     print("{} ok, {} failed".format(tester.successful, tester.failed))
 
 # vi:et:sta:sw=4
