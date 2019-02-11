@@ -24,7 +24,7 @@ from xml.etree import ElementTree as etree
 
 class Tester(object):
     def __init__(self):
-        with open("adql2.1.py.peg", "r") as adql_peg_file:
+        with open("adql2.1.arp.peg", "r") as adql_peg_file:
             adql_peg = adql_peg_file.read()
         self.parser = ParserPEG(adql_peg, 
             'query_specification', 

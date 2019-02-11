@@ -1,8 +1,9 @@
 # Note: in the actual PEG definition comments start with #
 # =========================== Configurables for deployers
 
+# additional prefixes to be added here
 udf_prefix <-
-	'ivo_'  # additional prefixes to be added here
+	'ivo_'
 
 # ============================ The Gramma's root symbol
 
@@ -270,9 +271,6 @@ concatenation <-
 	character_primary
 	_ '||'
 	_ character_value_expression
-
-# concatenation2 <-
-#	character_primary (_ '||' _ concatenation2)*
 
 geometry_function <-
 	geometry_value_function
@@ -701,4 +699,4 @@ Space <-
 	' '+ / '\t'
 
 EOL <-
-	'\r\n' / '\n' / '\'
+	'\r\n' / '\n' / '\r'
