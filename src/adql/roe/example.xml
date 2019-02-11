@@ -53,7 +53,7 @@
             <![CDATA[
             As simple example.
             ]]>
-		</description>
+        </description>
 
         <!--+
             | The ADQL query.
@@ -83,7 +83,7 @@
                 | VOSI metadata of the target data (TBD).
                 +--> 
             <vosi></vosi>
-		</target>
+        </target>
 
         <!--+
             | Details of the expected results.

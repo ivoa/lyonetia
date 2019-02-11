@@ -37,7 +37,7 @@
             <![CDATA[
             As simple example, using the full geometry feature set.
             ]]>
-		</description>
+        </description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -81,7 +81,7 @@
             <![CDATA[
             As simple example, explicitly naming each optional feature.
             ]]>
-		</description>
+        </description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[

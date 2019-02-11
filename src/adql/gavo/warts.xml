@@ -25,4 +25,4 @@
     <adql valid="true" version="adql-2.1">SELECT * FROM y WHERE 1=CONTAINS(POINT('ICRS',x,'sy') ,CIRCLE('ICRS',x,y,z))
 </adql>
   </query>
-
+</queries>

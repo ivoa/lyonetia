@@ -10,6 +10,12 @@ Caveats:
 * We're using negative lookhead, which is a (common) extension to
   classic PEG.
 
+Trying it out:
+
+This directory contains the testpeg.py script that, when started here,
+will run all example queries collected under adql.  It will report
+both false positives and false negatives.
+
 More on PEG:
 
 Paper defining the thing: https://dl.acm.org/citation.cfm?id=964001.964011
