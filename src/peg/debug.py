@@ -1,17 +1,16 @@
 import sys
 from arpeggio.peg import ParserPEG
 
+import testpeg
+
 def main():
     if len(sys.argv)!=3:
         sys.exit("Usage: {} <nonterminal> <expression>".format(
             sys.argv[0]))
 
     nonterminal, expression = sys.argv[1:]
-
-    with open("adql2.1.arp.peg") as f:
-        parser = ParserPEG(f.read(), nonterminal,
-            skipws=False, ignore_case=True, memoization=True, debug=True)
-
+    
+    parser = testpeg.get_parser(debug=True, root=nonterminal)
     parser.parse(expression)
 
 

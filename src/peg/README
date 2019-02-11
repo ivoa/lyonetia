@@ -3,8 +3,9 @@ derived from the published BNF grammar.
 
 Caveats:
 
-* Syntax is currently arpeggio's PEG one; I suspect at least the r'x'
-  syntax shouldn't be used.
+* We hope the syntax is portable PEG.  For our reference implementation,
+  which is based on arpeggio, we employ some lightweight translation
+  into this library's PEG dialect.
 * We're using a custom arpeggio feature for case folding.  The grammar
   would be too ugly without it.
 * We're using negative lookhead, which is a (common) extension to
@@ -15,6 +16,9 @@ Trying it out:
 This directory contains the testpeg.py script that, when started here,
 will run all example queries collected under adql.  It will report
 both false positives and false negatives.
+
+As said above, you'll need arpeggio for that; see
+https://pypi.org/project/Arpeggio/
 
 More on PEG:
 

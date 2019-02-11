@@ -17,6 +17,7 @@
 ####################################################################
 
 import os
+import re
 import sys
 from xml.etree import ElementTree as etree
 
@@ -24,19 +25,44 @@ from arpeggio import NoMatch
 from arpeggio.peg import ParserPEG
 
 
+def get_parser(debug=False, root='query_specification'):
+    """returns a PEG parser for the local ADQL grammar.
+
+    This patches the grammar literal a bit to make it palatable to
+    Arpeggio.
+
+    NOTE: This is *not* a general PEG-to-arpeggio translator; it
+    just happens to work on the ADQL grammar (and might do the
+    trick of other simple cases).
+    """
+    with open("adql2.1.peg") as f:
+        peg_rules = f.read()
+    
+    # insert semicolons between rules
+    peg_rules = re.sub(r"(?m)^[^#](?!(=\<\-)).+\s+"
+        r"((?!=(\<\-|)(?=\#)).+\n)+",
+        lambda match: match.group().strip() + ";\n",
+        peg_rules)
+
+    # replace comments (TODO: make sure the # isn't in a literal)
+    peg_rules = re.sub('#', '// ', peg_rules)
+
+    # adapt character range syntax
+    peg_rules = re.sub("'\\[", "r'[", peg_rules)
+
+    return ParserPEG(peg_rules, 
+       root,
+       ignore_case=True, 
+       skipws=False, 
+       debug=False, 
+       reduce_tree=True, 
+       memoization=True)
+
+
 class Tester(object):
     def __init__(self):
-        with open("adql2.1.arp.peg", "r") as adql_peg_file:
-            adql_peg = adql_peg_file.read()
-        self.parser = ParserPEG(adql_peg, 
-            'query_specification', 
-            ignore_case=True, 
-            skipws=False, 
-            debug=False, 
-            reduce_tree=True, 
-            memoization=True)
+        self.parser = get_parser()
         self.successful, self.failed = 0, 0
-
 
     def assert_valid(self, query, uuid, f, desc):
         try:
