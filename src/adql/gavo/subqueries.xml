@@ -15,8 +15,8 @@
 </adql>
   </query>
   <query uuid="1281cf42-450a-11e6-a82a-4fe7326f7d72">
-    <description>invalid simple subqueries</description>
-    <adql valid="false" version="adql-2.1">select a, b from (select * from x) q
+    <description>Correlation specification without AS</description>
+    <adql valid="true" version="adql-2.1">select a, b from (select * from x) q
 </adql>
   </query>
   <query uuid="187ca43a-450a-11e6-a82a-4fe7326f7d72">

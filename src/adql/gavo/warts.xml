@@ -1,0 +1,28 @@
+<queries>
+  <contact>
+    <name>Markus Demleitner</name>
+    <url>mailto:msdemlei@ari.uni-heidelberg.de</url>
+  </contact>
+  <publisher>
+    <name>Heidelberg GAVO Data Center</name>
+    <url>http://dc.g-vo.org</url>
+  </publisher>
+  <description>Warts: Expressions Markus would rather have fail</description>
+
+  <query uuid="118c7d86-4509-11e6-b60c-9d2c33f9b7a2">
+    <description>WART: Integer literal accepted as centroid argument</description>
+    <adql valid="true" version="adql-2.1">select x from y where CENTROID(3)=x
+</adql>
+  </query>
+  <query uuid="1aa0786e-4509-11e6-b60c-9d2c33f9b7a2">
+    <description>WART: aggregate function accepted as centroid argument</description>
+    <adql valid="true" version="adql-2.1">select x from y where CENTROID(COUNT(*))=x
+</adql>
+  </query>
+
+  <query uuid="d0725dde-450d-11e6-b20b-6d529bdffd4c">
+    <description>WART: string literals accepted as coordinate value.</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM y WHERE 1=CONTAINS(POINT('ICRS',x,'sy') ,CIRCLE('ICRS',x,y,z))
+</adql>
+  </query>
+</queries>

@@ -37,7 +37,7 @@
             <![CDATA[
             As simple example, using the full geometry feature set.
             ]]>
-        <description>
+        </description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -47,11 +47,13 @@
                 source
             WHERE
                 CONTAINS(
-                    POINT(
+					POINT(
+						'ICRS',
                         25.0,
                         -19.5
                         ),
-                    CIRCLE(
+					CIRCLE(
+						'ICRS',
                         25.4,
                         -20.0,
                         1
@@ -79,7 +81,7 @@
             <![CDATA[
             As simple example, explicitly naming each optional feature.
             ]]>
-        <description>
+        </description>
 
         <adql version='adql-2.1' valid='true'>
             <![CDATA[
@@ -89,11 +91,13 @@
                 source
             WHERE
                 CONTAINS(
-                    POINT(
+				POINT(
+						'ICRS',
                         25.0,
                         -19.5
                         ),
-                    CIRCLE(
+						CIRCLE(
+						'ICRS',
                         25.4,
                         -20.0,
                         1

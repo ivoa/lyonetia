@@ -60,8 +60,8 @@
 </adql>
   </query>
   <query uuid="5e700476-4458-11e6-96e2-28b2bdcff70b">
-    <description>Simple syntax errors</description>
-    <adql valid="false" version="adql-2.1">SELECT 89x FROM z
+    <description>Correlation specification without AS or whitespace.</description>
+    <adql valid="true" version="adql-2.1">SELECT 89x FROM z
 </adql>
   </query>
   <query uuid="6fe70754-4458-11e6-96e2-28b2bdcff70b">
@@ -90,7 +90,9 @@
 </adql>
   </query>
   <query uuid="ab9be5d0-4458-11e6-96e2-28b2bdcff70b">
-    <description>Various join forms</description>
+    <description>Anomalous join (this is allowed by the grammar but senseless; we should fix this
+    in a grammar update (which is harmless because such queries have always been rejected
+    by the database engines.</description>
     <adql valid="true" version="adql-2.1">select x from t1 JOIN t2
 </adql>
   </query>
@@ -151,7 +153,7 @@
   </query>
   <query uuid="feef3034-4458-11e6-96e2-28b2bdcff70b">
     <description>Various invalid join forms</description>
-    <adql valid="false" version="adql-2.1">select x from t1 quatsch JOIN t1
+    <adql valid="false" version="adql-2.1">select x from t1 x quatsch JOIN t1
 </adql>
   </query>
   <query uuid="033bb9b4-4459-11e6-96e2-28b2bdcff70b">
@@ -196,7 +198,7 @@
   </query>
   <query uuid="491b67e0-4459-11e6-96e2-28b2bdcff70b">
     <description>trivial order, group by, and having</description>
-    <adql valid="true" version="adql-2.1">select x from t1 having x=z AND 7&lt;u
+    <adql valid="true" version="adql-2.1">select x from t1 group by y having x=z AND 7&lt;u
 </adql>
   </query>
   <query uuid="5a70a960-4459-11e6-96e2-28b2bdcff70b">
@@ -666,7 +668,13 @@
   </query>
   <query uuid="6102e244-4cfa-11e6-bf5d-ebbe7e1e6fb5">
     <description>metadata inference samples</description>
-    <adql valid="true" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc")
+    <adql valid="false" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc")
+
+</adql>
+  </query>
+  <query uuid="6102e244-4cfa-11e6-bf5d-ebbe7e1e6fb5">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">select AVG(mag), mAx(mag), max(2*mag), Min(Mag), sum(mag), count(mag), avg(3), count(*) from misc
 
 </adql>
   </query>
@@ -869,7 +877,6 @@ select * from foo
 		quux --comment
 		from -- comment
 		foo --comment
-		SELECT bar, quux FROM foo
 </adql>
   </query>
   <query uuid="065d4842-4d00-11e6-866d-736653f6053b">
@@ -884,4 +891,9 @@ select * from foo
 bar
 </adql>
   </query>
+  <query uuid="1cb90482-4d00-11e6-866d-736653f6053c">
+    <description>String-valued UDFs parsed</description>
+    <adql valid="true" version="adql-2.1">select ivo_getstring() || 'abc' from t</adql>
+  </query>
+
 </queries>

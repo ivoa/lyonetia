@@ -1,0 +1,35 @@
+This directory contains an experimental PEG grammar for ADQL, largely
+derived from the published BNF grammar.
+
+Caveats:
+
+* We hope the syntax is portable PEG.  For our reference implementation,
+  which is based on arpeggio, we employ some lightweight translation
+  into this library's PEG dialect.
+* We're using a custom arpeggio feature for case folding.  The grammar
+  would be too ugly without it.
+* We're using negative lookhead, which is a (common) extension to
+  classic PEG.
+
+Trying it out:
+
+This directory contains the testpeg.py script that, when started here,
+will run all example queries collected under adql.  It will report
+both false positives and false negatives.
+
+As said above, you'll need arpeggio for that; see
+https://pypi.org/project/Arpeggio/
+
+More on PEG:
+
+Paper defining the thing: https://dl.acm.org/citation.cfm?id=964001.964011
+or, free, http://bford.info/pub/lang/peg
+
+Link list maintained by the inventor: http://bford.info/packrat/
+
+For this particular attempt we're using arpeggio, 
+http://www.igordejanovic.net/Arpeggio/stable/; we'll have to see how
+portable the resulting PEG is; in particular.
+
+Syntax rules for an alternative PEG machinery: 
+https://relishapp.com/jarhart/rattler/docs/peg-syntax
