@@ -28,7 +28,7 @@ or, free, http://bford.info/pub/lang/peg
 Link list maintained by the inventor: http://bford.info/packrat/
 
 For this particular attempt we're using arpeggio, 
-http://www.igordejanovic.net/Arpeggio/stable/; we'll have to see how
+http://textx.github.io/Arpeggio/stable/; we'll have to see how
 portable the resulting PEG is; in particular.
 
 Syntax rules for an alternative PEG machinery: 
