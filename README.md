@@ -31,7 +31,7 @@ At the moment the format for contributing queries is based on an [example XML fi
 ## Project funding 
 
 This project has received funding from the following sources :
-* The European Community's Seventh Framework Programme (FP7-SPACE-2013-1) under grant agreement n°606740, 
-* The European Commission Framework Programme Horizon 2020 Research and Innovation action under grant agreement n°653477
-* The UK Science and Technology Facilities Council under grant numbers ST/M001989/1, ST/M007812/1, and ST/N005813/1
+* The European Community's Seventh Framework Programme (FP7-SPACE-2013-1) under grant agreement n°606740, Gaia [GENIUS](https://cordis.europa.eu/project/id/606740) 
+* The European Commission Framework Programme Horizon 2020 Research and Innovation action under grant agreement n°653477, [ASTERICS](https://cordis.europa.eu/project/id/653477)
+* The UK Science and Technology Facilities Council under grant numbers [ST/M001989/1](https://gtr.ukri.org/projects?ref=ST%2FM001989%2F1), [ST/M007812/1](https://gtr.ukri.org/projects?ref=ST%2FM007812%2F1), and [ST/N005813/1](https://gtr.ukri.org/projects?ref=ST%2FN005813%2F1)
 
