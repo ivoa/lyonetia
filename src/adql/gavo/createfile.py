@@ -6,7 +6,7 @@ This is lean and mean.  Don't complain if it crashes on you.
 
 import os
 import sys
-import Tkinter
+import tkinter
 import uuid
 from xml.etree import ElementTree as etree
 
@@ -58,7 +58,7 @@ class _Element(object):
       if child is None:
           return
 
-      elif isinstance(child, basestring):
+      elif isinstance(child, str):
           self.add_text(child)
 
       elif isinstance(child, (int, float)):
@@ -76,7 +76,7 @@ class _Element(object):
       return self
   
   def __call__(self, **kwargs):
-      for k, v in kwargs.iteritems():
+      for k, v in kwargs.items():
           if k.endswith("_"):
               k = k[:-1]
           k = k.replace("_", "-")
@@ -103,32 +103,32 @@ T = _T()
 ############ tiny DOM end
 
 
-class UI(Tkinter.Tk):
+class UI(tkinter.Tk):
   def __init__(self, dest_doc):
     self.dest_doc = dest_doc
-    Tkinter.Tk.__init__(self)
+    tkinter.Tk.__init__(self)
     self._make_widgets()
   
   def _make_widgets(self):
-    Tkinter.Label(self, text="Description").grid(column=1, row=1,
-      sticky=Tkinter.NW+Tkinter.SE)
-    self.desc_entry = Tkinter.Entry(self)
+    tkinter.Label(self, text="Description").grid(column=1, row=1,
+      sticky=tkinter.NW+tkinter.SE)
+    self.desc_entry = tkinter.Entry(self)
     self.desc_entry.grid(column=2, row=1,
-      sticky=Tkinter.NW+Tkinter.SE)
+      sticky=tkinter.NW+tkinter.SE)
 
-    self.is_valid = Tkinter.IntVar()
+    self.is_valid = tkinter.IntVar()
     self.is_valid.set(1)
-    valid_box = Tkinter.Checkbutton(self, text="valid", var=self.is_valid)
+    valid_box = tkinter.Checkbutton(self, text="valid", var=self.is_valid)
     valid_box.grid(column=3, row=1,
-      sticky=Tkinter.NW+Tkinter.SE)
+      sticky=tkinter.NW+tkinter.SE)
 
-    self.query_box = Tkinter.Text(self)
-    self.query_box.insert(Tkinter.END, CONSTANT_PREFIX)
+    self.query_box = tkinter.Text(self)
+    self.query_box.insert(tkinter.END, CONSTANT_PREFIX)
     self.query_box.grid(column=1, row=2, columnspan=3,
-      sticky=Tkinter.NW+Tkinter.SE)
+      sticky=tkinter.NW+tkinter.SE)
   
-    Tkinter.Label(self, text="^Q quit  ^Space save entry"
-      ).grid(column=1, row=3, sticky=Tkinter.NW+Tkinter.SE)
+    tkinter.Label(self, text="^Q quit  ^Space save entry"
+      ).grid(column=1, row=3, sticky=tkinter.NW+tkinter.SE)
     self.columnconfigure(2, weight=1)
     self.rowconfigure(2, weight=1)
 
@@ -140,9 +140,9 @@ class UI(Tkinter.Tk):
       T.description[self.desc_entry.get()],
       T.adql(version=DEST_VERSION, 
           valid=(self.is_valid.get() and 'true') or 'false')[
-        self.query_box.get(1.0, Tkinter.END)]]]
-    self.query_box.delete(1.0, Tkinter.END)
-    self.query_box.insert(Tkinter.END, CONSTANT_PREFIX)
+        self.query_box.get(1.0, tkinter.END)]]]
+    self.query_box.delete(1.0, tkinter.END)
+    self.query_box.insert(tkinter.END, CONSTANT_PREFIX)
 
 
 def main():
@@ -151,7 +151,7 @@ def main():
   dest_file_name = sys.argv[1]
 
   if os.path.exists(dest_file_name):
-    with open(dest_file_name) as f:
+    with open(dest_file_name, encoding="utf-8") as f:
       doc = _Element.from_element(etree.parse(f).getroot())
   else:
     doc = T.queries[
@@ -167,7 +167,7 @@ def main():
 
   ui = UI(doc)
   ui.mainloop()
-  with open(sys.argv[1], "w") as dest_file:
+  with open(dest_file_name, "wb") as dest_file:
     doc.dump(dest_file=dest_file)
 
 

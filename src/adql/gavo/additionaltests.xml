@@ -9,7 +9,7 @@
 		<url>http://dc.g-vo.org</url>
 	</publisher>
 	<description>Additional simple cases for things for the ADQL parser. Some are syntactically correct but might be semantically incorrect.</description>
-	<query>
+	<query uuid="63f989e6-59b3-11ec-beef-28d2445a8967">
 		<description>Sequences for whitespace and comments are skipped</description>
 		<adql valid="true" version="adql-2.1">SELECT x
 
@@ -20,31 +20,31 @@
 			from Y
 		</adql>
 	</query>
-	<query>
+	<query uuid="6d5e927e-59b3-11ec-beef-28d2445a8967">
 		<description>String operands allow UDFs and numerics</description>
 		<adql valid="true" version="adql-2.1">SELECT ivo_foo(6) || 9
 			from Y
 		</adql>
 		</query>
-	<query>
+	<query uuid="760a0cdc-59b3-11ec-beef-28d2445a8967">
 		<description>UDFs allow string arguments</description>
 		<adql valid="true" version="adql-2.1">SELECT ivo_foo('11') || 11
 			from Y
 		</adql>
 	</query>
-	<query>
+	<query uuid="7cdd05fa-59b3-11ec-beef-28d2445a8967">
 		<description>Geometry values don't admit string operators.</description>
 		<adql valid="false" version="adql-2.1">SELECT point('icrs', 3, 4) || 'aaaa'
 			from Y
 		</adql>
 	</query>
-	<query>
+	<query uuid="84d8bcea-59b3-11ec-beef-28d2445a8967">
 		<description>Geometry values don't admit string operators.</description>
 		<adql valid="false" version="adql-2.1">SELECT 'aaaa' || point('icrs', 3, 4)
 			from Y
 		</adql>
 	</query>
-	<query>
+	<query uuid="8b9aa804-59b3-11ec-beef-28d2445a8967">
 		<description>Numeric operands and strings mix.</description>
 		<adql valid="true" version="adql-2.1">SELECT 'text'*1323
 			from Y
