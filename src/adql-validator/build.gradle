@@ -1,0 +1,71 @@
+plugins {
+    id "application"
+}
+
+version = '1.0'
+
+/* *************************************************************************
+ * * DEPENDENCIES                                                          *
+ * ************************************************************************* */
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+dependencies {
+    implementation name: 'vollt-adqllib_1.6'
+    implementation 'com.beust:jcommander:1.81'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+}
+
+/* *************************************************************************
+ * * CLASS TO RUN                                                          *
+ * ************************************************************************* */
+
+application {
+    mainClass = 'cds.adql.validation.ADQLValidatorRunner'
+}
+
+/* *************************************************************************
+ * * JAVA VERSION                                                          *
+ * ************************************************************************* */
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+/* *************************************************************************
+ * * SOURCES                                                               *
+ * ************************************************************************* */
+
+sourceSets.main.java.srcDirs = ["src"]
+sourceSets.main.resources.srcDirs = ["resources"]
+sourceSets.test.java.srcDirs = ["test"]
+sourceSets.test.resources.srcDirs = ["sample"]
+
+/* *************************************************************************
+ * * JUNIT TESTS CONFIGURATION                                             *
+ * ************************************************************************* */
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+/* *************************************************************************
+ * * JAR MANIFEST                                                          *
+ * ************************************************************************* */
+
+tasks.named('jar') {
+    manifest {
+        attributes('Implementation-Version': project.version,
+                   'Main-Class': 'cds.adql.validation.ADQLValidatorRunner',
+                   'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '))
+    }
+}

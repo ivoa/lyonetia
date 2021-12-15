@@ -3,3 +3,9 @@
 *.txt
 *.swp
 *.pyc
+*.class
+*.idea
+*.lock
+**/.gradle/
+src/adql-validator/build/
+src/adql-validator/out/
