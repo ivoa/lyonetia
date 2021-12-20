@@ -130,11 +130,8 @@ public class ADQLValidatorRunner {
         }
 
         // Validate each listed file/directory:
-        boolean allValid = true;
         for(String filePath : files)
-            allValid = validate(new File(filePath), validator) && allValid;
-
-        System.exit(allValid ? 0 : 1);
+            validate(new File(filePath), validator);
     }
 
     protected boolean validate(final File file, final ADQLValidator validator){
