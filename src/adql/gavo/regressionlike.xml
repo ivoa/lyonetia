@@ -78,5 +78,5 @@
 	ON ( width = dec )
 </adql></query><query uuid="56f8b6f0-59b2-11ec-9317-28d2445a8967"><description>COALESCE in select list</description><adql version="adql-2.1" valid="true">SELECT COALESCE(a, b, c,d) FROM x
 </adql></query><query uuid="704b5b76-59b2-11ec-ac92-28d2445a8967"><description>COALESCE in condition</description><adql version="adql-2.1" valid="true">SELECT count(*) FROM x
-WHERE COALESCE(a, b, c) IS NOT NULL
+WHERE COALESCE(a, b, c) = 0
 </adql></query></queries>
