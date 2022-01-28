@@ -1,0 +1,41 @@
+name: Remove obsolete report
+
+on:
+  pull_request:
+    types: [ closed ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    
+    env:
+      VALIDATOR_SCRIPT: ${GITHUB_WORKSPACE}/src/adql-validator/build/install/adql-validator/bin/adql-validator
+      QUERIES_PATH    : ${GITHUB_WORKSPACE}/src/adql/ivoa
+
+    steps:
+    
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+    
+    - name: Checkout the wiki
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository }}.wiki
+        path      : wiki/
+    
+    - name: Remove the PR report
+      run: rm $OUTPUT_FILE
+      env:
+        OUTPUT_FILE: wiki/${{ format('PR#{0}', github.event.number) }}.md
+    
+    - name: Push validation report
+      uses: Andrew-Chen-Wang/github-wiki-action@v2
+      env:
+        # Make sure you have that / at the end.
+        WIKI_DIR: wiki/
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_MAIL: gmantelet@astro.unistra.fr
+        GH_NAME: ${{ github.repository_owner }}
+        #EXCLUDED_FILES: "a/ b.md"
