@@ -172,32 +172,37 @@
 </adql>
   </query>
   <query uuid="2eae2a5a-4459-11e6-96e2-28b2bdcff70b">
-    <description>trivial order, group by, and having</description>
+    <description>trivial order by</description>
     <adql valid="true" version="adql-2.1">select x from t1 order by z
 </adql>
   </query>
   <query uuid="34fc5940-4459-11e6-96e2-28b2bdcff70b">
-    <description>trivial order, group by, and having</description>
+    <description>order by with ordering specification</description>
     <adql valid="true" version="adql-2.1">select x from t1 order by z desc
 </adql>
   </query>
   <query uuid="3969b70c-4459-11e6-96e2-28b2bdcff70b">
-    <description>trivial order, group by, and having</description>
+    <description>order by with ordering specification</description>
     <adql valid="true" version="adql-2.1">select x from t1 order by z desc, x asc
 </adql>
   </query>
+  <query uuid="d7378c18-2452-11ed-b7c4-28d2445a8967">
+    <description>order by with expressions</description>
+    <adql valid="true" version="adql-2.1">select x from t1 order by log10(z+1) desc, 2*x asc
+</adql>
+  </query>
   <query uuid="40174196-4459-11e6-96e2-28b2bdcff70b">
-    <description>trivial order, group by, and having</description>
+    <description>trivial group by</description>
     <adql valid="true" version="adql-2.1">select x from t1 group by z
 </adql>
   </query>
   <query uuid="449bc75a-4459-11e6-96e2-28b2bdcff70b">
-    <description>trivial order, group by, and having</description>
+    <description>group by multiple columns</description>
     <adql valid="true" version="adql-2.1">select x from t1 group by z, s
 </adql>
   </query>
   <query uuid="491b67e0-4459-11e6-96e2-28b2bdcff70b">
-    <description>trivial order, group by, and having</description>
+    <description>group by and having</description>
     <adql valid="true" version="adql-2.1">select x from t1 group by y having x=z AND 7&lt;u
 </adql>
   </query>
