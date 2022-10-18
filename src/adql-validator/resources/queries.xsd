@@ -5,6 +5,7 @@
     <xs:element name="queries">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="title" type="xs:string" minOccurs="0"/>
                 <xs:element name="contact" type="contact" minOccurs="0"/>
                 <xs:element name="publisher" type="contact" minOccurs="0"/>
                 <xs:element name="description" type="xs:string" minOccurs="0"/>

@@ -13,7 +13,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Print the output of an {@link cds.adql.validation.ADQLValidator} into a
@@ -26,7 +29,7 @@ import java.util.*;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (12/2021)
+ * @version 1.0 (10/2022)
  */
 public class MarkdownReport implements ValidatorListener {
 
@@ -137,17 +140,18 @@ public class MarkdownReport implements ValidatorListener {
             return;
 
         // Display a description of the validation tests set:
-        out.println("# ADQL Validation report");
+        out.println("# " + TextReport.formatText(set.title, "ADQL Validation report"));
         out.println();
         out.println();
         out.println("## About the validation set");
         out.println();
         out.println("| _Key_               | _Value_                                                      |");
         out.println("| ------------------- | ------------------------------------------------------------ |");
-        out.println("| **Origin**          | " + ((source != null && source.trim().length() > 0) ? source : "-") + " |");
+        out.println("| **Title**           | " + TextReport.formatText(set.title, "-") + " |");
+        out.println("| **Origin**          | " + TextReport.formatText(source, "-") + " |");
         out.println("| **Publisher**       | " + formatPublisher(set.publisher) + " |");
         out.println("| **Contact**         | " + formatContact(set.contact) + " |");
-        out.println("| **Description**     | " + (set.description != null ? set.description : "-") + " |");
+        out.println("| **Description**     | " + TextReport.formatText(set.description, "-") + " |");
         out.println("| **Available tests** | " + set.queries.size() + " |");
 
         // Remember the max. number of tests to run:

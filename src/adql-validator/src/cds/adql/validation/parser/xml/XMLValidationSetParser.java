@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (12/2021)
+ * @version 1.0 (10/2022)
  */
 public class XMLValidationSetParser implements ValidationSetParser {
 
@@ -182,13 +182,14 @@ public class XMLValidationSetParser implements ValidationSetParser {
      * XML parser's handler.
      *
      * @author Gr&eacute;gory Mantelet (CDS)
-     * @version 1.0 (10/2021)
+     * @version 1.0 (10/2022)
      */
     protected static class QueriesHandler extends DefaultHandler {
 
         /** Enumeration of all possible parsing Contexts. */
         private enum Context {
             QUERIES,
+            QUERIES_TITLE,
             QUERIES_DESCRIPTION,
             QUERY,
             QUERY_ADQL,
@@ -246,6 +247,12 @@ public class XMLValidationSetParser implements ValidationSetParser {
                     throw new SAXParseException("Inner queries suites not supported!", loc);
                 hasQueriesElt = true;
                 ctx.push(Context.QUERIES);
+            }
+            /*
+             * QUERIES TITLE
+             */
+            else if (qName.equals("title")) {
+                ctx.push(Context.QUERIES_TITLE);
             }
             /*
              * CONTACT
@@ -364,6 +371,9 @@ public class XMLValidationSetParser implements ValidationSetParser {
                 case QUERIES:
                     if (queries.queries.isEmpty())
                         info("No query to validate in this validation set!");
+                    break;
+                case QUERIES_TITLE:
+                    queries.title = content;
                     break;
                 case QUERIES_DESCRIPTION:
                     queries.description = content;
