@@ -1,0 +1,184 @@
+<queries>
+  <title>1. SELECT</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    ADQL queries aiming to test the SELECT clause (column names, *, label/AS,
+    DISTINCT, ...).
+  </description>
+  
+  <!--
+
+    SELECT CLAUSE
+    
+  -->
+
+  <query uuid="308b1389-1e55-484a-836d-067319323335">
+    <description>Selecting no column.</description>
+    <adql valid="false" version="adql-2.1">SELECT FROM stars</adql>
+  </query>
+
+  <query uuid="ccd99070-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Minimalist query</description>
+    <adql valid="true" version="adql-2.1">SELECT * FROM stars</adql>
+  </query>
+
+  <!--
+
+    COLUMN NAME
+
+  -->
+  
+  <query uuid="d2ed137e-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple column selection</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT name, ra, dec
+      FROM stars
+    </adql>
+  </query>
+  
+  <query uuid="fe956f66-3c3e-410d-baa4-59305da8ddfc">
+    <description>
+      Selecting columns with an incorrect name syntax (not starting with a
+      letter) and no double quotes.
+    </description>
+    <adql valid="false" version="adql-2.1">SELECT _weird_name FROM stars</adql>
+  </query>
+  
+  <query uuid="85e497ac-4403-4f84-8aa0-a3ee3da514cc">
+    <description>
+      Selecting columns with another incorrect name syntax (starting with a
+      digit) and no double quotes.
+    </description>
+    <adql valid="false" version="adql-2.1">SELECT 2weird FROM stars</adql>
+  </query>
+  
+  <query uuid="d6ff74f5-cecd-4a4b-878b-384b44be099b">
+    <description>
+      Selecting columns with a reserved keyword and no double quotes.
+    </description>
+    <adql valid="false" version="adql-2.1">SELECT distance FROM stars</adql>
+  </query>
+  
+  <query uuid="cd09816f-69c2-473d-b6ba-dd1191a3971e">
+    <description>
+      Selecting columns with reserved keyword and incorrect syntax name
+      BUT within double quotes.
+    </description>
+    <adql valid="true" version="adql-2.1">
+      SELECT "_weird_name", "distance"
+      FROM stars
+    </adql>
+  </query>
+
+  <!--
+
+    EXPRESSION INSTEAD OF COLUMN NAME
+
+  -->
+
+  <query uuid="895d5ba4-92ea-4827-bb0d-b7fd1d61ee7d">
+    <description>Selecting a dummy string expression.</description>
+    <adql valid="true" version="adql-2.1">SELECT 'blabla bla' FROM stars</adql>
+  </query>
+
+  <query uuid="03cb2948-2bb1-4b2b-8e67-719006d9601e">
+    <description>Selecting a string concatenation.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT 'Star/' || type
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="caebab6a-6f9d-4e28-a6a1-a2d6cc1e57f1">
+    <description>
+      Selecting a simple numeric value (positive or negative):
+      simple integer, float and exponent.
+    </description>
+    <adql valid="true" version="adql-2.1">
+      SELECT 42,
+             -2,
+             3.14,
+             10e-5,
+             10E3
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="6a7c00a0-5a3a-4c5c-bb4f-3495888ee66d">
+    <description>Selecting a math expression.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT radius*3.14, 1+2-6/2
+      FROM stars
+    </adql>
+  </query>
+
+  <!--
+
+    COLUMN LABEL (AS)
+
+  -->
+  
+  <query uuid="4da47ddf-77a6-49f3-8b1e-a43364ce44d8">
+    <description>
+      Set an output name (with and without double quotes) for selected columns.
+    </description>
+    <adql valid="true" version="adql-2.1">
+      SELECT long AS ra, des AS "Description"
+      FROM stars
+    </adql>
+  </query>
+
+  <!--
+
+    DISTINCT / ALL
+
+  -->
+  
+  <query uuid="30bcbe1f-32e6-4a3d-9a6a-3e9e88cd02c3">
+    <description>Select distinct columns.</description>
+    <adql valid="true" version="adql-2.1">SELECT DISTINCT type FROM stars</adql>
+  </query>
+
+  <query uuid="94c202af-5acd-4b8c-b013-56c065974a57">
+    <description>Select distinct columns.</description>
+    <adql valid="true" version="adql-2.1">SELECT ALL type FROM stars</adql>
+  </query>
+
+  <!-- 
+
+    ROW LIMIT
+
+  -->
+
+  <query uuid="808d8b43-4159-4e9d-9b5e-86705be1a881">
+    <description>Selecting N-first rows.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT TOP 10 name, ra, dec
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="3f86ac67-0820-452e-bef6-e86375b781b0">
+    <description>Selecting no row.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT TOP 0 name, ra, dec
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="3b1c1c86-cfde-4d91-bc92-d15686d96ef1">
+    <description>Selecting a negative number of rows.</description>
+    <adql valid="false" version="adql-2.1">
+      SELECT TOP -10 name, ra, dec
+      FROM stars
+    </adql>
+  </query>
+
+</queries>

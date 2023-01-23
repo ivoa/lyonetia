@@ -1,0 +1,141 @@
+<queries>
+  <title>Optional 5 - Set operators</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional Set operators (cf 4.6 in ADQL-2.1): UNION, EXCEPT, INTERSECT.
+  </description>
+
+  <query uuid="4cac62e0-1231-40e1-930c-2326868def34">
+    <description>Simple UNION: 2 simple queries with a single column.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+  SELECT id FROM table1 WHERE id <= 10
+UNION
+  SELECT id FROM table1 WHERE id > 120406
+    ]]></adql>
+  </query>
+
+  <query uuid="c8e44953-1eb2-4d1d-9f22-ebe441ae7bf0">
+    <description>UNION with a query using TOP.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+    SELECT id FROM table1 WHERE id <= 10
+UNION
+    SELECT TOP 10 id FROM table1 WHERE id > 10
+    ]]></adql>
+  </query>
+
+  <query uuid="6e75d418-6e2f-430d-9aaa-ecc779b01a9d">
+    <description>UNION with a global ORDER BY (cf 4.6.4 in ADQL-2.1).</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+  SELECT id, ra, dec FROM table1
+UNION
+  SELECT id, ra, dec FROM table2
+ORDER BY id -- sort the UNION result
+    ]]></adql>
+  </query>
+
+  <query uuid="10576f25-63f9-41cc-b161-07ce96702e33">
+    <description>
+      UNION with queries using TOP and ORDER BY (cf 4.6.4 in ADQL-2.1).
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+  -- take the 10 first
+  ( SELECT TOP 10 id, ra, dec FROM atable ORDER BY id ASC)
+UNION
+  -- take the 10 last
+  ( SELECT TOP 10 id, ra, dec FROM atable ORDER BY id DESC)
+    ]]></adql>
+  </query>
+
+  <query uuid="9e35a25c-d0cb-4f73-a2b1-86c6c9726725">
+    <description>
+      Simple INTERSECT.
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+    SELECT id FROM table1 WHERE id <= 10
+INTERSECT
+    SELECT id FROM table1 WHERE id >= 10 AND mod(id, 2) = 0
+    ]]></adql>
+  </query>
+
+  <query uuid="b862684f-224c-46fc-8d66-f643333f6446">
+    <description>
+      Simple INTERSECT.
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+    SELECT id FROM table1 WHERE id <= 10
+EXCEPT
+    SELECT id FROM table1 WHERE id >= 10 AND mod(id, 2) = 0
+    ]]></adql>
+  </query>
+
+  <query uuid="f36a10ec-6ab9-46cb-9f80-a3439aaa0651">
+    <description>
+      UNION and INTERSECT together (cf 4.6.5 in ADQL-2.1).
+      An ADQL validator can not check execution order (or SQL translation), but
+      just for information: INTERSECT should execute first ; the UNION should
+      operate on the first query and the result of the INTERSECT.
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+  SELECT id, ra, dec FROM table1
+UNION
+  SELECT id, ra, dec FROM table2
+INTERSECT
+  SELECT id, ra, dec FROM table3
+    ]]></adql>
+  </query>
+
+  <query uuid="48c92ab1-b4b9-4c72-a1c4-15823d40d8a8">
+    <description>
+      UNION between parenthesis and INTERSECT.
+      An ADQL validator can not check execution order (or SQL translation), but
+      just for information: an UNION between parenthesis should execute first ;
+      the INTERSECT should operate on the wrapped UNION's result and the last
+      query.
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+(
+    SELECT id FROM table1 WHERE id <= 10
+UNION
+    SELECT id FROM table1 WHERE id > 120406
+)
+INTERSECT
+    SELECT id FROM table1 WHERE (id <= 10 OR id > 120406) AND mod(id, 2) = 0
+    ]]></adql>
+  </query>
+
+  <query uuid="5ab8021e-c390-4a54-8aaa-bff8784c76e4">
+    <description>
+      WITH and UNION (cf 4.6.4 in ADQL-2.1).
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+WITH tenFirst AS ( SELECT TOP 10 id, ra, dec FROM atable ORDER BY id ASC),
+      tenLast AS ( SELECT TOP 10 id, ra, dec FROM atable ORDER BY id DESC)
+  SELECT * FROM tenFirst
+UNION
+  SELECT * FROM tenLast
+    ]]></adql>
+  </query>
+
+  <query uuid="398e300f-8cb2-459a-9cac-fd2f70d641e1">
+    <description>
+      UNION with a WITH in subquery ; this is not allowed by ADQL-2.1. CTEs must
+      all be declared at the top level.
+    </description>
+    <adql valid="false" version="adql-2.1"><![CDATA[
+    SELECT id FROM table1 WHERE id <= 10
+UNION
+    (
+        WITH tt AS (SELECT id FROM table1 WHERE id > 120406)
+        SELECT id FROM tt
+    )
+    ]]></adql>
+  </query>
+
+</queries>

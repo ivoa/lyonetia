@@ -17,7 +17,7 @@ import java.util.*;
  * Class running the command line version of the ADQL Validator.
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (10/2022)
+ * @version 1.0 (01/2023)
  */
 public class ADQLValidatorRunner {
 

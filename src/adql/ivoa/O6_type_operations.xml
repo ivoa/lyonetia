@@ -1,0 +1,80 @@
+<queries>
+  <title>Optional 6 - Type operations</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional type operations (cf 4.7 in ADQL-2.1): CAST.
+  </description>
+
+  <query uuid="abfe7671-3267-4ef7-98d0-45202e91f19a">
+    <description>CASTing into a numeric.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT CAST(2022   AS SMALLINT),
+               CAST(5      AS INTEGER),
+               CAST(123456 AS BigInt),
+               CAST(3.14   AS REAL),
+               CAST(3.14   AS Double Precision)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="0ace90cc-a20b-4fa8-bd00-0984fcb8b45b">
+    <description>CASTing into characters.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT CAST(name AS CHAR),
+               CAST(name AS VarChar),
+               CAST(name AS char(30)),
+               CAST(name AS VARCHAR(30))
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="02ad59ac-e214-4edf-8b31-0c75fa525d25">
+    <description>CASTing into a TIMESTAMP</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name, CAST('2021-01-14T11:25:00' AS TIMESTAMP)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="2d5b0f90-57e4-4bdb-85d6-0cdf2550de38">
+    <description>CASTing a string (DALI serial.) into a geometry.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT CAST('12.3 45.6' AS POINT),
+               CAST('12.3 45.6 1.0' AS CIRCLE),
+               CAST('1.0 0.1 2.0 0.2 3.0 0.3' AS POLYGON)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="6920d94d-3077-45d2-98ca-4bde7f0807d8">
+    <description>CASTing a NULL value</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name, CAST(NULL AS VARCHAR)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="fcb50aed-deef-4a76-be2b-4b23096211f3">
+    <description>CASTing into NULL</description>
+    <adql valid="false" version="adql-2.1">
+        SELECT name, CAST(123 AS NULL)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="fde5dacc-cea6-4262-b9bf-265dc8d51b8c">
+    <description>CASTing into a non-supported datatype</description>
+    <adql valid="false" version="adql-2.1">
+        SELECT name, CAST(314 AS FLOAT)
+        FROM stars
+    </adql>
+  </query>
+
+</queries>

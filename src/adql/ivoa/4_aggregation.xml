@@ -1,0 +1,58 @@
+<queries>
+  <title>4. Aggregate functions</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>ADQL queries with aggregate functions.</description>
+
+  <query uuid="92944702-7d0a-41d3-867c-02c6a95609af">
+    <description>The most used aggregation function: COUNT(*).</description>
+    <adql valid="true" version="adql-2.1">SELECT COUNT(*) FROM stars</adql>
+  </query>
+
+  <query uuid="7cdd6e40-94e5-4e9a-8825-bfb4e5add07b">
+    <description>Counting distinct values.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT COUNT(DISTINCT name)
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="7cdd6e40-94e5-4e9a-8825-bfb4e5add07b">
+    <description>All aggregate functions.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT COUNT(*),
+             MIN(ra_error),
+             MAX(ra_error),
+             AVG(ra_error),
+             STDDEV(ra_error),
+             SUM(ra_error)
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="633ec7dc-7aac-4d3c-9285-709a5b8a19d8">
+    <description>
+        All aggregate functions after grouping rows and filtering groups.
+    </description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+      SELECT type,
+             COUNT(*),
+             MIN(ra_error),
+             MAX(ra_error),
+             AVG(ra_error),
+             STDDEV(ra_error),
+             SUM(ra_error)
+      FROM stars
+      GROUP BY type
+      HAVING AVG(ra_error) > 0.001
+      ORDER BY 5 DESC
+    ]]></adql>
+  </query>
+
+</queries>

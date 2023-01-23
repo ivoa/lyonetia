@@ -1,0 +1,52 @@
+<queries>
+  <title>Optional 7 - Conditional functions.</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional conditional functions (cf 4.8 in ADQL-2.1): COALESCE.
+  </description>
+
+  <query uuid="db040870-06cb-49d0-a45e-b4ed07b646b5">
+    <description>COALESCE function with no argument.</description>
+    <adql valid="false" version="adql-2.1">
+        SELECT COALESCE()
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="2104c723-4ea8-42d7-bf96-7735cc9fd88b">
+    <description>
+      COALESCE function with NULL as argument. This does not make sense to allow
+      NULL in there, as COALESCE aims to avoid NULL values in its output.
+    </description>
+    <adql valid="false" version="adql-2.1">
+        SELECT COALESCE(NULL)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="f4e1fb9a-3645-47be-9db5-ed6eb3e6a805">
+    <description>COALESCE function with just one argument.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT COALESCE(star_name)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="a504e0e3-2581-4e06-824e-2b287d123a7f">
+    <description>
+        COALESCE function with more than one argument.
+    </description>
+    <adql valid="true" version="adql-2.1">
+        SELECT COALESCE(favorite_name, star_name, 'a_star')
+        FROM stars
+    </adql>
+  </query>
+
+</queries>

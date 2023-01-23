@@ -1,0 +1,119 @@
+<queries>
+  <title>2. WHERE</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    ADQL queries with simple native (i.e. mandatory) rows constraints.
+    </description>
+
+  <!--
+
+      NUMERICAL CONSTRAINTS
+
+  -->
+
+  <query uuid="ff381c85-a6b3-40d1-a2a4-f10b8435a747">
+    <description>Simple unique numerical constraint.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE mag < 0
+    ]]></adql>
+  </query>
+
+  <query uuid="6bfea8fe-fe95-43e3-833c-6d5ac6202732">
+    <description>Use the BETWEEN operator.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE ra BETWEEN -10 AND 10
+    ]]></adql>
+  </query>
+
+  <!--
+
+      STRING CONSTRAINTS
+
+  -->
+
+  <query uuid="d1ee764c-155e-43f9-9fba-4933345080ef">
+    <description>String comparison: string equality.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name
+        FROM stars
+        WHERE name = 'M31'
+    </adql>
+  </query>
+
+  <query uuid="389f445d-4ae2-4a02-a2c0-2253def983e4">
+    <description>String comparison: string inequality: !=</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name
+        FROM stars
+        WHERE name != 'M31'
+    </adql>
+  </query>
+  
+  <query uuid="61b37a6c-f62d-47dd-a652-fd16886bea10">
+    <description><![CDATA[
+        String comparison: string inequality: <>
+    ]]></description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE name <> 'M31'
+    ]]></adql>
+  </query>
+
+  <query uuid="5052e0ea-ba09-4e75-8191-286eabd1540a">
+    <description>String comparison: less than.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE name < 'M31'
+    ]]></adql>
+  </query>
+
+  <query uuid="aaa9600b-bfc6-4613-bc0b-507d6d87a74a">
+    <description>String comparison: less or equal than.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE name <= 'M31'
+    ]]></adql>
+  </query>
+  
+  <query uuid="a3a3cf44-66d3-41f7-9cba-82f94e030d21">
+    <description>String comparison: greater than.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE name > 'M31'
+    ]]></adql>
+  </query>
+  
+  <query uuid="c6be7e86-915b-43c5-91bc-f646bf77873e">
+    <description>String comparison: greater or equal than.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        SELECT name
+        FROM stars
+        WHERE name >= 'M31'
+    ]]></adql>
+  </query>
+
+  <query uuid="b1fdacd2-b153-464a-a808-0970bd7b459f">
+    <description>String comparison: LIKE</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name
+        FROM stars
+        WHERE name LIKE 'NGC%'
+    </adql>
+  </query>
+
+</queries>

@@ -1,0 +1,53 @@
+<queries>
+  <title>3. Math functions</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    ADQL queries using the mandatory mathematical and trigonometrical functions
+    (cf 2.3 in ADQL-2.1).
+  </description>
+
+  <query uuid="534fd779-5304-4ec1-abe9-aec87ab97c06">
+    <description>Mathematical functions.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT TOP 1
+        abs(-3.14)                               AS "ABS",
+        truncate(ceiling(313.6)/100, 2)          AS "CEILING",
+        truncate(degrees(0.054803338512622), 2)  AS "DEGREES",
+        truncate(exp(1.1442227999201620), 2)     AS "EXP",
+        truncate(floor(314.3)/100, 2)            AS "FLOOR",
+        truncate(log(23.103866858722183), 2)     AS "LOG",
+        truncate(log10(1380.3842646028848), 2)   AS "LOG10",
+        mod(7.14, 4)                             AS "MOD",
+        truncate(pi(), 2)                        AS "PI",
+        round(power(1.772004514666935, 2), 2)    AS "POW",
+        round(radians(179.908747671078)*100)/100 AS "RADIANS",
+        truncate(sqrt(9.8596000000000000), 2)    AS "SQRT",
+        round(3.14278210, 2)                     AS "ROUND",
+        truncate(3.1499999999, 2)                AS "TRUNCATE"
+      FROM stars
+    </adql>
+  </query>
+
+  <query uuid="0d2f3aad-c72e-422a-a54b-92d22c64496a">
+    <description>Trigonometrical functions.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT TOP 1
+        acos(1)            AS "ACOS",
+        asin(0)            AS "ASIN",
+        atan(0)            AS "ATAN",
+        atan2(0,1)         AS "ATAN2",
+        round(cos(pi()/2)) AS "COS",
+        sin(0)             AS "SIN",
+        tan(0)             AS "TAN"
+      FROM stars
+    </adql>
+  </query>
+
+</queries>

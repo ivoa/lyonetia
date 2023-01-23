@@ -1,0 +1,67 @@
+<queries>
+  <title>Optional 4 - Common Table Expressions</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional Common Table Expressions (CTE) (cf 4.5 in ADQL-2.1): WITH.
+  </description>
+
+  <query uuid="c255eb17-103c-40c2-821e-7c814c195f92">
+    <description>Simple WITH expression.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[
+        WITH alpha_subset AS (
+          SELECT *
+          FROM stars
+          WHERE mod(id, 10) = 0
+        )
+        SELECT ra, dec
+        FROM alpha_subset
+        WHERE ra > 10 AND ra < 20
+    ]]></adql>
+  </query>
+
+  <query uuid="11a7abc0-c549-45e4-809c-914e12865c0d">
+    <description>WITH expression inside a sub-query.</description>
+    <adql valid="false" version="adql-2.1"><![CDATA[
+        SELECT *
+        FROM (
+          WITH alpha_subset AS (
+            SELECT *
+            FROM stars
+            WHERE mod(id, 10) = 0
+          )
+          SELECT ra, dec
+          FROM alpha_subset
+          WHERE ra > 10 AND ra < 20
+        ) AS db_stars
+          INNER JOIN TAP_UPLOAD.my_stars
+            ON 1=CONTAINS(POINT(db_stars.ra, db_stars.dec),
+                          CIRCLE(my_stars.ra, my_stars.dec, 1./60))
+    ]]></adql>
+  </query>
+
+  <query uuid="6a81504b-d361-463c-80d5-68ed6e269460">
+    <description>Recursive WITH expressions.</description>
+    <adql valid="false" version="adql-2.1"><![CDATA[
+        WITH alpha_subset AS (
+          WITH my_stars_subset AS (
+            SELECT * FROM TAP_UPLOAD.my_stars FROM mag < 1
+          )
+          SELECT *
+          FROM stars
+            JOIN my_stars_subset AS subset
+              ON 1=CONTAINS(POINT(stars.ra, stars.dec),
+                            CIRCLE(subset.ra, subset.dec, 1./60))
+        )
+        SELECT *
+        FROM alpha_subset
+    ]]></adql>
+  </query>
+
+</queries>

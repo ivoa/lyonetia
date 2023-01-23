@@ -1,0 +1,639 @@
+<queries>
+  <title>Extra 1 - ESO's Obscore queries sample</title>
+  <contact>
+    <name>Alberto Micol</name>
+    <url>mailto:amicol@eso.org</url>
+  </contact>
+  <publisher>
+    <name>ESO</name>
+    <url>http://archive.eso.org/programmatic/#TAP</url>
+  </publisher>
+  <description>
+    ADQL-2.1 queries on ivoa.ObsCore at ESO's TAP service.
+  </description>
+
+  <query uuid="81c95ea3-cf1a-446c-8fda-fcf7bcfae85a">
+    <description>ots1: Which tables can be queried via this service? Use the TAP_SCHEMA to discover that.</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs tap_schema 1'
+
+SELECT table_name, description
+FROM TAP_SCHEMA.tables
+ORDER BY table_name
+
+-- Full explanation:
+-- All TAP services must support a set of (meta) tables, in a schema named TAP_SCHEMA.
+-- These meta-tables describe all tables and columns published through the TAP service.
+-- The meta-tables can be queried themselves via TAP.
+-- Users can discover ESO-published tables or columns by querying the tables in this schema.
+]]></adql>
+  </query>
+  <query uuid="a0fed2ca-1f59-449a-b650-d95a8a953fd0">
+    <description>ots2: I am interested in spectra. What are the columns of the dbo.ssa table?</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs tap_schema 2'
+
+
+SELECT column_name, datatype, arraysize, xtype, unit, description
+from TAP_SCHEMA.columns
+where table_name='dbo.ssa'
+
+-- The TAP_SCHEMA.columns table contains all column names, units,
+-- UCDs, description, etc., of all the published ESO tables.
+-- This use case answer to the following question:
+-- WHAT ARE THE COLUMNS OF THE SPECTRAL TABLE called dbo.ssa?
+-- 
+-- Further details:
+-- Please note that string values must be embraced in single quotes (e.g.: 'dbo.ssa').
+
+]]></adql>
+  </query>
+  <query uuid="d3531f66-38e3-4c70-8342-3dc8f18e778c">
+    <description>ots3: I am interested in reduced data. What are the column names of the ivoa.obscore table?</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs tap_schema 3'
+
+SELECT column_name, datatype, arraysize, xtype, unit, ucd, utype -- add description to know more
+from TAP_SCHEMA.columns
+where table_name='ivoa.ObsCore'
+
+-- WHAT ARE THE COLUMNS OF THE DATA PRODUCT TABLE called ivoa.ObsCore?
+-- The TAP_SCHEMA.columns table contains all column names, units,
+-- UCDs, description, etc., of all the published ESO tables.
+]]></adql>
+  </query>
+  <query uuid="61d4ec21-99e2-43ab-b844-37ded6cfc12d">
+    <description>ots4: I am interested in raw data. What are the column names of the dbo.raw table?</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs tap_schema 4'
+
+SELECT column_name, datatype, arraysize, xtype, unit, ucd, description
+from TAP_SCHEMA.columns
+where table_name='dbo.raw'
+
+-- WHAT ARE THE COLUMNS OF THE TABLE describing the raw data?
+-- The TAP_SCHEMA.columns table contains all column names, units,
+-- UCDs, description, etc., of all the published ESO tables.
+]]></adql>
+  </query>
+  <query uuid="38b20b4a-b032-4b7b-a121-78b4f4f09a88">
+    <description>ots5: I am interested in ambient data. What are the tables available?</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs tap_schema 5 asm'
+
+SELECT table_name, description
+from TAP_SCHEMA.tables
+where schema_name='asm'
+
+-- WHAT ARE THE TABLES in the asm (Astronomical Site Monitoring) schema?
+-- In the asm schema you'll find all the meteorological, seeing, turbulence and
+-- and other atmospheric measurements taken in Paranal, La Silla, and Llano de Chanjantor.
+]]></adql>
+  </query>
+  <query uuid="ee77774d-851d-4224-93df-0b718c55c238">
+    <description>osp1: FAST cone search around ASASSN-14lp (spatial regions, intersects, count(*), group by, order by)</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query 1'
+
+SELECT count(*), dataproduct_type from ivoa.obscore
+where intersects(s_region, circle('', 191.288, -0.459, 0.2))=1
+group by dataproduct_type
+order by 1
+
+-- Search products whose footprint (s_region)
+-- intersects a circle, around the coordinates of ASASSN-14lp,
+-- of radius 0.2 degrees.
+-- To boost performances, always use s_region instead of s_ra, s_dec!
+]]></adql>
+  </query>
+  <query uuid="3b617072-c560-45be-ac91-5fdde5fa9a82">
+    <description>osp2: SLOW cone search around ASASSN-14lp method: (count(*), group by, order by)</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query 2'
+
+SELECT count(*), dataproduct_type from ivoa.obscore
+where contains(point('',s_ra, s_dec), circle('', 191.288, -0.459, 0.2))=1
+group by dataproduct_type
+order by 1
+
+-- Please refer and compare to  use case 'osp1'.
+-- To boost performances, always use s_region (when available) instead of s_ra, s_dec!
+]]></adql>
+  </query>
+  <query uuid="c90c85d3-3085-44a5-bde4-5e1b23f78ce7">
+    <description>opoly1: data cubes intersecting a polygon, sorted by time</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query 1'
+
+SELECT dp_id, instrument_name, em_min, em_max, t_min, t_max, abmaglim
+from ivoa.obscore
+where dataproduct_type='cube'
+and intersects(s_region, POLYGON('J2000', 13.0693,-71.65096, 14.84154,-71.56671, 15.27297,-71.35749, 16.06896,-71.18409, 18.05569,-71.21087, 18.18693,-71.56017, 17.94095,-71.79691, 18.2426,-72.26287, 18.1768,-72.51207, 18.6428,-72.84655, 18.41702,-73.21914, 17.21973,-73.51087, 15.95491,-73.67205, 14.53724,-73.81775, 13.29543,-74.21443, 11.09112,-74.30085, 9.31902,-74.1996, 8.07684,-73.94694, 7.24562,-73.75243, 7.14798,-73.24678, 7.86999,-72.77294, 8.78747,-72.39554, 10.11832,-72.2524, 11.27343,-72.09003, 12.32697,-71.83623))=1
+order by t_min
+
+-- Search for data cubes whose footprint (s_region)
+-- intersects a polygon, around the Small Magellanic Cloud;
+-- show only the identifier of the product, the instrument name, the min and max wavelengths,
+-- the start and stop times, and the limiting magnitude (AB).
+-- Sort by start time.
+-- In the SELECT part, add s_region if you want to display the footprints, e.g., when querying using a tool;
+-- add access_url if you want to access the product files (or related files).
+]]></adql>
+  </query>
+  <query uuid="d2be7141-f301-493f-9eb3-4b42d891ebc2">
+    <description>owc1: Products covering a specific wavelength (top, order by)</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs wavelength_coverage 1'
+
+SELECT TOP 200 target_name, instrument_name, dataproduct_type,
+   em_min, em_max, em_res_power, obs_collection, dataproduct_subtype 
+FROM ivoa.ObsCore 
+WHERE em_min <= 2.18E-6 
+  AND em_max >= 2.18E-6 
+  AND s_dec < -74.5
+-- and em_res_power < 10 -- to exclude narrow-band filters like the Hawki-BrGamma
+ORDER BY s_dec
+-- 
+-- Find products containing the 2.18 micron wavelength,
+-- which are closer than 15.5 degrees to the south pole (FK5 J2000).
+-- Limit the results to the first 200 records.
+-- Expected results:
+--   . Any spectrum, cube, or visibility, whose wavelengths extend below and above the 2.18 micron
+--   . Any image, source table, catalog, whose filter covers the 2.18 micron wavelength
+--     (i.e. the Ks-filter of all instruments, the BrGamma narrow-band filter of HAWKY), 
+--     (see Helper: Characteristics of ESO filters below)
+--   . Only products whose declination is southern than -74.5 degrees (FK5 J2000) are considered.
+--   . ORDER BY: the results will be sorted by the declination in the default ascending order.
+--   . TOP 200: only the first 200 records (at maximum) of the result set will be returned,
+--     even if more results are available.
+--   . The TOP operator is applied to the query result set, that is, after the sorting has taken place;
+--     effectively, this means that only the first 200 closest products to the south pole are returned.
+
+]]></adql>
+  </query>
+  <query uuid="b0a9fc61-8315-4d1a-95cc-d2f1bbc4c29e">
+    <description>owc2: Spectra covering a specific spectral line</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs wavelength_coverage 2'
+
+
+SELECT TOP 200 target_name, instrument_name, em_min, em_max, em_res_power, obs_id, obs_publisher_did 
+FROM ivoa.Obscore 
+WHERE dataproduct_type = 'spectrum'                 -- find 1d spectra with 
+  AND em_min < 656.28E-9 AND em_max > 656.28E-9     -- wavelength covering the Halpha wavelength (in meters, at redshift 0.0)
+
+-- Find 200 1d spectra covering the Halpha wavelength (in meters, at redshift 0.0)
+
+-- The list of standard dataproduct_type values supported by the ESO archive are:
+-- 'spectrum', 'image', 'cube', 'measurements', 'visibility'
+-- Some ESO-specific types are provided via the dataproduct_subtype column.
+]]></adql>
+  </query>
+  <query uuid="91fb2719-7096-4b88-bcdb-00d86d125e7f">
+    <description>ospfoot1: Cone search around ETA CAR, CONTAINING products with R > 27000, order by distance)</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query_footprint 1'
+
+SELECT target_name, s_dec, s_ra, t_exptime, em_res_power, em_min, dataproduct_type, instrument_name,   
+       3600.*distance(s_region, point('',161.265,-59.684)) as arcsec_from_eta_car   
+FROM   ivoa.Obscore    
+WHERE  CONTAINS(s_region,CIRCLE('ICRS',161.265, -59.684, 100./3600.)) = 1   -- a circle centered onto Eta Car, of radius=100 arcsec,
+                                                                           -- must contain the s_region
+                                                                           -- (the footprint of the ESO 1d spectra is always a point!)
+and em_res_power > 27000                                     -- R (resolving power) > 27 000 
+order by arcsec_from_eta_car                                 -- sorted (ascending) on the computed field called arcsec_from_eta_car 
+
+-- Find products whose footprints are enterily within a cone of radius 100 arcsec around Eta Carinae
+-- with a spectral resolving power of at least 27,000.
+-- For the 'the-cone-fully-contains-product' search, the CONTAINS(contained, container) construct is used,
+-- that is, the 'contained' must entirely lie within the 'container'  
+-- Refer and compare with ospfoot2.
+]]></adql>
+  </query>
+  <query uuid="a8b1ce2a-64ff-47c7-9fcd-a64190a04c18">
+    <description>ospfoot2: Cone search around SN1987A, INTERSECTING products with R > 27000, order by distance</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query_footprint 2'
+
+-- with a spectral resolving power of at least 27,000.
+-- For the 'product-intersecting-user-defined-cone' search, the INTERSECTS(shape, shape) construct is used,
+-- that is, the two shapes need to overlap, but not necessarily 100 percent. 
+
+SELECT target_name, s_dec, s_ra, t_exptime, em_res_power, em_min*1E9 as em_min, dataproduct_type, instrument_name,   
+       3600.*distance(s_region, point('',83.86675,-69.269741666)) as arcsec_from_sn1987a   
+FROM   ivoa.Obscore    
+WHERE  INTERSECTS(s_region, CIRCLE('ICRS',83.86675,-69.269741666, 100./3600.)) = 1
+                           -- a circle centered onto SN1987A, of radius=100 arcsec,
+                                     -- must intersect the footprint of the product (field: s_region)
+                                     -- (Note that the footprint of a ESO 1d spectra is always a point)
+and em_res_power > 27000             -- R (resolving power) > 27 000 
+order by arcsec_from_sn1987a         -- sorted (ascending) on the computed field called arcsec_from_sn1987a 
+
+-- Find products whose footprints intersect a cone of radius 100 arcsec around SN1987A
+-- with a spectral resolving power of at least 27,000.
+-- For the 'the-cone-intersects-product' search, the INTERSECTS(region1� region2) construct is used,
+-- the order of the two arguments is irrelevant.
+-- Refer and compare with ospfoot1.
+]]></adql>
+  </query>
+  <query uuid="6ab8a7c1-664a-40ed-b1c0-46d070e41256">
+    <description>ospfoot3: RS PUPPIS in footprint: INCORRECT WAY: this query WILL NOT RETURN ANY SPECTRA!</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query_footprint 3'
+
+SELECT TOP 100 * FROM ivoa.Obscore 
+WHERE CONTAINS(POINT('ICRS',123.2675,-34.5785),s_region) = 1  -- footprint(the s_region field) must contain point (RA,DEC)=(123.2675deg,-34.5785deg)
+
+-- Find products containing the position of the cepheid RS PUPPIS
+-- Please note that this query very likely will NOT return any spectrum. 
+-- That is because, in the ESO case, 1D spectra have point-like footprints. 
+-- Refer and compare with ospfoot4.
+]]></adql>
+  </query>
+  <query uuid="3dcda782-eb92-46a8-b6e2-5324c532eda9">
+    <description>ospfoot4: RS PUPPIS in footprint: CORRECT WAY: small overlapping cone</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs spatial_query_footprint 4'
+
+SELECT target_name, s_ra, s_dec, dataproduct_type, distance(s_region, POINT('',123.2675,-34.5785))
+FROM ivoa.Obscore 
+WHERE INTERSECTS(CIRCLE('ICRS',123.2675,-34.5785,60./3600.),s_region) = 1  -- footprint of product (s_region) must overlap a 1 arcmin cone around RS PUPPIS 
+ORDER by 5 
+
+-- Find products intersecting a small circle around the cepheid RS PUPPIS
+-- Please note that this query will also return data products with a point-type footprint (spectra and visibilities)! 
+-- Refer and compare with ospfoot3.
+]]></adql>
+  </query>
+  <query uuid="7928f365-6631-4415-be7d-29865f14c083">
+    <description>oDEMO1: Find overlapping J and H HAWKI source tables on th GC plane</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs advanced 1'
+
+SELECT * FROM ivoa.ObsCore WHERE dp_id in (
+   SELECT distinct J.dp_id FROM
+      (select * FROM ivoa.Obscore WHERE dataproduct_subtype ='srctbl' 
+      AND obs_collection = 'HAWKI' 
+      AND gal_lat < 10 AND gal_lat > -10 
+      AND em_min < 1.265E-6 AND em_max > 1.265E-6 ) J, 
+
+      (select * FROM ivoa.Obscore WHERE dataproduct_subtype ='srctbl' 
+      AND obs_collection = 'HAWKI' 
+      AND gal_lat < 10 AND gal_lat > -10 
+      AND em_min < 1.66E-6 AND em_max > 1.66E-6 ) H 
+
+   WHERE INTERSECTS( J.s_region , H.s_region)=1 and 
+   ESO_INTERSECTION( J.s_region , H.s_region) > 0.8*AREA( J.s_region ) 
+)
+
+-- Find overlapping J and H HAWKI source tables within the GC plane:
+-- provided they overlap for at least 80% of the J image.
+-- 
+-- ESO specific:
+--    (A) gal_lat (and gal_lon) are ESO specific columns (not part of the ObsCore standard)
+--    (B) ESO_INTERSECTION is an ESO-defined function
+--        which returns the area of the intersection between 2 regions.
+-- Note: You can dismiss the gal_lat constraints and try on the whole sky.
+]]></adql>
+  </query>
+  <query uuid="7f30606b-509a-491f-8b5a-5d712f37670c">
+    <description>oDEMO2: SEEING vs PSF FWHM of a HAWKI product</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs advanced 2'
+
+SELECT s_resolution as PSF_FWHM,
+AVG(turbfwhm) as mass_seeing_avg, AVG(tet) as mass_isoplanaticangle_avg,
+count(distinct(mass.start_date)) as mass_num_samples,
+min(mass.start_date) as mass_start_date, max(mass.start_date) as mass_stop_date,
+raw.dp_id as Originating_RAW
+FROM ivoa.obscore,
+asm.MASS_paranal as mass,
+dbo.raw as raw
+WHERE mass.start_date  between eso_dateadd_sec(-360, raw.exp_start) and eso_dateadd_sec(360, raw.exp_start)
+and instrument='HAWKI'
+and raw.dp_id in
+      (select source_file from phase3v2.provenance as p, phase3v2.files as f
+       where p.product_file=f.file_id and archive_id=ivoa.obscore.dp_id)
+and ivoa.obscore.dp_id='ADP.2016-07-29T13:44:04.217'
+group by s_resolution, obscore.dp_id, raw.dp_id
+-- The results do not take into account the scaling necessary
+-- to bring the seeing to the airmass and wavelength of the observation.
+-- See: http://www.eso.org/observing/etc/doc/helpfors.html#seeing
+-- Other bands:
+-- ADP.2016-07-29T13:44:03.709 J   (FWHM_J / FWHM_V = 0.85 * POW(AIRMASS_OBS / AIRMASS_MASS, 0.6) )
+-- ADP.2016-07-18T09:00:02.473 Brackett Gamma
+-- ADP.2016-07-29T13:44:04.217 Ks  (FWHM_Ks / FWHM_V = 0.76 * POW(AIRMASS_OBS / AIRMASS_MASS, 0.6))
+]]></adql>
+  </query>
+  <query uuid="fe14faa7-e3ce-4e65-a3fa-e3314a3bf94c">
+    <description>oid: select metadata of one specific product, given its unique ESO identifier</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT * from ivoa.ObsCore
+WHERE dp_id='ADP.2014-10-01T10:19:21.580'
+
+-- you could use, completely equivalently, its ESO VO identifier using:
+-- WHERE obs_publisher_did='ivo://eso.org/ID?ADP.2014-10-01T10:19:21.580'
+]]></adql>
+  </query>
+  <query uuid="cb9c4c36-a7ca-431d-9912-f5fed75e3e95">
+    <description>oseeing: Good-seeing J/H/K images in a selected (ra,dec) box</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT * FROM ivoa.Obscore 
+WHERE dataproduct_type='image' 
+AND s_resolution < 0.4 
+AND s_ra BETWEEN 240 AND 255 AND s_dec BETWEEN -10 AND 0     -- RA in range: 240..255, DEC in range: -10..0
+AND ((em_min < 2.2E-6 AND em_max > 2.2E-6)                   -- wavelength covering (either the Ks band
+    OR (em_min < 1.65E-6 AND em_max > 1.65E-6)               --                          or the H band,
+    OR (em_min < 1.25E-6 AND em_max > 1.25E-6))              --                          or the J band).
+]]></adql>
+  </query>
+  <query uuid="a03b3015-a936-4d59-8fa4-3adde0aafe64">
+    <description>ofilter: Products with transmission curves similar to the standard 2MASS-Cohen Ks band</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT TOP 10 obs_publisher_did, instrument_name, em_min, em_max, em_res_power, obs_collection 
+FROM ivoa.ObsCore 
+WHERE em_min < 2.159E-6 AND em_max > 2.159E-6 -- contains the central lambda of Ks of the 2MASS-Cohen standard photometric system
+AND em_res_power between 5 and 10 -- and limits the resolving power to a small value (no spectrum/cube will match)
+                                  -- Expected are em_res_power(Ks)=6.22 of HAWKI, 7.1 of VIRCAM, 8.0 of ISAAC,
+                                  -- but not the BrGamma of HAWKI (69.85).
+                                  -- See the Helper tables below.
+]]></adql>
+  </query>
+  <query uuid="78be472c-30cf-4351-87fb-24f9e471bb8a">
+    <description>oSTATS1: Total number of products</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT COUNT(*) FROM ivoa.ObsCore]]></adql>
+  </query>
+  <query uuid="632ac799-645e-4c91-b416-572a05c0e35f">
+    <description>oSTATS2: on obs_collection (Number of datasets PER collection)</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT COUNT(*) as qty, obs_collection   -- Num of datasets in collection
+FROM ivoa.ObsCore 
+GROUP BY obs_collection           -- group on the field(s) you want to compute the aggregates
+ORDER BY qty]]></adql>
+  </query>
+  <query uuid="b3493f63-1f7c-4889-b0bc-b66d67eafe12">
+    <description>oSTATS3: on obs_collection, dataproduct_type (Number of datasets PER type and collection)</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT COUNT(*), obs_collection, dataproduct_type   -- Num of datasets per collection and data product type
+FROM ivoa.ObsCore 
+GROUP BY obs_collection, dataproduct_type           -- group on the field(s) you want to compute the aggregates
+ORDER BY obs_collection, dataproduct_type           -- you might want to order by COUNT(*) instead]]></adql>
+  </query>
+  <query uuid="72a97d14-ef53-49d1-a5d3-152de18a4fcc">
+    <description>oSTATS4: Min and Max spectral resolving power PER data type</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT min(em_res_power) as min_res_power,    -- Find min of the resolving 
+       max(em_res_power) as max_res_power,    --  and max of the resolving power 
+       dataproduct_type                       --  for a data product type
+FROM ivoa.ObsCore 
+GROUP BY dataproduct_type                     -- group on the field(s) you want to compute the aggregates
+]]></adql>
+  </query>
+  <query uuid="c25461ef-9030-4f35-bda8-5b3c31ac1040">
+    <description>oSTATS5: Min and Max spectral resolving power and wavelengths PER collection</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT min(em_res_power) as min_res_power,  max(em_res_power) as max_res_power, 
+obs_collection 
+FROM ivoa.ObsCore 
+GROUP BY obs_collection 
+]]></adql>
+  </query>
+  <query uuid="b2ab4c84-2b1e-4a52-abc8-9ed79d49fbdf">
+    <description>oSTATS6: Census of collections/data types/instruments/</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT count(*) as qty, obs_collection, dataproduct_type, dataproduct_subtype, 
+instrument_name, filter, min(em_min*1E9) as wmin_nm, max(em_max*1E9) as wmax_nm, 
+min(snr) as min_snr, max(snr) as max_snr, min(abmaglim) as min_mag_lim, 
+max(abmaglim) as max_mag_lim
+ FROM ivoa.ObsCore
+ group by obs_collection, dataproduct_type, dataproduct_subtype, facility_name, instrument_name, filter
+ order by obs_collection, dataproduct_type, dataproduct_subtype, instrument_name, filter
+]]></adql>
+  </query>
+  <query uuid="d936c319-a8dd-4026-8b49-7e73f0675d29">
+    <description>oSTATS7: Total number and volume (TB) per type of product</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT dataproduct_type, count(*) NumProducts, sum(access_estsize)/1000000000. TB 
+FROM ivoa.ObsCore group by dataproduct_type 
+order by 3 desc 
+]]></adql>
+  </query>
+  <query uuid="554bb25b-c081-4870-b216-1cabb46e5c51">
+    <description>osci1: *** 100 best J,H,Ks spatially-resolved products intersecting a 5deg cone around Galactic Centre</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT TOP 100 instrument_name, em_min, em_max, s_resolution, distance(s_region, point('',266.42,-29.0)) as dist_from_GC, dataproduct_type 
+ FROM ivoa.Obscore 
+WHERE dataproduct_type='image' 
+ AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5),s_region) = 1  -- intersecting (aka overlapping) a 5 deg cone around the Galactic Centre
+ AND ((em_min < 1.25E-6 AND em_max > 1.25E-6)   -- Contains lambda(J) or
+     OR (em_min < 1.65E-6 AND em_max > 1.65E-6) -- Contains lambda(H) or
+     OR (em_min < 2.2E-6 AND em_max > 2.2E-6))  -- Contains lambda(Ks) 
+ AND em_res_power < 20                          -- Low spectral resolving power, includes both images and source tables 
+ ORDER BY 4               -- 4 is the position of the s_resolution within fields in the SELECT
+]]></adql>
+  </query>
+  <query uuid="07e4961f-84d8-43f4-8249-0b7316c91fbd">
+    <description>50 J, H, or K images closest to the Galactic Centre</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT TOP 50 instrument_name, em_min, em_max, s_resolution, distance(s_region, point('',266.42,-29.0)) as dist_footprint_from_GC 
+ FROM ivoa.Obscore 
+WHERE dataproduct_type='image' 
+ AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5),s_region) = 1 
+ AND ((em_min < 1.265E-6 AND em_max > 1.265E-6) -- Contains lambda(J) 
+     OR (em_min < 1.66E-6 AND em_max > 1.66E-6) -- Contains lambda(H) 
+     OR (em_min < 2.18E-6 AND em_max > 2.18E-6)) -- Contains lambda(Ks) 
+ AND dataproduct_type = 'image' 
+ ORDER BY 5              -- 5 is the position in the SELECT of the distance from 
+                         -- the galactic center of the returned footprint (aliased to dist_footprint_from_GC), in degrees)
+]]></adql>
+  </query>
+  <query uuid="4b8bd9f4-611c-4d2e-8227-2525dee664d2">
+    <description>osci2: overlapping J and H images around the Galactic Centre SORTING BY OVERLAPPING AREA</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT TOP 50 J.target_name, J.obs_publisher_did, J.s_ra, J.s_dec, J.em_min, J.em_max, J.instrument_name,
+              H.target_name, H.obs_publisher_did, H.s_ra, H.s_dec, H.em_min, H.em_max, H.instrument_name,
+              ESO_INTERSECTION(J.s_region,H.s_region) as OverlappingArea, J.s_region, H.s_region
+FROM
+     (SELECT * FROM ivoa.Obscore WHERE dataproduct_type='image'
+        AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5),s_region) = 1
+        AND em_min < 1.265E-6 AND em_max > 1.265E-6
+     ) as J
+,
+     (SELECT * FROM ivoa.Obscore WHERE dataproduct_type='image'
+        AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5),s_region) = 1
+        AND em_min < 1.66E-6 AND em_max > 1.66E-6
+     ) as H
+WHERE INTERSECTS(J.s_region, H.s_region)=1
+  AND ESO_INTERSECTION(J.s_region,H.s_region) > 1.79
+ORDER by 1, OverlappingArea desc]]></adql>
+  </query>
+  <query uuid="1084e068-8f31-4007-9d89-115dec609452">
+    <description>Similar to DEMO 1: Find overlapping J and H images around the Galactic Centre</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[       SELECT *
+       FROM
+             (select * FROM ivoa.Obscore WHERE dataproduct_type ='image'
+             AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5), s_region) = 1 
+             AND em_min < 1.265E-6 AND em_max > 1.265E-6 ) J, 
+
+            (select * FROM ivoa.Obscore WHERE dataproduct_type ='image' 
+             AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5), s_region) = 1 
+             AND em_min < 1.66E-6 AND em_max > 1.66E-6 ) H 
+
+       WHERE INTERSECTS( J.s_region , H.s_region)=1 and 
+       ESO_INTERSECTION( J.s_region , H.s_region) > 1.79 
+
+]]></adql>
+  </query>
+  <query uuid="8f02cf39-2c33-478e-9f21-88b0be7579b3">
+    <description>Aladin: visualise J images around the Galactic Centre</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT  TOP 1000 *
+FROM ivoa.Obscore
+WHERE dataproduct_type='image'
+ AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5), s_region) = 1
+ AND em_min < 1.265E-6 AND em_max > 1.265E-6 -- Contains lambda(J)
+]]></adql>
+  </query>
+  <query uuid="5e83a501-61c1-4af3-aee7-7c987f5400b9">
+    <description>How to compute the distance of a point from a product's footprint</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT top 120
+   distance(s_region, point('',266.42,-29.0)) as dist_footprint, -- CORRECT
+   distance(point('',s_ra,s_dec),point('',266.42,-29.0)) as dist_ra_dec, -- INCORRECT
+dataproduct_type, s_ra, s_dec
+FROM ivoa.Obscore 
+WHERE dataproduct_type='image' 
+AND INTERSECTS(CIRCLE('ICRS',266.42,-29.0,5),s_region) = 1  -- intersecting (aka overlapping) a 5 deg cone around the Galactic Centre
+AND em_min < 1.25E-6 AND em_max > 1.25E-6   -- Contains lambda(J)
+ORDER BY dist_footprint, dist_ra_dec
+-- 
+-- CAUTION: Never use s_ra, s_dec when computing distances, use s_region instead!
+]]></adql>
+  </query>
+  <query uuid="ca6fde69-6b12-4f52-84ee-22b7723c43fc">
+    <description>ObsCore: Find spectra of sources observed in the H band by the VVV public survey</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT spectrum.* FROM
+      (select * FROM ivoa.Obscore WHERE dataproduct_type='spectrum' and snr > 500) spectrum,
+
+      (select * FROM ivoa.Obscore WHERE dataproduct_subtype ='tile'
+      AND obs_collection = 'VVV'  AND em_min < 1.66E-6 AND em_max > 1.66E-6 ) VVV_H
+
+WHERE CONTAINS( spectrum.s_region , VVV_H.s_region)=1
+
+-- CAUTION: if you use collection/band with many more records than VVV/H,
+--          then the query might take longer time: use /async in that case.
+]]></adql>
+  </query>
+  <query uuid="97b9b46e-36ce-4b1b-bccf-bd7056f2276c">
+    <description>Not ObsCore: Find spectra of sources observed in the H band by the VVV public survey</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT spectrum.* FROM
+      (select * FROM ivoa.Obscore WHERE dataproduct_type='spectrum' and snr > 500) spectrum,
+
+      (select * FROM ivoa.Obscore WHERE dataproduct_subtype ='tile'
+      AND obs_collection = 'VVV'  AND filter = 'H' ) VVV_H
+
+WHERE CONTAINS( spectrum.s_region , VVV_H.s_region)=1
+
+-- It is the same query as the one before, but this time using
+-- the ESO-specific field called filter, not part of the ObsCore standard
+-- CAUTION: if you use collection/band with many more records than VVV/H,
+--          then the query might take longer time: use /async in that case.
+]]></adql>
+  </query>
+  <query uuid="0903f935-cf00-4450-9f12-2d5a837a6f90">
+    <description>Get some stats about spectra of sources observed in the H band of VVV survey</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT count(*) as qty, spectrum.instrument_name, spectrum.em_res_power,
+               min(spectrum.snr) as min_snr, max(spectrum.snr) as max_snr
+FROM
+      (select * FROM ivoa.Obscore WHERE dataproduct_type='spectrum' and snr > 500) spectrum,
+ 
+      (select * FROM ivoa.Obscore WHERE dataproduct_subtype ='tile'
+      AND obs_collection = 'VVV'  AND em_min < 1.66E-6 AND em_max > 1.66E-6 ) VVV_H
+ 
+WHERE CONTAINS( spectrum.s_region , VVV_H.s_region)=1
+GROUP BY spectrum.instrument_name, spectrum.em_res_power
+
+-- Use text mode to better visualise these results.
+]]></adql>
+  </query>
+  <query uuid="92ad7772-d874-4ab6-bec5-2adf613378b4">
+    <description>raw01: select XSHOOTER spectra from a specific observing run</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT * from dbo.raw
+where prog_id='60.A-9022(C)'
+and instrument in ('SHOOT', 'XSHOOTER')
+and dp_cat='SCIENCE'
+and dp_tech like 'ECHELLE%'
+
+-- Please note that the XSHOOTER instrument, during its life time,
+-- has changed name. This is to be taken into account when querying
+-- the raw data database: to be sure to get all the XSHOOTER data
+-- always use both possible names with the constraint: 
+--    instrument in ('SHOOT','XSHOOTER')
+]]></adql>
+  </query>
+  <query uuid="6794498f-1603-4a12-b0dd-e48be1acab4b">
+    <description>asm01: find LHATPRO measurements for Paranal, around a certain position and time</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT start_date, midpoint_date, ra, dec, alt, az, *
+FROM asm.lhatpros_paranal_profiles
+WHERE midpoint_date between eso_dateadd_sec(-2700.000000, '2019-06-06T09:55:27') and eso_dateadd_sec(2700.000000, '2019-06-06T09:55:27')
+  AND CONTAINS(POINT('',ra, dec), CIRCLE('', 332.200000, -25.500000, 2.500000))=1
+  AND valid=1
+
+]]></adql>
+  </query>
+  <query uuid="9ed3f3c8-1461-4cee-9115-a910c319e671">
+    <description>prov1a: I want to know from which files was a product generated</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT source_file from phase3v2.provenance as p, phase3v2.files as f
+where p.product_file=f.file_id and archive_id='ADP.2017-10-25T22:38:07.225'
+
+-- This is a UVES 1d-spectrum product, generated out of a single raw files.
+-- The query in this case returns that raw file.
+]]></adql>
+  </query>
+  <query uuid="aaa9269e-eeae-424e-b355-cf757b091bc1">
+    <description>prov1b: I want to know from which files was a product generated</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT source_file from phase3v2.provenance as p, phase3v2.files as f
+where p.product_file=f.file_id and archive_id='ADP.2016-07-29T13:44:04.217'
+
+-- This is a HARPS product, generated out of some 42 HARPS raw files.
+-- The query in this case returns the list of those 42 raw files.
+]]></adql>
+  </query>
+  <query uuid="6cbd9338-6630-4fc9-bf11-43f362bbb7c5">
+    <description>prov2: I want to know from which file(s) was a product generated</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[-- Given a product identifier: ADP.2015-05-11T10:20:22.733
+-- find out from which file(s) it was generated:
+
+SELECT this_product, dataproduct_type, originated_from, originating_product.type "type (if product)", originating_raw.type "type (if raw)"
+FROM 
+
+  (SELECT dp_id, dataproduct_type FROM ivoa.ObsCore) as obscore,
+
+  (SELECT archive_id as this_product, source_file as originated_from
+   FROM phase3v2.provenance as p, phase3v2.files as f
+   WHERE p.product_file=f.file_id) as provenance
+
+  LEFT JOIN (SELECT dp_id, dataproduct_type as type FROM ivoa.ObsCore) as originating_product ON provenance.originated_from = originating_product.dp_id
+
+  LEFT JOIN (SELECT dp_id, dp_cat || dp_tech || dp_type as type FROM dbo.raw) as originating_raw ON provenance.originated_from = originating_raw.dp_id
+
+WHERE provenance.this_product = obscore.dp_id
+AND obscore.dp_id='ADP.2015-05-11T10:20:22.733'
+
+]]></adql>
+  </query>
+  <query uuid="dc62ea00-5d6b-4f05-83d8-21b137d1daf8">
+    <description>prov3: I want to know which products have the highest provenance cardinality</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[Select count(*) provenanceCardinality, dp_id, obs_collection, dataproduct_type, dataproduct_subtype
+from (select dp_id, obs_collection, dataproduct_type, dataproduct_subtype from ivoa.ObsCore) allobs,
+        (SELECT archive_id, source_file from phase3v2.provenance as p, phase3v2.files as f
+         where p.product_file=f.file_id) prov
+where  allobs.dp_id=prov.archive_id
+group by dp_id,obs_collection, dataproduct_type, dataproduct_subtype
+having count(*) > 400
+order by 1 desc, 4
+
+]]></adql>
+  </query>
+  <query uuid="fbb80106-2c3c-4f0f-899e-c8e0909666da">
+    <description>deriv1: I want to know which product(s) was generated from a particular file</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT source_file,
+       archive_id as product_id,
+       category   as product_category,
+       name       as product_origfile
+from phase3v2.provenance as p, phase3v2.files as f
+where p.product_file=f.file_id and source_file='HAWKI.2015-10-01T09:14:56.450'
+]]></adql>
+  </query>
+  <query uuid="55f130c2-8c31-4a0d-814c-5317500e66ea">
+    <description>CCW north polygon</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT top 1 
+POLYGON('', 0,80, 270,80, 180,80, 90,80) as myPolygon,
+area(POLYGON('', 0,80, 270,80, 180,80, 90,80)) as myArea,
+contains( POINT('', 0, 90), POLYGON('', 0,80, 270,80, 180,80, 90,80) ) as isNorthPoleInside,
+contains( POINT('', 0, -90), POLYGON('', 0,80, 270,80, 180,80, 90,80) ) as isSouthPoleInside
+FROM ivoa.ObsCore
+]]></adql>
+  </query>
+  <query uuid="e137f343-b8c8-4f91-97b6-50ea56bbda24">
+    <description>CCW south polygon</description>
+    <adql valid="true" version="adql-2.1"><![CDATA[SELECT top 1 
+POLYGON('', 0,-80, 90,-80, 180,-80, 270,-80) as myPolygon,
+area(POLYGON('', 0,-80, 90,-80, 180,-80, 270,-80)) as myArea,
+contains( POINT('', 0, 90), POLYGON('', 0,-80, 90,-80, 180,-80, 270,-80) ) as isNorthPoleInside,
+contains( POINT('', 0, -90), POLYGON('', 0,-80, 90,-80, 180,-80, 270,-80) ) as isSouthPoleInside
+FROM ivoa.ObsCore
+]]></adql>
+  </query>
+
+</queries>
