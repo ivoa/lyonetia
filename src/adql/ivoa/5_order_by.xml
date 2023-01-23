@@ -1,0 +1,36 @@
+<queries>
+  <title>5. ORDER BY</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    ADQL queries aiming to test the ORDER BY clause.
+  </description>
+
+  <query uuid="34621bba-ebd5-403a-aa8e-4a0654c90d0f">
+    <description>ORDER BY with column names with and without explicit ASC/DESC.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT id, ra, dec FROM atable ORDER BY id, ra ASC, dec DESC
+    </adql>
+  </query>
+
+  <query uuid="2ea8af3d-a279-4777-8686-413dc22af995">
+    <description>ORDER BY with SELECT column index.</description>
+    <adql valid="true" version="adql-2.1">
+      SELECT id, ra, dec FROM atable ORDER BY 1, 2 ASC, 3 DESC
+    </adql>
+  </query>
+
+  <query uuid="d7378c18-2452-11ed-b7c4-28d2445a8967">
+    <description>ORDER BY with expressions. (credits: Markus Demleitner)</description>
+    <adql valid="true" version="adql-2.1">
+      select x from t1 order by log10(z+1) desc, 2*x asc
+    </adql>
+  </query>
+
+</queries>
