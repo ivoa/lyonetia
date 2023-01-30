@@ -3,6 +3,7 @@ package cds.adql.validation.parser.xml;
 import adql.parser.ADQLParser;
 import cds.adql.validation.parser.ParseException;
 import cds.adql.validation.parser.ValidationSetParser;
+import cds.adql.validation.query.UDF;
 import cds.adql.validation.query.ValidationQuery;
 import cds.adql.validation.query.ValidationSet;
 import org.junit.jupiter.api.Test;
@@ -394,6 +395,59 @@ class XMLValidationSetParserTest {
         final ValidationQuery validationQuery = validationSet.queries.iterator().next();
         assertNotNull(validationQuery);
         assertEquals(ADQL.trim(), validationQuery.query);
+    }
+
+    @Test
+    void parse_UDF_in_Queries() throws ParseException {
+        final String UDF_FORM = "blabla()";
+        final String XML = "<queries><functions><function><form>"+UDF_FORM+"</form><description>Blabla function.</description></function></functions></queries>";
+
+        // Parse the validation set:
+        final XMLValidationSetParser parser = new XMLValidationSetParser();
+        final ValidationSet validationSet = parser.parse(new ByteArrayInputStream(XML.getBytes()));
+
+        // Check there is exactly one UDF:
+        assertEquals(1, validationSet.functions.size());
+
+        // Check the function form:
+        assertEquals(UDF_FORM, validationSet.functions.iterator().next().getForm());
+    }
+
+    @Test
+    void parse_UDF_in_A_query() throws ParseException {
+        final String UDF_FORM = "blabla()";
+        final String XML = "<queries><query uuid=\"ee45b3bd-6902-4f77-bca1-3212f76e31bb\"><functions><function><form>"+UDF_FORM+"</form><description>Blabla function.</description></function></functions><adql valid=\"true\" version=\"2.1\">SELECT * FROM atable</adql></query></queries>";
+
+        // Parse the validation set:
+        final XMLValidationSetParser parser = new XMLValidationSetParser();
+        final ValidationSet validationSet = parser.parse(new ByteArrayInputStream(XML.getBytes()));
+
+        // Check there is exactly one query:
+        assertEquals(1, validationSet.queries.size());
+
+        // Check this query has exactly one UDF:
+        final ValidationQuery QUERY = validationSet.queries.iterator().next();
+        assertEquals(1, QUERY.functions.size());
+
+        // Check the function form:
+        assertEquals(UDF_FORM, QUERY.functions.iterator().next().getForm());
+    }
+
+    @Test
+    void parse_Duplicated_UDF() throws ParseException {
+        final String UDF_FORM = "blabla()";
+        final String UDF_DEF = "<function><form>"+UDF_FORM+"</form><description>Blabla function.</description></function>";
+        final String XML = "<queries><functions>"+UDF_DEF+UDF_DEF+"</functions></queries>";
+
+        // Parse the validation set:
+        final XMLValidationSetParser parser = new XMLValidationSetParser();
+        final ValidationSet validationSet = parser.parse(new ByteArrayInputStream(XML.getBytes()));
+
+        // Check there is exactly one UDF:
+        assertEquals(1, validationSet.functions.size());
+
+        // Check the function form:
+        assertEquals(UDF_FORM, validationSet.functions.iterator().next().getForm());
     }
 
 

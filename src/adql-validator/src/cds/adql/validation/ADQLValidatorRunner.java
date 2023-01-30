@@ -164,9 +164,11 @@ public class ADQLValidatorRunner {
         }
 
         try{
+
             // Check the input document:
             try(InputStream stream = new FileInputStream(file)) {
-                validator.checkXML(stream);
+                if (!validator.checkXML(stream))
+                    return false;
             }
 
             // Parse and validate the validation queries:

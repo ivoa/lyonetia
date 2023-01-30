@@ -7,7 +7,7 @@ import java.util.Set;
  * Representation of a set of Validation Tests.
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (10/2022)
+ * @version 1.0 (01/2023)
  */
 public class ValidationSet {
 
@@ -23,6 +23,9 @@ public class ValidationSet {
 
     /** Human description of this entire set.*/
     public String description = null;
+
+    /** Definitions of all allowed User Defined Functions. */
+    public Set<UDF> functions = new LinkedHashSet<>(3);
 
     /** Set of all Validation Tests included inside this set.
      * <p>

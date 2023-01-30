@@ -2,10 +2,7 @@ package cds.adql.validation.parser.xml;
 
 import cds.adql.validation.parser.ParseException;
 import cds.adql.validation.parser.ValidationSetParser;
-import cds.adql.validation.query.Contact;
-import cds.adql.validation.query.Publisher;
-import cds.adql.validation.query.ValidationQuery;
-import cds.adql.validation.query.ValidationSet;
+import cds.adql.validation.query.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -39,7 +36,7 @@ import java.util.regex.Pattern;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (10/2022)
+ * @version 1.0 (01/2023)
  */
 public class XMLValidationSetParser implements ValidationSetParser {
 
@@ -191,6 +188,11 @@ public class XMLValidationSetParser implements ValidationSetParser {
             QUERIES,
             QUERIES_TITLE,
             QUERIES_DESCRIPTION,
+            QUERIES_FUNCTIONS,
+            QUERY_FUNCTIONS,
+            FUNCTION,
+            FUNCTION_FORM,
+            FUNCTION_DESCRIPTION,
             QUERY,
             QUERY_ADQL,
             QUERY_DESCRIPTION,
@@ -218,6 +220,9 @@ public class XMLValidationSetParser implements ValidationSetParser {
 
         /** Parser position inside the XML document. */
         private Locator loc = null;
+
+        /**  */
+        private UDF func = null;
 
         /** The Validation Query being parsed. */
         private ValidationQuery q = null;
@@ -301,6 +306,50 @@ public class XMLValidationSetParser implements ValidationSetParser {
                     }
             }
             /*
+             * FUNCTIONS PARENT
+             */
+            else if (qName.equals("functions")) {
+                switch(ctx.peek()){
+                    case QUERIES:
+                        func = new UDF();
+                        ctx.push(Context.QUERIES_FUNCTIONS);
+                        break;
+                    case QUERY:
+                        func = new UDF();
+                        ctx.push(Context.QUERY_FUNCTIONS);
+                        break;
+                    default:
+                        ctx.push(Context.UNSUPPORTED);
+                        warnUnexpected(qName);
+                }
+            }
+            /*
+             * FUNCTION PARENT
+             */
+            else if (qName.equals("function")) {
+                switch(ctx.peek()){
+                    case QUERIES_FUNCTIONS:
+                    case QUERY_FUNCTIONS:
+                        func = new UDF();
+                        ctx.push(Context.FUNCTION);
+                        break;
+                    default:
+                        ctx.push(Context.UNSUPPORTED);
+                        warnUnexpected(qName);
+                }
+            }
+            /*
+             * FUNCTION FORM/SIGNATURE
+             */
+            else if (qName.equals("form")) {
+                if (ctx.peek() == Context.FUNCTION)
+                    ctx.push(Context.FUNCTION_FORM);
+                else{
+                    ctx.push(Context.UNSUPPORTED);
+                    warnUnexpected(qName);
+                }
+            }
+            /*
              * QUERY PARENT
              */
             else if (qName.equals("query")) {
@@ -311,7 +360,7 @@ public class XMLValidationSetParser implements ValidationSetParser {
                 ctx.push(Context.QUERY);
             }
             /*
-             * QUERIES/QUERY DESCRIPTION
+             * QUERIES/QUERY/FUNCTION DESCRIPTION
              */
             else if (qName.equals("description")) {
                 switch(ctx.peek()){
@@ -320,6 +369,9 @@ public class XMLValidationSetParser implements ValidationSetParser {
                         break;
                     case QUERY:
                         ctx.push(Context.QUERY_DESCRIPTION);
+                        break;
+                    case FUNCTION:
+                        ctx.push(Context.FUNCTION_DESCRIPTION);
                         break;
                     default:
                         ctx.push(Context.UNSUPPORTED);
@@ -380,6 +432,33 @@ public class XMLValidationSetParser implements ValidationSetParser {
                     break;
                 case QUERY_DESCRIPTION:
                     q.description = content;
+                    break;
+                case FUNCTION_DESCRIPTION:
+                    func.description = content;
+                    break;
+                case FUNCTION_FORM:
+                    try {
+                        func.setForm(content);
+                    }catch(adql.parser.grammar.ParseException pe){
+                        error("UDF ignored! Incorrect UDF definition: '"+content+"'. Cause: "+pe.getMessage());
+                    }
+                    break;
+                case FUNCTION:
+                    if (func.getForm() == null)
+                        warning("Empty UDF definition ignored!");
+                    else {
+                        switch (ctx.peek()) {
+                            case QUERIES_FUNCTIONS:
+                                queries.functions.add(func);
+                                break;
+                            case QUERY_FUNCTIONS:
+                                q.functions.add(func);
+                                break;
+                            default:
+                                warning("Unused function definition: '(" + func.getForm() + ")'!");
+                        }
+                    }
+                    func = null;
                     break;
                 case QUERY_ADQL:
                     q.query = content;
@@ -465,6 +544,15 @@ public class XMLValidationSetParser implements ValidationSetParser {
          */
         protected void warning(final String message) {
             LOGGER.warning("[l." + loc.getLineNumber() + ", c." + loc.getColumnNumber() + "] "+message);
+        }
+
+        /**
+         * Log an error message with the current parser location.
+         *
+         * @param message The message to log.
+         */
+        protected void error(final String message) {
+            LOGGER.severe("[l." + loc.getLineNumber() + ", c." + loc.getColumnNumber() + "] "+message);
         }
 
         /**

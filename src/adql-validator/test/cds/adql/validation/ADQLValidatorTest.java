@@ -172,7 +172,7 @@ class ADQLValidatorTest {
 
     @Test
     void validate_Set_Null() {
-        assertFalse((new ADQLValidator()).validate(null, null));
+        assertFalse((new ADQLValidator()).validate(null, (String)null));
     }
 
     @Test

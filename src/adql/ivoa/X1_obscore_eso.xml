@@ -12,6 +12,15 @@
     ADQL-2.1 queries on ivoa.ObsCore at ESO's TAP service.
   </description>
 
+  <!-- UDF declarations -->
+
+  <functions>
+    <function><form><![CDATA[ESO_INTERSECTION(region1 REGION, region2 REGION) -> DOUBLE]]></form></function>
+    <function><form><![CDATA[ESO_DATEADD_SEC(seconds INTEGER, date TIMESTAMP) -> TIMESTAMP]]></form></function>
+  </functions>
+
+  <!-- Queries -->
+
   <query uuid="81c95ea3-cf1a-446c-8fda-fcf7bcfae85a">
     <description>ots1: Which tables can be queried via this service? Use the TAP_SCHEMA to discover that.</description>
     <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs tap_schema 1'
