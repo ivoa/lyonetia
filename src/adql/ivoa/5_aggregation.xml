@@ -30,7 +30,6 @@
              MIN(ra_error),
              MAX(ra_error),
              AVG(ra_error),
-             STDDEV(ra_error),
              SUM(ra_error)
       FROM stars
     </adql>
@@ -46,7 +45,6 @@
              MIN(ra_error),
              MAX(ra_error),
              AVG(ra_error),
-             STDDEV(ra_error),
              SUM(ra_error)
       FROM stars
       GROUP BY type
