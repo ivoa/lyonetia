@@ -1,4 +1,5 @@
-<queries>
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
   <title>4. Math functions</title>
   <contact>
     <name>Gregory Mantelet</name>

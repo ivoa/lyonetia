@@ -57,7 +57,7 @@ public class ValidationQuery {
     public String description = null;
 
     /** Definitions of all allowed User Defined Functions. */
-    public Set<UDF> functions = new LinkedHashSet<>(3);
+    public final Set<UDF> functions = new LinkedHashSet<>(3);
 
     /** The ADQL query to test. */
     public String query = null;

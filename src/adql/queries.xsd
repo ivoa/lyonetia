@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="queries">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="title" type="xs:string" minOccurs="0"/>
+                <xs:element name="contact" type="contact" minOccurs="0"/>
+                <xs:element name="publisher" type="contact" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
+                <xs:element name="functions" type="functions" minOccurs="0"/>
+                <xs:element name="query" type="query" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="contact">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="0"/>
+            <xs:element name="url" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="query">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="functions" type="functions" minOccurs="0"/>
+            <xs:element name="adql" type="adql"/>
+        </xs:sequence>
+        <xs:attribute name="uuid" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="functions">
+        <xs:sequence>
+            <xs:element name="function" type="function" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="function">
+        <xs:sequence>
+            <xs:element name="form" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="adql">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="valid" type="xs:string" default="false"/>
+                <xs:attribute name="version" type="xs:string" default="adql-2.1"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

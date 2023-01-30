@@ -394,7 +394,7 @@ public class ADQLValidator {
      *          <code>false</code> otherwise.
      */
     public boolean validate(final ValidationQuery query){
-        return validate(query, Collections.EMPTY_SET);
+        return validate(query, null);
     }
 
     /**
@@ -427,8 +427,10 @@ public class ADQLValidator {
         final ADQLParser parser = getParser(query.adqlVersion);
 
         // Declare all UDFs to support:
-        for(UDF u : functions)
-            parser.getSupportedFeatures().support(u.getFeature());
+        if (functions != null) {
+            for (UDF u : functions)
+                parser.getSupportedFeatures().support(u.getFeature());
+        }
         for(UDF u : query.functions)
             parser.getSupportedFeatures().support(u.getFeature());
 
