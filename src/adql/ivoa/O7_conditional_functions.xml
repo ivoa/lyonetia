@@ -23,11 +23,11 @@
 
   <query uuid="2104c723-4ea8-42d7-bf96-7735cc9fd88b">
     <description>
-      COALESCE function with NULL as argument. This does not make sense to allow
-      NULL in there, as COALESCE aims to avoid NULL values in its output.
+      COALESCE function with NULL as argument. This is grammatically possible,
+      though pretty useless.
     </description>
-    <adql valid="false" version="adql-2.1">
-        SELECT COALESCE(NULL)
+    <adql valid="true" version="adql-2.1">
+        SELECT NULL
         FROM stars
     </adql>
   </query>
