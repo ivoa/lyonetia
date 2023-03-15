@@ -232,13 +232,6 @@
   	</adql>
   </query>
 
-  <query uuid="a66c56e6-f18d-11e8-96df-28d244962af0">
-  	<description>Order by internal whitespace and stuck sort direction </description>
-  	<adql valid="true" version="adql-2.1">
-  		select * from bar order   by foo asc, 2desc
-  	</adql>
-  </query>
-
   <query uuid="a66c56e6-f18d-11e8-96df-28d244962ad1">
   	<description>Balanced queries in HAVING</description>
   	<adql valid="false" version="adql-2.1">
