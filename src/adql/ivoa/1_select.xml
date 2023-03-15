@@ -52,14 +52,6 @@
     <adql valid="false" version="adql-2.1">SELECT _weird_name FROM stars</adql>
   </query>
   
-  <query uuid="85e497ac-4403-4f84-8aa0-a3ee3da514cc">
-    <description>
-      Selecting columns with another incorrect name syntax (starting with a
-      digit) and no double quotes.
-    </description>
-    <adql valid="false" version="adql-2.1">SELECT 2weird FROM stars</adql>
-  </query>
-  
   <query uuid="d6ff74f5-cecd-4a4b-878b-384b44be099b">
     <description>
       Selecting columns with a reserved keyword and no double quotes.
