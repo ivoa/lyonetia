@@ -13,13 +13,6 @@
     ADQL-2.1 queries on ivoa.ObsCore at ESO's TAP service.
   </description>
 
-  <!-- UDF declarations -->
-
-  <functions>
-    <function><form><![CDATA[ESO_INTERSECTION(region1 REGION, region2 REGION) -> DOUBLE]]></form></function>
-    <function><form><![CDATA[ESO_DATEADD_SEC(seconds INTEGER, date TIMESTAMP) -> TIMESTAMP]]></form></function>
-  </functions>
-
   <!-- Queries -->
 
   <query uuid="81c95ea3-cf1a-446c-8fda-fcf7bcfae85a">
@@ -263,6 +256,9 @@ ORDER by 5
   </query>
   <query uuid="7928f365-6631-4415-be7d-29865f14c083">
     <description>oDEMO1: Find overlapping J and H HAWKI source tables on th GC plane</description>
+    <functions>
+      <function><form><![CDATA[ESO_INTERSECTION(region1 REGION, region2 REGION) -> DOUBLE]]></form></function>
+    </functions>
     <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs advanced 1'
 
 SELECT * FROM ivoa.ObsCore WHERE dp_id in (
@@ -293,6 +289,9 @@ SELECT * FROM ivoa.ObsCore WHERE dp_id in (
   </query>
   <query uuid="7f30606b-509a-491f-8b5a-5d712f37670c">
     <description>oDEMO2: SEEING vs PSF FWHM of a HAWKI product</description>
+    <functions>
+      <function><form><![CDATA[ESO_DATEADD_SEC(seconds INTEGER, date TIMESTAMP) -> TIMESTAMP]]></form></function>
+    </functions>
     <adql valid="true" version="adql-2.1"><![CDATA[-- Use case name: 'obs advanced 2'
 
 SELECT s_resolution as PSF_FWHM,
@@ -432,6 +431,9 @@ WHERE dataproduct_type='image'
   </query>
   <query uuid="4b8bd9f4-611c-4d2e-8227-2525dee664d2">
     <description>osci2: overlapping J and H images around the Galactic Centre SORTING BY OVERLAPPING AREA</description>
+    <functions>
+      <function><form><![CDATA[ESO_INTERSECTION(region1 REGION, region2 REGION) -> DOUBLE]]></form></function>
+    </functions>
     <adql valid="true" version="adql-2.1"><![CDATA[SELECT TOP 50 J.target_name, J.obs_publisher_did, J.s_ra, J.s_dec, J.em_min, J.em_max, J.instrument_name,
               H.target_name, H.obs_publisher_did, H.s_ra, H.s_dec, H.em_min, H.em_max, H.instrument_name,
               ESO_INTERSECTION(J.s_region,H.s_region) as OverlappingArea, J.s_region, H.s_region
@@ -451,6 +453,9 @@ ORDER by 1, OverlappingArea desc]]></adql>
   </query>
   <query uuid="1084e068-8f31-4007-9d89-115dec609452">
     <description>Similar to DEMO 1: Find overlapping J and H images around the Galactic Centre</description>
+    <functions>
+      <function><form><![CDATA[ESO_INTERSECTION(region1 REGION, region2 REGION) -> DOUBLE]]></form></function>
+    </functions>
     <adql valid="true" version="adql-2.1"><![CDATA[       SELECT *
        FROM
              (select * FROM ivoa.Obscore WHERE dataproduct_type ='image'
@@ -553,6 +558,9 @@ and dp_tech like 'ECHELLE%'
   </query>
   <query uuid="6794498f-1603-4a12-b0dd-e48be1acab4b">
     <description>asm01: find LHATPRO measurements for Paranal, around a certain position and time</description>
+    <functions>
+      <function><form><![CDATA[ESO_DATEADD_SEC(seconds INTEGER, date TIMESTAMP) -> TIMESTAMP]]></form></function>
+    </functions>
     <adql valid="true" version="adql-2.1"><![CDATA[SELECT start_date, midpoint_date, ra, dec, alt, az, *
 FROM asm.lhatpros_paranal_profiles
 WHERE midpoint_date between eso_dateadd_sec(-2700.000000, '2019-06-06T09:55:27') and eso_dateadd_sec(2700.000000, '2019-06-06T09:55:27')
