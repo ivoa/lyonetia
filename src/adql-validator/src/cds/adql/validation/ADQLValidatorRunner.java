@@ -152,8 +152,12 @@ public class ADQLValidatorRunner {
             }
             return allValid;
         }
-        else
+        // Only try to validate XML files:
+        else if (file.getName().endsWith(".xml"))
             return validateFile(file, validator);
+        // Otherwise, nothing to validate, so return true:
+        else
+            return true;
     }
 
     protected boolean validateFile(final File file, final ADQLValidator validator){
