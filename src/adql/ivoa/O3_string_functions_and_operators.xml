@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>Optional 3. String functions and operators</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional string functions (cf 4.4 in ADQL-2.1): LOWER, UPPER, ILIKE.
+  </description>
+
+  <query uuid="d5971b3a-fc30-4b87-9de2-18cd284888ab">
+    <description>ILIKE</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name
+        FROM stars
+        WHERE name ILIKE 'NgC %'
+    </adql>
+  </query>
+
+  <query uuid="515278f2-454a-4192-9660-04b8c756d11a">
+    <description>LOWER</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT LOWER(name)
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="adc9cfb8-46d0-471f-a4cb-ddca1f6a8a16">
+    <description>UPPER</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT UPPER(name)
+        FROM stars
+    </adql>
+  </query>
+
+</queries>

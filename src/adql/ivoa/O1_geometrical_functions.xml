@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>Optional 1 - Geometries</title>
+  <contact>
+    <name>Markus Demleitner</name>
+    <url>mailto:msdemlei@ari.uni-heidelberg.de</url>
+  </contact>
+  <publisher>
+    <name>Heidelberg GAVO Data Center</name>
+    <url>http://dc.g-vo.org</url>
+  </publisher>
+  <description>
+    ADQL geometry test queries (cf 4.2 in ADQL-2.1): AREA, BOX, CENTROID,
+    CIRCLE, CONTAINS, COORD1, COORD2, COORDSYS, DISTANCE, INTERSECTS, POINT,
+    POLYGON, REGION.
+  </description>
+  
+  <query uuid="ccd99070-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where Point(NULL, 2, 3)=x
+    </adql>
+  </query>
+
+  <query uuid="d2ed137e-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where Point('fk5', 2, 3)=x
+    </adql>
+  </query>
+
+  <query uuid="d8ad7880-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where CIRCLE('fk5', 2, 3, 3)=x
+    </adql>
+  </query>
+
+  <query uuid="dcec62bc-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where box('fk5', 2, 3, 3, 0)=x
+    </adql>
+  </query>
+
+  <query uuid="e19cb15e-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where POLYGON('fk5', 2, 3, 3, 0, 23, 0, 45, 34)=x
+    </adql>
+  </query>
+
+  <query uuid="f0532c00-4508-11e6-b60c-9d2c33f9b7a2">
+    <description>Simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where CENTROID(CIRCLE('fk4', 2, 3, 3))=x
+    </adql>
+  </query>
+
+  <query uuid="000d56ac-4509-11e6-b60c-9d2c33f9b7a2">
+    <description>Invalid simple geometry predicates ; missing comparison</description>
+    <adql valid="false" version="adql-2.1">
+      select x from y where Point('fk5',2,3)
+    </adql>
+  </query>
+
+  <query uuid="052cd50e-4509-11e6-b60c-9d2c33f9b7a2">
+    <description>Valid simple geometry predicates</description>
+    <adql valid="true" version="adql-2.1">
+      select x from y where Point(2,3)=x
+    </adql>
+  </query>
+
+  <query uuid="0996bf74-4509-11e6-b60c-9d2c33f9b7a2">
+    <description>Invalid simple geometry predicates, missing radius parameter</description>
+    <adql valid="false" version="adql-2.1">
+      select x from y where CIRCLE('fk5', 2, 3)=x
+    </adql>
+  </query>
+
+  <query uuid="0dc25eaa-4509-11e6-b60c-9d2c33f9b7a2">
+    <description>Invalid simple geometry predicates</description>
+    <adql valid="false" version="adql-2.1">
+      select x from y where POLYGON('fk5', 2, 3, 3, 0, 23, 0, 45)=x
+    </adql>
+  </query>
+
+  <query uuid="6297254e-450b-11e6-8767-d37711b24676">
+    <description>Misc. geometry</description>
+    <adql valid="true" version="adql-2.1">
+      select * FROM t WHERE 1=CONTAINS(CIRCLE('ICRS', 4, 4, 2), POINT('', ra, dec))
+    </adql>
+  </query>
+
+  <query uuid="898cf934-450c-11e6-8564-332de33a5c03">
+    <description>bad coordinate system accepted at the grammar level</description>
+    <adql valid="true" version="adql-2.1">
+      select point('ICRS', 1, 2) from spatial
+    </adql>
+  </query>
+
+  <query uuid="dfd90750-450d-11e6-b20b-6d529bdffd4c">
+    <description>two-arg point works in the select list</description>
+    <adql valid="true" version="adql-2.1">
+      select POINT(3,4) FROM z
+    </adql>
+  </query>
+
+  <query uuid="c6a8aa4c-450d-11e6-b20b-6d529bdffd4c">
+    <description>misc bad queries for error message optimization</description>
+    <adql valid="false" version="adql-2.1">
+      select * FROM y WHERE CONTAINS(a,b)
+    </adql>
+  </query>
+
+  <!-- BEGIN TODO
+    Are the following queries really useful to test ONLY the grammar?
+    It seems there are testing the inference mechanism of a specific
+    implementation.
+  -->
+
+  <query uuid="b36dfd5c-4cfa-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select distance(point('galactic', 2, 3), point('ICRS', ra1, ra2)) from spatial
+
+    </adql>
+  </query>
+
+  <query uuid="c8a45338-4cfa-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select centroid(circle('galactic', ra1, ra2, 0.5)) from spatial
+    </adql>
+  </query>
+
+  <query uuid="275ae374-4cfb-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select u.ra1 FROM spatial AS mine LEFT OUTER JOIN spatial2 as u ON (1=CONTAINS(POINT('', mine.ra1, mine.ra2), CIRCLE('', u.ra1, u.dec, 1)))
+    </adql>
+  </query>
+
+  <query uuid="f7bb0890-4cfc-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples with joins</description>
+    <adql valid="true" version="adql-2.1">
+      select * from spatial as q join misc as p on (1=contains(point('ICRS', q.dist, q.width), circle('ICRS', p.mass, p.mag, 0.02)))
+    </adql>
+  </query>
+
+  <query uuid="a485337e-4cfe-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select point('', ra2, 2) from spatial
+    </adql>
+  </query>
+
+  <query uuid="ae8f7406-4cfe-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select point('', mag, 2) from misc
+    </adql>
+  </query>
+
+  <query uuid="b8bca746-4cfe-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select point(NULL, ra1, 2) from spatial
+    </adql>
+  </query>
+
+  <query uuid="c8f9060e-4cfe-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select point('ICRS', ra2, 2) from spatial
+    </adql>
+  </query>
+
+  <query uuid="da9c058c-4cfe-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select coordsys(p), coord1(p), coord2(p) from	(select point('FK5', ra1, width) as p from spatial) as q
+    </adql>
+  </query>
+
+  <query uuid="efd97984-4cfe-11e6-b1bc-3d3af74034fa">
+    <description>metadata inference samples</description>
+    <adql valid="true" version="adql-2.1">
+      select region('Circle FK4 10 10 1') from spatial
+    </adql>
+  </query>
+  
+  <!-- END TODO -->
+
+  <query uuid="1ab2928a-4cff-11e6-b88b-1f1a0c6b9cfa">
+    <description>function arguments</description>
+    <adql valid="true" version="adql-2.1">
+      select POINT('ICRS', 5*width+height*LOG(width),height) from spatial
+    </adql>
+  </query>
+
+  <query uuid="97426e46-4d00-11e6-b557-7d8321365660">
+    <description>From morph tests (i.e., wild mixture of features exercised)</description>
+    <adql valid="true" version="adql-2.1">
+      select alphaFloat, deltaFloat from ppmx.data
+where contains(point('ICRS', alphaFloat, deltaFloat), 
+				circle('ICRS', 23, 24, 0.2))=1
+    </adql>
+  </query>
+
+  <query uuid="aa3e588e-4d00-11e6-b557-7d8321365660">
+    <description>From morph tests (i.e., wild mixture of features exercised)</description>
+    <adql valid="true" version="adql-2.1">
+      select alphaFloat, deltaFloat from ppmx.data
+where 0=contains(point('ICRS', alphaFloat, deltaFloat),
+				circle('ICRS', 23, 24, 0.2))
+    </adql>
+  </query>
+
+  <query uuid="c0b16458-4d00-11e6-b557-7d8321365660">
+    <description>From morph tests (i.e., wild mixture of features exercised)</description>
+    <adql valid="true" version="adql-2.1">
+      select TOP 10 * FROM spatial
+	WHERE 1=CONTAINS(POINT('ICRS', ra1, ra2),
+		CIRCLE('ICRS', 10, 10, 0.5))
+    </adql>
+  </query>
+
+  <query uuid="d052af02-4d00-11e6-b557-7d8321365660">
+    <description>From morph tests (i.e., wild mixture of features exercised)</description>
+    <adql valid="true" version="adql-2.1">
+      select TOP 10 * FROM spatial
+WHERE 1=INTERSECTS(CIRCLE('ICRS', 10, 10, 0.5),
+		POINT('ICRS', ra1, ra2))
+    </adql>
+  </query>
+
+  <query uuid="e03ce418-4d01-11e6-8c9d-819288b39233">
+    <description>with upload</description>
+    <adql valid="true" version="adql-2.1">
+      select TAP_UPLOAD.user_table.ra FROM
+		TAP_UPLOAD.user_table WHERE (1=CONTAINS(POINT('ICRS',
+		usnob.data.raj2000, usnob.data.dej2000), CIRCLE('ICRS',
+		TAP_UPLOAD.user_table.ra2000, a.dec2000, 0.016666666666666666)))
+    </adql>
+  </query>
+
+  <query uuid="fd09fb58-4d01-11e6-8c9d-819288b39233">
+    <description>STC-S</description>
+    <adql valid="true" version="adql-2.1">
+      select * from foo where 1=CONTAINS(REGION('Position ICRS 1 2'), x)
+    </adql>
+  </query>
+
+  <query uuid="1655f288-4d02-11e6-8c9d-819288b39233">
+    <description>STC-S</description>
+    <adql valid="true" version="adql-2.1">
+      select * from foo where 1=CONTAINS(
+        REGION('Union ICRS (Position 1 2 Intersection (circle  1 2 3 box 1 2 3 4 circle 30 40 2))'),
+        REGION('circle GALACTIC 1 2 3')
+      )
+    </adql>
+  </query>
+
+  <query uuid="27fd6dd6-4d02-11e6-8c9d-819288b39233">
+    <description>STC-S</description>
+    <adql valid="true" version="adql-2.1">
+      select * from foo where 1=INTERSECTS(REGION('NOT (circle  1 2 3)'), x)
+    </adql>
+  </query>
+
+</queries>

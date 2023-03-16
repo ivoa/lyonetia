@@ -4,6 +4,7 @@ import adql.parser.ADQLParser;
 import adql.parser.grammar.ParseException;
 import cds.adql.validation.parser.ValidationSetParser;
 import cds.adql.validation.parser.xml.XMLValidationSetParser;
+import cds.adql.validation.query.UDF;
 import cds.adql.validation.query.ValidationQuery;
 import cds.adql.validation.query.ValidationSet;
 import cds.adql.validation.report.ValidatorListener;
@@ -246,14 +247,14 @@ public class ADQLValidator {
         // If not existing, create it:
         if (parser == null) {
             parsers.put(version, (parser = new ADQLParser(version)));
-            // Allow any coordinate system:
-            try {
-                parser.setAllowedCoordSys(null);
-            } catch (ParseException e) {
-                LOGGER.log(Level.WARNING, "Impossible to remove the restriction on the coordinate system argument!", e);
-            }
-            // Allow any UDF:
-            parser.allowAnyUdf(true);
+            // Allow any coordinate system from ADQL-2.1 only:
+            /*if (version != ADQLVersion.V2_0){*/
+                try {
+                    parser.setAllowedCoordSys(null);
+                } catch (ParseException e) {
+                    LOGGER.log(Level.WARNING, "Impossible to remove the restriction on the coordinate system argument!", e);
+                }
+            /*}*/
         }
 
         // Return the found/created parser:
@@ -271,14 +272,21 @@ public class ADQLValidator {
      *
      * @param stream    Stream toward the document to parse.
      *
-     * @throws cds.adql.validation.parser.ParseException In case of parsing error.
+     * @return boolean  <code>true</code> if valid XML document,
+     *                  <code>false</code> otherwise (the error has already been
+     *                  reported in registered listeners).
      *
      * @see XMLValidationSetParser#checkXML(InputStream)
      */
-    public void checkXML(final InputStream stream)
-            throws cds.adql.validation.parser.ParseException
-    {
-        (new XMLValidationSetParser()).checkXML(stream);
+    public boolean checkXML(final InputStream stream) {
+        try {
+            (new XMLValidationSetParser()).checkXML(stream);
+            return true;
+        }catch(cds.adql.validation.parser.ParseException pe){
+            publishError(new ValidationException("Incorrect XML syntax! Cause: "+pe.getMessage(), pe));
+            publishEndValidation(new ValidationSet());
+            return false;
+        }
     }
 
     /**
@@ -363,7 +371,7 @@ public class ADQLValidator {
         for(ValidationQuery query : set.queries) {
             /* always try to validate all queries even if allValid is false ;
              * that way, all errors of all queries are reported. */
-            allValid = validate(query) && allValid;
+            allValid = validate(query, set.functions) && allValid;
         }
 
         // Publish the end of the Validation session:
@@ -380,12 +388,30 @@ public class ADQLValidator {
      *   return <code>false</code>.
      * </i></p>
      *
-     * @param query The query to validate.
+     * @param query     The query to validate.
      *
      * @return  <code>true</code> if this query passed the validation test,
      *          <code>false</code> otherwise.
      */
     public boolean validate(final ValidationQuery query){
+        return validate(query, null);
+    }
+
+    /**
+     * Validate a single ADQL query.
+     *
+     * <p><i><b>Note:</b>
+     *   NULL or an empty query string will make this function immediately
+     *   return <code>false</code>.
+     * </i></p>
+     *
+     * @param query     The query to validate.
+     * @param functions Global UDFs to support while validating the query.
+     *
+     * @return  <code>true</code> if this query passed the validation test,
+     *          <code>false</code> otherwise.
+     */
+    public boolean validate(final ValidationQuery query, final Set<UDF> functions){
         // Nothing to validate if NULL:
         if (query == null
             || query.query == null
@@ -399,6 +425,14 @@ public class ADQLValidator {
 
         // Get the appropriate ADQL parser:
         final ADQLParser parser = getParser(query.adqlVersion);
+
+        // Declare all UDFs to support:
+        if (functions != null) {
+            for (UDF u : functions)
+                parser.getSupportedFeatures().support(u.getFeature());
+        }
+        for(UDF u : query.functions)
+            parser.getSupportedFeatures().support(u.getFeature());
 
         // Publish start of validation:
         publishStartValidation(query);

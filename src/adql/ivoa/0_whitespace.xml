@@ -1,4 +1,6 @@
-<queries>
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>Whitespace</title>
   <contact>
     <name>Jon Juaristi Campillo</name>
     <url>mailto:juaristi@uni-heidelberg.de</url>
@@ -149,21 +151,6 @@
 	)
 </adql>
   </query>
-  <query uuid="d4c3a72c-4458-11e6-96e2-28b2bdcff70b">
-    <description>Various join forms</description>
-	<adql valid="true" version="adql-2.1">select x from t1 INNER JOIN (t2
-		JOIN
-		t3)
-</adql>
-  </query>
-  <query uuid="dbef92f4-4458-11e6-96e2-28b2bdcff70b">
-    <description>Various join forms</description>
-	<adql valid="true" version="adql-2.1">select x from (
-		t1 JOIN t4
-		) FULL OUTER JOIN (
-		t2 JOIN t3
-		)
-</adql></query>
    <query uuid="4bce84c2-4cfb-11e6-9064-032db3af9290">
     <description>metadata inference samples</description>
 	<adql valid="true" version="adql-2.1">SELECT LOWER( 
@@ -222,15 +209,10 @@
 		q
 </adql>
   </query>
-  <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c03">
-    <description>subqueries join</description>
-    <adql valid="true" version="adql-2.1">select * from ( select * from urks.a, b, ( select * from c, monk.d ) as q ) as r join ( select * from x, y ) as p
-</adql>
-  </query>
 
   <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c13">
   	<description>non-blank characters can delimit reserved words</description>
-  	<adql valid="true">
+  	<adql valid="true" version="adql-2.1">
   		select all(a+b)X from 
   			most,(anything join else3 ON(a BETWEEN(b+and7)AND 4))
   	</adql>
@@ -238,28 +220,21 @@
 
   <query uuid="a66c56e6-f18d-11e8-96df-28d244962ad0">
   	<description>No mandatory whitespace in AS-less corr spec.</description>
-  	<adql valid="true">
+  	<adql valid="true" version="adql-2.1">
   		select top 4* from (select * from amanda.nucand)x
   	</adql>
   </query>
 
   <query uuid="a66c56e6-f18d-11e8-96df-28d244962ae0">
   	<description>Group by internal whitespace</description>
-  	<adql valid="true">
+  	<adql valid="true" version="adql-2.1">
   		select * from bar group   by foo
-  	</adql>
-  </query>
-
-  <query uuid="a66c56e6-f18d-11e8-96df-28d244962af0">
-  	<description>Order by internal whitespace and stuck sort direction </description>
-  	<adql valid="true">
-  		select * from bar order   by foo asc, 2desc
   	</adql>
   </query>
 
   <query uuid="a66c56e6-f18d-11e8-96df-28d244962ad1">
   	<description>Balanced queries in HAVING</description>
-  	<adql valid="false">
+  	<adql valid="false" version="adql-2.1">
   		select * from a group by d having (d>2
   	</adql>
   </query>

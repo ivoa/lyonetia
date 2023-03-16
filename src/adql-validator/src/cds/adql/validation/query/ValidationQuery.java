@@ -2,7 +2,9 @@ package cds.adql.validation.query;
 
 import cds.adql.validation.parser.ValidationSetParser;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import static adql.parser.ADQLParser.ADQLVersion;
@@ -44,7 +46,7 @@ import static adql.parser.ADQLParser.ADQLVersion;
  *
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (09/2021)
+ * @version 1.0 (01/2023)
  */
 public class ValidationQuery {
 
@@ -53,6 +55,9 @@ public class ValidationQuery {
 
     /** Human description of this test. */
     public String description = null;
+
+    /** Definitions of all allowed User Defined Functions. */
+    public final Set<UDF> functions = new LinkedHashSet<>(3);
 
     /** The ADQL query to test. */
     public String query = null;

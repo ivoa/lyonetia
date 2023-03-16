@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>Optional 2 - User Defined Functions</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional User Defined Functions (UDF) (cf 4.3 in ADQL-2.1).
+  </description>
+
+  <!-- UDF Declarations -->
+  <functions>
+    <function>
+      <form><![CDATA[ivo_healpix_index(hpxOrder INTEGER, long REAL, lat REAL) -> BIGINT]]></form>
+      <description>Returns the index (npix) of the HEALPix cell containing the spherical point given by longitude long (typically, right ascension) and latitude lat (typically, declination) at order hpxOrder in NESTED numbering.</description>
+    </function>
+  </functions>
+
+  <!-- Queries to validate -->
+
+  <query uuid="598ff7ac-9d06-4aad-9b77-8283b5d00838">
+    <description>
+      Any function not declared in ADQL-2.1 is considered as a UDF, if supported
+      by the ADQL parser.
+      As the usage of a prefix is not mandatory, the UDF name is totally free,
+      though it is highly recommended to prefix the UDF with `ivo_` for official
+      IVOA function (already used in more than one service ; cf the Catalogue of
+      ADQL User Defined Functions). The prefix could also be the service or
+      institute name, if such UDF is not used anywhere.
+    </description>
+    <adql valid="true" version="adql-2.1">
+        SELECT id, ivo_healpix_index(6, ra, dec) AS hpx FROM atable
+    </adql>
+  </query>
+
+  <query uuid="29c75d48-e525-4e92-af3f-c5e8f3e5f26c">
+    <description>
+      A query with a function being neither a standard ADQL-2.1 function nor a
+      UDF.
+    </description>
+    <adql valid="false" version="adql-2.1">
+        SELECT id, my_undefined_function(ra, dec) AS bad FROM atable
+    </adql>
+  </query>
+
+</queries>

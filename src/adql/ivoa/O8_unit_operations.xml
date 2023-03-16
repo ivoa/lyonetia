@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>Optional 8 - Unit operations.</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional unit operations (cf 4.9 in ADQL-2.1): IN_UNIT. Most of the errors
+    can only be generated with a working ADQL service since unit has to be
+    provided and then checked against the desired output unit.
+  </description>
+
+  <query uuid="ac52e138-73b0-4d61-83c2-daedb6fba4a0">
+    <description>UNIT function with just a column name.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name, IN_UNIT(ra, 'rad')
+        FROM stars
+    </adql>
+  </query>
+
+  <query uuid="a504e0e3-2581-4e06-824e-2b287d123a7f">
+    <description>
+        UNIT function with a complex expression (interesting if there is unit
+        inference mechanism).
+    </description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name, IN_UNIT(sqrt(power(pm_ra,2)+power(pm_dec,2)), 'rad/yr')
+        FROM stars
+    </adql>
+  </query>
+
+</queries>

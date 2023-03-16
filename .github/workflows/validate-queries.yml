@@ -13,7 +13,9 @@ jobs:
     
     env:
       VALIDATOR_SCRIPT: ${GITHUB_WORKSPACE}/src/adql-validator/build/install/adql-validator/bin/adql-validator
-      QUERIES_PATH    : ${GITHUB_WORKSPACE}/src/adql
+      QUERIES_PATH    : ${GITHUB_WORKSPACE}/src/adql/ivoa
+      WIKI_PAGE       : wiki/${{ github.event.number == 0 && 'Master' ||  format('PR#{0}', github.event.number) }}
+      WIKI_URL        : ${{ github.server_url }}/${{ github.repository }}/wiki/${{ github.event.number == 0 && 'Master' ||  format('PR%23{0}', github.event.number) }}
 
     steps:
     
@@ -38,17 +40,21 @@ jobs:
         build-root-directory: src/adql-validator
         arguments           : installDist
     
-    - name : Run ADQL validation queries
-      run  : ${{env.VALIDATOR_SCRIPT}} -r -f markdown ${{env.QUERIES_PATH}} > $OUTPUT_FILE
-      env:
-        OUTPUT_FILE: wiki/${{ github.event.number == 0 && 'Master' ||  format('PR#{0}', github.event.number) }}.md
-    
+    - name: Run ADQL validation queries
+      run : ${{env.VALIDATOR_SCRIPT}} -r -f markdown ${{env.QUERIES_PATH}} > $OUTPUT_FILE
+      env :
+        OUTPUT_FILE: ${{ env.WIKI_PAGE }}.md
+
     - name: Push validation report
-      uses: Andrew-Chen-Wang/github-wiki-action@v2
-      env:
+      uses: Andrew-Chen-Wang/github-wiki-action@v3
+      env :
         # Make sure you have that / at the end.
         WIKI_DIR: wiki/
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_MAIL: gmantelet@astro.unistra.fr
         GH_NAME: ${{ github.repository_owner }}
         #EXCLUDED_FILES: "a/ b.md"
+
+    - name: Set CI status
+      run : bash -c "if [ `grep -c '[0-9]\+ FAILED' ${{env.WIKI_PAGE}}.md` -gt 1 ]; then echo `grep -c '[0-9]\+ FAILED' ${{env.WIKI_PAGE}}.md`' failed validations sets! See '${{env.WIKI_URL}} ; exit 1 ; else exit 0 ; fi"
+

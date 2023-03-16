@@ -11,15 +11,13 @@ import com.beust.jcommander.Parameter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class running the command line version of the ADQL Validator.
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (12/2021)
+ * @version 1.0 (01/2023)
  */
 public class ADQLValidatorRunner {
 
@@ -130,22 +128,36 @@ public class ADQLValidatorRunner {
         }
 
         // Validate each listed file/directory:
-        for(String filePath : files)
-            validate(new File(filePath), validator);
+        for(String filePath : files) {
+            final File file = new File(filePath);
+            if (file.exists())
+                validate(file, validator);
+            else
+                System.err.println("ERROR: file not found! ("+filePath+")");
+        }
     }
 
     protected boolean validate(final File file, final ADQLValidator validator){
         if (file.isDirectory())
         {
+            // Sort files by alphabetic order:
+            File[] sortedFiles = file.listFiles();
+            Arrays.sort(sortedFiles, Comparator.comparing(File::getAbsolutePath));
+
+            // Now try to validate all of them:
             boolean allValid = true;
-            for (File f : file.listFiles()) {
+            for (File f : sortedFiles) {
                 if (!f.isDirectory() || recursive)
                     allValid = validate(f, validator) && allValid;
             }
             return allValid;
         }
-        else
+        // Only try to validate XML files:
+        else if (file.getName().endsWith(".xml"))
             return validateFile(file, validator);
+        // Otherwise, nothing to validate, so return true:
+        else
+            return true;
     }
 
     protected boolean validateFile(final File file, final ADQLValidator validator){
@@ -156,9 +168,11 @@ public class ADQLValidatorRunner {
         }
 
         try{
+
             // Check the input document:
             try(InputStream stream = new FileInputStream(file)) {
-                validator.checkXML(stream);
+                if (!validator.checkXML(stream))
+                    return false;
             }
 
             // Parse and validate the validation queries:

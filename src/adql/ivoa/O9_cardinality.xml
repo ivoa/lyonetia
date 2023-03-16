@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>Optional 9 - Cardinality</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    Optional cardinality operators (cf 4.10 in ADQL-2.1): OFFSET.
+  </description>
+
+  <query uuid="2ee915f1-0139-4704-8db6-6f7a2992556c">
+    <description>Normal OFFSET usage.</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT name, ra, dec
+        FROM stars
+        OFFSET 100
+    </adql>
+  </query>
+
+  <query uuid="280c51ec-ff0a-4f75-a79a-05d9e1a88e85">
+    <description>Negative OFFSET value.</description>
+    <adql valid="false" version="adql-2.1">
+        SELECT name, ra, dec
+        FROM stars
+        OFFSET -10
+    </adql>
+  </query>
+
+  <query uuid="2f847a03-ab5b-4712-b2b5-8282036c23ee">
+    <description>Non-integer OFFSET value.</description>
+    <adql valid="false" version="adql-2.1">
+        SELECT name, ra, dec
+        FROM stars
+        OFFSET 10.5
+    </adql>
+  </query>
+
+</queries>

@@ -1,7 +1,5 @@
 # ADQL Validation
 
-
-
 ## Preambule
 
 ### Prerequisites

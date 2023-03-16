@@ -19,7 +19,7 @@ import java.io.PrintStream;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.0 (12/2021)
+ * @version 1.0 (10/2022)
  */
 public class TextReport implements ValidatorListener {
 
@@ -115,10 +115,11 @@ public class TextReport implements ValidatorListener {
         // Display a description of the validation tests set:
         out.println("Starting validation...");
         out.println(SEPARATOR);
+        out.println("Title          : "+formatText(set.title, "-"));
         out.println("Origin         : "+((source != null && source.trim().length() > 0) ? source : "-"));
         out.println("Publisher      : "+formatPublisher(set.publisher));
         out.println("Contact        : "+formatContact(set.contact));
-        out.println("Description    : "+(set.description != null ? set.description : "-"));
+        out.println("Description    : "+formatText(set.description, "-"));
         out.println("Available tests: "+set.queries.size());
         out.println(SEPARATOR);
 
@@ -216,6 +217,24 @@ public class TextReport implements ValidatorListener {
             final String errMsg = error.getMessage();
             err.println("ERROR: "+(errMsg == null || errMsg.trim().length() == 0 ? "<" + error.getClass().getName() + ">" : error.getMessage()));
         }
+    }
+
+    /**
+     * Format a possibly long piece of text.
+     *
+     * Multiple space characters (e.g. space, line return, tab) are replaced by
+     * a single space.
+     *
+     * @param txt           The text to format.
+     * @param defaultValue  Value returned if the given text is NULL or empty.
+     *
+     * @return  The formatted text.
+     */
+    public static String formatText(final String txt, final String defaultValue){
+        if (txt == null || txt.trim().length() == 0)
+            return defaultValue;
+        else
+            return txt.replaceAll(System.getProperty("line.separator"), " ").replaceAll("\t", " ").replaceAll(" +", " ");
     }
 
     /**

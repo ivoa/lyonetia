@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../queries.xsd">
+  <title>2. FROM</title>
+  <contact>
+    <name>Gregory Mantelet</name>
+    <url>mailto:gmantelet@astro.unistra.fr</url>
+  </contact>
+  <publisher>
+    <name>CDS</name>
+    <url>http://cds.unistra.fr</url>
+  </publisher>
+  <description>
+    ADQL queries aiming to test the FROM clause (single table, join, subquery).
+  </description>
+
+  <query uuid="35fdd599-4b25-41e6-918b-6335b2297f75">
+    <description>Select from a single table.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1
+    </adql>
+  </query>
+  
+  <query uuid="aa05ad89-e3b9-40b8-a400-82519864eae0">
+    <description>Select from a single table with a table alias.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT mytable.* FROM t1 AS mytable
+    </adql>
+  </query>
+  
+  <query uuid="26421808-c04e-4b21-b06b-23b33a487a68">
+    <description>Natural join between two tables.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 NATURAL JOIN t2
+    </adql>
+  </query>
+  
+  <query uuid="26421808-c04e-4b21-b06b-23b33a487a68">
+    <description>Natural join between two tables.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 NATURAL JOIN t2
+    </adql>
+  </query>
+
+  <query uuid="d4c3a72c-4458-11e6-96e2-28b2bdcff70b">
+    <description>Inner join with no join condition.</description>
+	  <adql valid="false" version="adql-2.1">
+        SELECT * FROM t1 INNER JOIN t2
+    </adql>
+  </query>
+
+  <query uuid="bbb3e148-6f18-4faa-9492-96d3a4c3e8c3">
+    <description>Valid inner join with a common column as join constraint.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 INNER JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="18c5cd39-52f1-47f9-8944-87d31fa3ffde">
+    <description>Valid inner join with a join constraint.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 INNER JOIN t2 ON t1.oid = t2.name
+    </adql>
+  </query>
+
+  <query uuid="56a45b26-74b2-428b-91ba-5aa012f1fc5e">
+    <description>Valid inner join without the INNER word (optional).</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="407275f1-043c-45b0-9e85-7ca9c563a324">
+    <description>Valid cross join.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1, t2
+    </adql>
+  </query>
+
+  <query uuid="0a62f4a6-6c6c-4014-aeca-1c2a9c0ad72a">
+    <description>Valid left outer join.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 LEFT OUTER JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="235df697-e6c1-4d9a-91c7-67d926596904">
+    <description>Valid left outer join without the OUTER word (optional).</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 LEFT JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="48e90251-9968-4b01-a84f-f515a0137043">
+    <description>Valid right outer join.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 RIGHT OUTER JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="acada701-143e-41d5-86cf-ccff88b16878">
+    <description>Valid right outer join without the OUTER word (optional).</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 RIGHT JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="a90e1622-844e-44e1-8231-0415ef61f067">
+    <description>Valid right outer join.</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 FULL OUTER JOIN t2 USING(oid)
+    </adql>
+  </query>
+
+  <query uuid="f4a16635-b1e8-4c48-92d9-9a1954636446">
+    <description>Valid full outer join without the OUTER word (optional).</description>
+	  <adql valid="true" version="adql-2.1">
+        SELECT * FROM t1 FULL JOIN t2 USING(oid)
+    </adql>
+  </query>
+  
+  <query uuid="1f5d27dc-450c-11e6-8564-332de33a5c03">
+    <description>Subquery</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT *
+        FROM (SELECT * FROM t1 ) AS p
+    </adql>
+  </query>
+  
+  <query uuid="664ec168-d900-43c3-8b90-aadb6d836521">
+    <description>Join with a subquery</description>
+    <adql valid="true" version="adql-2.1">
+        SELECT *
+        FROM t1 JOIN (SELECT id, something FROM t1 WHERE something &lt; 42) AS p USING(id)
+    </adql>
+  </query>
+
+</queries>

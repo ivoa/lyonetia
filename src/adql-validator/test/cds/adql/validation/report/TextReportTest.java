@@ -59,6 +59,7 @@ class TextReportTest {
     private static String generateReportHeader(final String setName, final int nbAvailableTests){
         return "Starting validation..." + LINE_SEP +
                 TextReport.SEPARATOR + LINE_SEP +
+                "Title          : -" + LINE_SEP +
                 "Origin         : " + setName + LINE_SEP +
                 "Publisher      : -" + LINE_SEP +
                 "Contact        : -" + LINE_SEP +
@@ -126,6 +127,9 @@ class TextReportTest {
     void startWithAllInformation() throws MalformedURLException {
         // Create a validation set:
         final ValidationSet validationSet = new ValidationSet();
+        // Set the set title:
+        final String TITLE = "Super Original Validation Set Title";
+        validationSet.title = TITLE;
         // Set all info about a publisher:
         validationSet.publisher = new Publisher();
         validationSet.publisher.name = "John Doe";
@@ -151,6 +155,7 @@ class TextReportTest {
         // Check the output:
         assertEquals("Starting validation..." + LINE_SEP +
                 TextReport.SEPARATOR + LINE_SEP +
+                "Title          : " + TITLE + LINE_SEP +
                 "Origin         : " + ORIGIN + LINE_SEP +
                 "Publisher      : " + validationSet.publisher.name + " ("+PUBLISHER_EMAIL+")" + LINE_SEP +
                 "Contact        : " + validationSet.contact.name + " ("+CONTACT_EMAIL+")" + LINE_SEP +

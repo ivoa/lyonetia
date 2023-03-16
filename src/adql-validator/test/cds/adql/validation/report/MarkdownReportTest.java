@@ -91,6 +91,7 @@ class MarkdownReportTest {
                 LINE_SEP +
                 "| _Key_               | _Value_                                                      |" + LINE_SEP +
                 "| ------------------- | ------------------------------------------------------------ |" + LINE_SEP +
+                "| **Title**           | - |" + LINE_SEP +
                 "| **Origin**          | " + setName + " |" + LINE_SEP +
                 "| **Publisher**       | - |" + LINE_SEP +
                 "| **Contact**         | - |" + LINE_SEP +
@@ -132,6 +133,9 @@ class MarkdownReportTest {
     void startWithAllInformation() throws MalformedURLException {
         // Create a validation set:
         final ValidationSet validationSet = new ValidationSet();
+        // Set the set title:
+        final String TITLE = "Super Original Validation Set Title";
+        validationSet.title = TITLE;
         // Set all info about a publisher:
         validationSet.publisher = new Publisher();
         validationSet.publisher.name = "John Doe";
@@ -155,13 +159,14 @@ class MarkdownReportTest {
         assertEquals(validationSet.queries.size(), report.nbAvailableTests);
 
         // Check the output:
-        assertEquals("# ADQL Validation report" + LINE_SEP +
+        assertEquals("# " + TITLE + LINE_SEP +
                 LINE_SEP +
                 LINE_SEP +
                 "## About the validation set" + LINE_SEP +
                 LINE_SEP +
                 "| _Key_               | _Value_                                                      |" + LINE_SEP +
                 "| ------------------- | ------------------------------------------------------------ |" + LINE_SEP +
+                "| **Title**           | " + TITLE + " |" + LINE_SEP +
                 "| **Origin**          | " + ORIGIN + " |" + LINE_SEP +
                 "| **Publisher**       | [" + validationSet.publisher.name + "]("+PUBLISHER_EMAIL+")" + " |" + LINE_SEP +
                 "| **Contact**         | [" + validationSet.contact.name + "]("+CONTACT_EMAIL+")" + " |" + LINE_SEP +
