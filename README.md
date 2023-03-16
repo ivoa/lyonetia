@@ -1,5 +1,5 @@
-[![Validator test](https://github.com/gmantele/lyonetia/actions/workflows/test-validator.yml/badge.svg)](https://github.com/gmantele/lyonetia/actions/workflows/test-validator.yml)
-[![ADQL Validation](https://github.com/gmantele/lyonetia/actions/workflows/validate-queries.yml/badge.svg)](https://github.com/gmantele/lyonetia/wiki)
+[![Validator test](https://github.com/ivoa/lyonetia/actions/workflows/test-validator.yml/badge.svg)](https://github.com/gmantele/ivoa/actions/workflows/test-validator.yml)
+[![ADQL Validation](https://github.com/ivoa/lyonetia/actions/workflows/validate-queries.yml/badge.svg)](https://github.com/ivoa/lyonetia/wiki)
 
 # lyonetia
 A project for working on the BNF specification of ADQL, named after the <a href='http://ukmoths.org.uk/species/lyonetia-clerkella'>Lyonetiinae</a> family of moths.
