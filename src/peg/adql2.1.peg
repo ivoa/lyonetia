@@ -1,6 +1,6 @@
 # Note: in the actual PEG definition comments start with #
 
-# ============================ The Gramma's root symbol
+# ============================ The Grammar's root symbol
 
 query_specification <-
 	with_clause? _
