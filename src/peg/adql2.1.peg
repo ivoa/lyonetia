@@ -1,9 +1,4 @@
 # Note: in the actual PEG definition comments start with #
-# =========================== Configurables for deployers
-
-# additional prefixes to be added here
-udf_prefix <-
-	'ivo_'
 
 # ============================ The Gramma's root symbol
 
@@ -245,13 +240,13 @@ identifier <-
 	(regular_identifier / delimited_identifier)
 
 delimited_identifier <-
-	'"' ('""' / '[^"]')+ '"'
+	'"' ('""' / !["])+ '"'
 
 regular_identifier <-
 	(!(keyword) letter (letter / digit / '_')*)
 
 character_string_literal <-
-	("'" ("''" / r"[^']")* "'" (Space+ comment _)*)+
+	("'" ("''" / !['])* "'" (Space+ comment _)*)+
 
 fold_function <-
 	('UPPER' / 'LOWER') _
@@ -280,7 +275,7 @@ geometry_function <-
 	/ extract_coord_sys
 
 bitwise_op <-
-	'&' / '|' / '^'
+	[&|^]
 
 bitwise_expression <-
 	'~' numeric_value_expression
@@ -456,13 +451,13 @@ point <-
 	_ ',' _ coordinates _ ')'
 
 numeric_value_expression <-
-	term (_ ('+' / '-') _ numeric_value_expression)*
+	term (_ [-+] _ numeric_value_expression)*
 
 term <-
-	factor (_ ('*' / '/') _ term)*
+	factor (_ [*/] _ term)*
 
 factor <-
-	('+' / '-')? numeric_primary
+	[-+]? numeric_primary
 
 numeric_value_function <-
 	math_function
@@ -531,7 +526,7 @@ numeric_expression_operand <-
 	numeric_value_expression
 
 numeric_expression_rest <-
-	('+' / '-' / '*' / '/') _ numeric_expression_operand
+	[-+*/] _ numeric_expression_operand
 
 approximate_numeric_literal <-
 	exact_numeric_literal 'E'
@@ -541,7 +536,7 @@ exact_numeric_literal	<-
 	(unsigned_integer '.')* unsigned_integer
 
 signed_integer <-
-	('+' / '-')? unsigned_integer
+	[-+]? unsigned_integer
 
 # TODO: We should take out character_string_literal here, MD thinks --
 # what sort of use case did people have in mind here?
@@ -566,13 +561,13 @@ unsigned_hexadecimal <-
 	'0x' hex_digit+
 
 digit <-
-	'[0-9]'
+	[0-9]
 
 hex_digit <-
-	'[0-9A-F]'
+	[0-9A-F]
 
 letter <-
-	'[a-zA-Z]'
+	[a-zA-Z]
 
 # Reserved words
 
@@ -684,7 +679,7 @@ ANY_CHAR <-
 	letter / digit / ' ' / '\t' / ',' / '' / '.'
 
 comment	<-
-	'--' '[^\n\r]*'
+	'--' (![\n\r])*
 
 _ <-
 	(comment / Space / EOL)*
@@ -693,10 +688,19 @@ __ <-
 	(comment / Space / EOL)+
 
 _a <-
-	!'[A-Z0-9_]'
+	![A-Z0-9_]
 
 Space <-
 	' '+ / '\t'
 
 EOL <-
 	'\r\n' / '\n' / '\r'
+
+EOF <-
+    !.
+
+# =========================== Configurables for deployers
+# additional prefixes to be added here
+udf_prefix <-
+	'ivo_'
+
