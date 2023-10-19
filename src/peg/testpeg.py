@@ -48,7 +48,10 @@ def get_parser(debug=False, root='query_specification'):
     peg_rules = re.sub('#', '// ', peg_rules)
 
     # adapt character range syntax
-    peg_rules = re.sub("'\\[", "r'[", peg_rules)
+    peg_rules = re.sub("\\[", "r'[", peg_rules)
+    peg_rules = re.sub("\\!r'\\[", "r'[^", peg_rules)
+    peg_rules = re.sub("\\]", "]'", peg_rules)
+    peg_rules = re.sub("EOF <-[^;]*;", "", peg_rules)
 
     return ParserPEG(peg_rules, 
        root,
